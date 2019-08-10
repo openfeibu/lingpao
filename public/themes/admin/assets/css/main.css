@@ -1,0 +1,132 @@
+.fb-clearfix:after{content: "";width: 100%;height: 0;display: block;clear: both;}
+body{background: #f5f5f5;}
+.layui-side-menu{background:#20222A;width: 200px;overflow-x: hidden;}
+.layui-side-menu .layui-nav{margin-top: 5px}
+.layui-side-scroll{width: 220px;}
+.logo{height: 50px;text-align: center;line-height: 50px;color: #fff;width: 200px;font-size: 18px;box-shadow: 0 1px 2px 0 rgba(0,0,0,.15)}
+.layui-header{background: #fff;height: 50px;    box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);}
+.layui-header .layui-nav{background: #fff;color: #333;height: 50px;}
+.layui-header .layui-nav .layui-nav-item{height: 50px;line-height: 50px;}
+.layui-header .layui-nav .layui-nav-item a{color: #333;}
+.layui-header .layui-nav .layui-nav-item a:hover{color: #333;}
+.layui-header .layui-nav .layui-nav-more {
+    border-top-color: #666;
+}
+.layui-header .layui-nav .layui-nav-mored {
+	border-color: transparent transparent #666
+}
+.layui-nav-bar{background: #666;height: 2px;}
+.layui-side-menu{z-index:1000;}
+.layui-nav-tree .layui-nav-item{background: #20222A;}
+.layui-nav-tree .layui-nav-item > a{height: 50px;line-height: 50px;font-size: 14px;}
+.layui-nav-tree .layui-nav-item > a i{margin-right: 15px;font-size: 16px;}
+.layui-nav-tree .layui-nav-item dl a{height: 45px;line-height: 45px;text-indent:30px;}
+.main {
+    position: absolute;
+    left: 200px;
+    right: 0;
+    top: 50px;
+    bottom: 0;
+    z-index: 998;
+    width: auto;
+    overflow: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.main_full{padding:0 15px 15px 15px;}
+.fb-backlog .fb-backlog-body {
+	display: block;
+	padding: 10px 15px;
+	background-color: #f8f8f8;
+	color: #999;
+	border-radius: 2px;
+	transition: all .3s;
+	-webkit-transition: all .3s
+}
+
+.fb-backlog-body h3 {
+	padding-bottom: 10px;
+	font-size: 12px
+}
+
+.fb-backlog-body p cite {
+	font-style: normal;
+	font-size: 30px;
+	font-weight: 300;
+	color: #009688
+}
+
+.fb-backlog-body:hover {
+	background-color: #f2f2f2;
+	color: #888
+}
+.tabel-btn{margin-right: 20px;}
+.fb-minNav{height: 50px;padding: 0 15px;line-height: 50px}
+.fb-main-table .layui-form-item .layui-input-inline{width: 300px;}
+.layui-btn a{color: #fff;display: block;}
+.main_full .layui-form-onswitch{border-color: #FF5722;
+    background-color: #FF5722}
+.layui-table-main{background: #fff;}
+#uploadImage img{height: 200px}
+.main_full .layui-form-radio{margin-right: 5px;}
+.layui-form-set{background: #fff;padding: 15px }
+.layui-form-set .layui-form-label{width: 100px;}
+.layui-form-set .layui-input-block{margin-left: 130px;}
+.fb-main-table{background: #fff;padding: 15px;}
+
+#map{height: 500px;}
+.layui-button-mapsearch{    display: inline-block;
+    height: 38px;
+    line-height: 38px;
+    padding: 0 18px;
+    background-color: #009688;
+    color: #fff;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 14px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    float: right;
+    margin-top: 5px;
+}
+.login{width:1200px;height:612px;background:url("../img/bg.png") no-repeat center;position:absolute;top:50%;margin-top:-350px;left:50%;margin-left:-600px;}
+.login-bg{background:#349fff}
+.login-con{width:1029px;height100%;margin:0 0 0 115px;position:relative;}
+.login-con .login-con-title{padding:35px 50px;color:#2b2b2b;font-size:16px;}
+.login-con form{width:320px;position:absolute;top:160px;right:85px;}
+.form-title{height:50px;color:#349fff;line-height:50px;text-align:center;border-bottom:2px solid #349fff;font-size:16px;margin-bottom:30px;}
+.login-con form .layui-input{width:100%;height:50px;border:none;border-bottom:1px solid #bbb;margin:10px 0}
+.login-con form .login_btn{width:180px !important;height:40px;border-radius:40px;background:#349fff;color:#fff;margin:50px auto;display:block;border:none;cursor:pointer;}
+.layui-alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+.layui-close{
+    float: right;
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .2;
+    filter: alpha(opacity=20);
+}
+button.layui-close{
+    padding: 0;
+    cursor: pointer;
+    background: 0 0;
+    border: 0;
+    -webkit-appearance: none;
+}
+
+
+
+
+
+
+
+

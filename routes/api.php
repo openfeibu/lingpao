@@ -1,0 +1,50 @@
+<?php
+
+use Illuminate\Http\Request;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| is assigned the "api" middleware group. Enjoy building your API!
+|
+*/
+
+
+$api = app('Dingo\Api\Routing\Router');
+
+$api->version('v1', function ($api) {
+    $api->get('/','App\Http\Controllers\Api\HomeController@index');
+    $api->post('login', 'App\Http\Controllers\Api\Auth\LoginController@login');
+    $api->post('register', 'App\Http\Controllers\Api\Auth\RegisterController@register');
+    $api->get('/page','App\Http\Controllers\Api\PageController@getPages');
+    $api->get('/page/{id}','App\Http\Controllers\Api\PageController@getPage');
+    $api->get('/page/slug/{slug}','App\Http\Controllers\Api\PageController@getPageSlug');
+    $api->get('/page-category','App\Http\Controllers\Api\PageCategoryController@index');
+    $api->get('/page-recruit','App\Http\Controllers\Api\PageController@getRecruits');
+    $api->get('/page-contact','App\Http\Controllers\Api\PageController@getContacts');
+    $api->get('/banners','App\Http\Controllers\Api\HomeController@getBanners');
+    $api->get('/link','App\Http\Controllers\Api\LinkController@getLinks');
+    $api->get('/nav','App\Http\Controllers\Api\NavController@getNavs');
+    $api->post('test','App\Http\Controllers\Api\HomeController@test');
+    $api->get('/link','App\Http\Controllers\Api\LinkController@getLinks');
+    $api->get('/videoVid','App\Http\Controllers\Api\HomeController@getVideoVid');
+
+
+    $api->post('/weapp/code','App\Http\Controllers\Api\Auth\WeAppUserLoginController@code');
+    $api->post('/weapp/login','App\Http\Controllers\Api\Auth\WeAppUserLoginController@login');
+    $api->post('/submit_phone','App\Http\Controllers\Api\UserController@submitPhone');
+    $api->post('/submit_location','App\Http\Controllers\Api\UserController@submitLocation');
+
+    $api->get('/user_address','App\Http\Controllers\Api\UserAddressController@getUserAddresses');
+    $api->get('/user_address/{id}','App\Http\Controllers\Api\UserAddressController@getUserAddress');
+    $api->get('/user_address/default','App\Http\Controllers\Api\UserAddressController@getDefault');
+    $api->post('/user_address/store','App\Http\Controllers\Api\UserAddressController@store');
+    $api->post('/user_address/update','App\Http\Controllers\Api\UserAddressController@update');
+    $api->post('/user_address/destroy','App\Http\Controllers\Api\UserAddressController@destroy');
+
+    $api->post('payment/wechat-notify','App\Http\Controllers\Api\PaymentController@wechatNotify');
+});
