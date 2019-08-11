@@ -25,10 +25,10 @@ class User extends AuthModel
         return self::$user;
     }
 
-    public static function tokenAuth()
+    public static function tokenAuth($custom = ['*'])
     {
         $token = Request::input('token','');
-        self::$user = $user = self::select('id','nickname','avatar_url','token','phone','open_id','session_key')->where('token', $token)->first();
+        self::$user = $user = self::where('token', $token)->first($custom);
         if (!$user) {
             throw new UnauthorizedHttpException('jwt-auth', 'token过期请重新登陆');
         }

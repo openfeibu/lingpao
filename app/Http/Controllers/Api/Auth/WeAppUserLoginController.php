@@ -29,7 +29,7 @@ class WeAppUserLoginController extends BaseController
         $user_info->nickName = '';
         $user_info->city = "";
         $this->storeUser($user_info, $token, $we_data['session_key']);
-        $user = $this->userRepository->getUserByToken($token);
+        $user = $this->userRepository->getUserByToken($token,config('model.user.user.user_visible'));
 
         return $this->response->success()->data($user->toArray())->json();
     }
@@ -56,7 +56,7 @@ class WeAppUserLoginController extends BaseController
 
         $this->storeUser($user_info, $token, $sessionKey);
 
-        $user = $this->userRepository->getUserByToken($token);
+        $user = $this->userRepository->getUserByToken($token,config('model.user.user.user_visible'));
 
         return $this->response->success()->data($user)->json();
     }

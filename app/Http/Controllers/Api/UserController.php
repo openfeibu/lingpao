@@ -18,7 +18,7 @@ class UserController extends BaseController
     }
     public function getUser(Request $request)
     {
-        $user = User::tokenAuth();
+        $user = User::tokenAuth(config('model.user.user.user_visible'));
         return response()->json([
             'code' => '200',
             'data' => $user,

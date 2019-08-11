@@ -69,6 +69,7 @@ return [
         'table'         => 'users',
         'hidden'        => [],
         'visible'       => [],
+        'user_visible'  => ['id','nickname','phone','avatar_url','city','token','session_key'],
         'guarded'       => ['*'],
         //'slugs'         => [],
         'dates'         => ['created_at', 'updated_at'],

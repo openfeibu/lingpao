@@ -33,6 +33,7 @@ $api->version('v1', function ($api) {
     $api->get('/link','App\Http\Controllers\Api\LinkController@getLinks');
     $api->get('/videoVid','App\Http\Controllers\Api\HomeController@getVideoVid');
 
+    $api->get('/user_info','App\Http\Controllers\Api\UserController@getUser');
 
     $api->post('/weapp/code','App\Http\Controllers\Api\Auth\WeAppUserLoginController@code');
     $api->post('/weapp/login','App\Http\Controllers\Api\Auth\WeAppUserLoginController@login');

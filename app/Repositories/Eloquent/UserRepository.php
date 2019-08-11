@@ -10,6 +10,7 @@ use App\Models\User;
 class UserRepository extends BaseRepository implements UserRepositoryInterface
 {
 
+    public $custom = ['*'];
     /**
      * Booting the repository.
      *
@@ -31,7 +32,11 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     {
         return config('model.user.user.model');
     }
-
+    public function user_visible()
+    {
+        $this->custom = config('model.user.user.user_visible');
+        return $this;
+    }
     /**
      * 检验用户是否已经实名认证
      */
