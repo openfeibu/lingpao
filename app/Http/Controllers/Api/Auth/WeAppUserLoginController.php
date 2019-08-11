@@ -9,12 +9,14 @@ use \GuzzleHttp\Client;
 use Log;
 use App\Helpers\Constants as Constants;
 use App\Services\WXBizDataCryptService;
+use App\Repositories\Eloquent\UserRepositoryInterface;
 
 class WeAppUserLoginController extends BaseController
 {
-    public function __construct()
+    public function __construct(UserRepositoryInterface $userRepository)
     {
         parent::__construct();
+        $this->userRepository = $userRepository;
     }
     public function code(Request $request)
     {
@@ -27,9 +29,9 @@ class WeAppUserLoginController extends BaseController
         $user_info->nickName = '';
         $user_info->city = "";
         $this->storeUser($user_info, $token, $we_data['session_key']);
-        $user = app(User::class)->findUserByToken($token);
+        $user = $this->userRepository->getUserByToken($token);
 
-        return $this->response->success()->data($user)->json();
+        return $this->response->success()->data($user->toArray())->json();
     }
     public function login(Request $request)
     {
@@ -54,7 +56,7 @@ class WeAppUserLoginController extends BaseController
 
         $this->storeUser($user_info, $token, $sessionKey);
 
-        $user = app(User::class)->findUserByToken($token);
+        $user = $this->userRepository->getUserByToken($token);
 
         return $this->response->success()->data($user)->json();
     }

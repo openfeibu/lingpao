@@ -34,4 +34,8 @@ class User extends AuthModel
         }
         return $user;
     }
+    public function findUserByToken()
+    {
+
+    }
 }
