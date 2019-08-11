@@ -23,4 +23,18 @@ class HomeController extends BaseController
         }
         return $this->response->success()->data($banners)->json();
     }
+    public function setting(Request $request)
+    {
+        $category = $request->input('category','arguments');
+        $arguments = Setting::where('category',$category)->orderBy('order','asc')->orderBy('id','asc')->get(['title','slug','value'])->toArray();
+        $data = [];
+        foreach ($arguments as $key => $argument)
+        {
+            $data[$argument['slug']] = [
+                'value' => $argument['value'],
+                'title' => $argument['title'],
+            ];
+        }
+        return $this->response->success()->data($data)->json();
+    }
 }

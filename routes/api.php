@@ -42,10 +42,12 @@ $api->version('v1', function ($api) {
 
     $api->get('/user_address','App\Http\Controllers\Api\UserAddressController@getUserAddresses');
     $api->get('/user_address/{id}','App\Http\Controllers\Api\UserAddressController@getUserAddress');
-    $api->get('/user_address/default','App\Http\Controllers\Api\UserAddressController@getDefault');
+    $api->get('/user_default_address','App\Http\Controllers\Api\UserAddressController@getDefault');
     $api->post('/user_address/store','App\Http\Controllers\Api\UserAddressController@store');
     $api->post('/user_address/update','App\Http\Controllers\Api\UserAddressController@update');
     $api->post('/user_address/destroy','App\Http\Controllers\Api\UserAddressController@destroy');
 
     $api->post('payment/wechat-notify','App\Http\Controllers\Api\PaymentController@wechatNotify');
+
+    $api->get('/setting','App\Http\Controllers\Api\HomeController@setting');
 });
