@@ -29,10 +29,7 @@ class WeAppUserLoginController extends BaseController
         $this->storeUser($user_info, $token, $we_data['session_key']);
         $user = app(User::class)->findUserByToken($token);
 
-        return response()->json([
-            'code' => '200',
-            'data' => $user,
-        ]);
+        return $this->response->success()->data($user)->json();
     }
     public function login(Request $request)
     {
@@ -50,10 +47,7 @@ class WeAppUserLoginController extends BaseController
         $errCode = $WXBizDataCryptService->decryptData($encryptedData, $iv, $data );
 
         if ($errCode != 0) {
-            return response()->json([
-                'code' => '400',
-                'message' => $errCode,
-            ]);
+            throw new \App\Exceptions\OutputServerMessageException($errCode);
         }
 
         $user_info = json_decode($data);
@@ -62,10 +56,7 @@ class WeAppUserLoginController extends BaseController
 
         $user = app(User::class)->findUserByToken($token);
 
-        return response()->json([
-            'code' => '200',
-            'data' => $user,
-        ]);
+        return $this->response->success()->data($user)->json();
     }
     /**
      * 通过 code 换取 session key
