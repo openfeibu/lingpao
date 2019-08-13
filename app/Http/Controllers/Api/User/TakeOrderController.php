@@ -19,6 +19,7 @@ class TakeOrderController extends BaseController
             'urgent' => 'sometimes|in:0,1',
             'urgent_price' => 'sometimes|numeric|min:0',
             'tip' => 'sometimes|numeric|min:0',
+            'payment' => "required|integer|in:wechat,cash",
 
             'phone' => 'sometimes|required|regex:'.config('regex.phone'),
             'destination' => 'required',
