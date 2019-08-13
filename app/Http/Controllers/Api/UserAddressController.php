@@ -62,14 +62,13 @@ class UserAddressController extends BaseController
 
     }
 
-    public function getUserAddress(Request $request)
+    public function getUserAddress(Request $request,$id)
     {
         $rules = [
         	'token' 	=> 'required',
-        	'address_id' => "required|integer",
         ];
         validateParameter($rules);
-        $user_address = $this->userAddressRepository->getUserAddress(['id' => $request->address_id,'user_id' => $this->user->id]);
+        $user_address = $this->userAddressRepository->getUserAddress(['id' => $id,'user_id' => $this->user->id])->toArray();
         if(!$user_address){
 			throw new \App\Exceptions\DataNotFoundException('收货地址不存在');
 		}

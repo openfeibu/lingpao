@@ -904,6 +904,18 @@ if (!function_exists('validateParameter')) {
         }
     }
 }
+if (!function_exists('validateCustomParameter')) {
+    function validateCustomParameter($data,$rules,$message=[])
+    {
+
+        $validator = Validator::make($data, $rules,$message);
+        if ($validator->fails()) {
+            throw new \App\Exceptions\OutputServerMessageException($validator->errors()->first());
+        } else {
+            return true;
+        }
+    }
+}
 if (!function_exists('validateData')) {
     function validateData($value, $custom)
     {
