@@ -47,6 +47,8 @@ $api->version('v1', function ($api) {
     $api->post('/user_address/update','App\Http\Controllers\Api\UserAddressController@update');
     $api->post('/user_address/destroy','App\Http\Controllers\Api\UserAddressController@destroy');
 
+    $api->post('/extract_express_info','App\Http\Controllers\Api\User\TakeOrderController@extractExpressInfo');
+
     $api->post('payment/wechat-notify','App\Http\Controllers\Api\PaymentController@wechatNotify');
 
     $api->get('/setting','App\Http\Controllers\Api\HomeController@setting');
