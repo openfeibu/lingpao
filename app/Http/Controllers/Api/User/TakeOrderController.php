@@ -57,7 +57,32 @@ class TakeOrderController extends BaseController
         ];
         validateParameter($rule);
         $description = $request->description;
-        preg_match_all('/[0-9-_]{4,8}/',$description,$result);
-        var_dump($result);exit;
+        $data = [
+            'take_code' => '',
+            'express_company' => '',
+        ];
+
+        preg_match('/[\da-zA-Z]{1,}-[\da-zA-Z]{1,}-[\da-zA-Z]{1,}|[\da-zA-Z]{1,}-[\da-zA-Z]{1,}/',$description,$code_result);
+        if($code_result)
+        {
+            $data['take_code'] = $code_result[0];
+        }else{
+            preg_match('/(货号|取件码|取货码|凭)(?P<code>[0-9a-zA-Z])/',$description,$code_result);
+            $data['take_code'] = $code_result ? $code_result['code'] : '';
+        }
+
+        $express_companies = config('regex.express_company');
+
+        foreach ($express_companies as $key => $express_company)
+        {
+            if(strpos($description,$express_company) !== false)
+            {
+                $data['express_company'] = $express_company;
+                break;
+            }
+        }
+
+        return $this->response->success()->data($data)->json();
+
     }
 }
