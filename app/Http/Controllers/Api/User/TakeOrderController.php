@@ -38,8 +38,8 @@ class TakeOrderController extends BaseController
             'consignee' => 'required',
             'mobile' => 'required|regex'.config('regex.phone'),
             'address' => 'required',
-            'description' => 'description',
-            'take_code' => 'required',
+            'description' => 'sometimes',
+            'take_code' => 'sometimes',
             'express_company' => 'required',
             'express_arrive_date' => 'required',
         ];
@@ -48,6 +48,7 @@ class TakeOrderController extends BaseController
         {
             validateCustomParameter($express,$express_rule);
         }
+
 
     }
     public function extractExpressInfo(Request $request)

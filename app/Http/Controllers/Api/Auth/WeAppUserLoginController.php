@@ -58,7 +58,7 @@ class WeAppUserLoginController extends BaseController
 
         $user = $this->userRepository->getUserByToken($token,config('model.user.user.user_visible'));
 
-        return $this->response->success()->data($user)->json();
+        return $this->response->success()->data($user->toArray())->json();
     }
     /**
      * 通过 code 换取 session key
