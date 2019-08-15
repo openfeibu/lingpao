@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\OutputServerMessageException;
 use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -39,10 +40,7 @@ class UserController extends BaseController
         $errCode = $WXBizDataCryptService->decryptData($encryptedData, $iv, $data );
 
         if ($errCode != 0) {
-            return response()->json([
-                'code' => '400',
-                'message' => $errCode,
-            ]);
+            throw new OutputServerMessageException('错误码：'.$errCode);
         }
 
         $phone_data = json_decode($data);
@@ -52,7 +50,7 @@ class UserController extends BaseController
         User::where('id',$user->id)->update([
             'phone' => $phone
         ]);
-        return $this->response->success('提交成功')->data($phone)->json();
+        return $this->response->success('提交成功')->data(['phone' => $phone])->json();
     }
     public function submitLocation(Request $request)
     {
@@ -68,7 +66,7 @@ class UserController extends BaseController
             'latitude' => $latitude,
             'city' => $data['regeocode']['addressComponent']['city'],
         ]);
-        return $this->response->success('提交成功')->data($data['regeocode']['addressComponent']['city'])->json();
+        return $this->response->success('提交成功')->data(['city' => $data['regeocode']['addressComponent']['city']])->json();
     }
 
     /*设置支付密码*/
