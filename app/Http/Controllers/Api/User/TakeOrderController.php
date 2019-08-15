@@ -93,7 +93,6 @@ class TakeOrderController extends BaseController
         }
         $data = [
             'order_id' => $order->id,
-            'return_url' => config('common.order_return_url'),
             'order_sn' => $order_sn,
             'subject' => "代拿",
             'body' => "代拿",
