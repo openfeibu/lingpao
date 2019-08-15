@@ -8,11 +8,11 @@ use App\Traits\Database\Slugger;
 use App\Traits\Database\DateFormatter;
 use App\Traits\Filer\Filer;
 
-class UserAddress extends BaseModel
+class UserCoupon extends BaseModel
 {
     use Filer, Slugger, DateFormatter;
 
-    protected $config = 'model.user.user_address';
+    protected $config = 'model.coupon.user_coupon';
 
 
 }

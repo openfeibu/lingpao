@@ -11,8 +11,6 @@ use App\Repositories\Eloquent\UserAddressRepositoryInterface;
 
 class UserAddressController extends BaseController
 {
-	protected $helpService;
-	
 	protected $user;
 	
 	public function __construct (UserAddressRepositoryInterface $userAddressRepository)
