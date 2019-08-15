@@ -15,6 +15,8 @@ class User extends AuthModel
 
     protected $config = 'model.user.user';
 
+    protected $appends = ['is_pay_password'];
+
     protected static $user;
 
     public static function tokenAuthCache()
@@ -34,8 +36,9 @@ class User extends AuthModel
         }
         return $user;
     }
-    public function findUserByToken()
+    public function getIsPayPasswordAttribute()
     {
-
+        $pay_password = $this->attributes['pay_password'];
+        return $pay_password ? true : false;
     }
 }

@@ -925,3 +925,14 @@ if (!function_exists('validateData')) {
         return true;
     }
 }
+if (!function_exists('visible_data')) {
+    function visible_data($data,$keys)
+    {
+        $return_data = [];
+        foreach ($keys as $key)
+        {
+            $return_data[$key] = $data[$key];
+        }
+        return $return_data;
+    }
+}

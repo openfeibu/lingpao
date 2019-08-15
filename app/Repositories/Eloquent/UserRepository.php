@@ -52,7 +52,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     }
     public function updatePayPassword ($user_id,$pay_password)
     {
-        return User::where('id',$user_id)->update(['pay_password'=>$pay_password]);
+        return User::where('id',$user_id)->update(['pay_password'=>handlePayPassword($pay_password)]);
     }
     public function getUserByToken($token,$custom = ['*'])
     {

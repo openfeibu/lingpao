@@ -5,7 +5,7 @@ return [
 /*
  * Modules .
  */
-    'modules'  => ['link'],
+    'modules'  => ['take_order'],
 
 
 /*
@@ -14,9 +14,9 @@ return [
     'views'    => ['default' => 'Default', 'left' => 'Left menu', 'right' => 'Right menu'],
 
 // Modale variables for page module.
-    'link'     => [
-        'model'        => 'App\Models\Link',
-        'table'        => 'links',
+    'take_order'     => [
+        'model'        => 'App\Models\TakeOrder',
+        'table'        => 'take_orders',
         'primaryKey'   => 'id',
         'hidden'       => [],
         'visible'      => [],
@@ -31,5 +31,21 @@ return [
             'title'  => 'like',
         ],
     ],
-
+    'take_order_express' => [
+        'model'        => 'App\Models\TakeOrderExpress',
+        'table'        => 'take_order_expresses',
+        'primaryKey'   => 'id',
+        'hidden'       => [],
+        'visible'      => [],
+        'guarded'      => ['*'],
+        'fillable'     => ['name', 'image', 'order'],
+        'translate'    => ['name', 'image', 'order'],
+        'upload_folder' => '/page/link',
+        'encrypt'      => ['id'],
+        'revision'     => ['name'],
+        'perPage'      => '20',
+        'search'        => [
+            'title'  => 'like',
+        ],
+    ],
 ];

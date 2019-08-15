@@ -69,6 +69,15 @@ class AppServiceProvider extends ServiceProvider
             'App\Repositories\Eloquent\UserAddressRepositoryInterface',
             \App\Repositories\Eloquent\UserAddressRepository::class
         );
+        $this->app->bind(
+            'App\Repositories\Eloquent\TakeOrderRepositoryInterface',
+            \App\Repositories\Eloquent\TakeOrderRepository::class
+        );
+        $this->app->bind(
+            'App\Repositories\Eloquent\TakeOrderExpressRepositoryInterface',
+            \App\Repositories\Eloquent\TakeOrderExpressRepository::class
+        );
+
         $this->app->bind('filer', function ($app) {
             return new \App\Helpers\Filer\Filer();
         });

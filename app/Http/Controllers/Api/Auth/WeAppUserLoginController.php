@@ -29,9 +29,9 @@ class WeAppUserLoginController extends BaseController
         $user_info->nickName = '';
         $user_info->city = "";
         $this->storeUser($user_info, $token, $we_data['session_key']);
-        $user = $this->userRepository->getUserByToken($token,config('model.user.user.user_visible'));
-
-        return $this->response->success()->data($user->toArray())->json();
+        $user = $this->userRepository->getUserByToken($token);
+        $user = visible_data($user->toArray(),config('model.user.user.user_visible'));
+        return $this->response->success()->data($user)->json();
     }
     public function login(Request $request)
     {
@@ -56,9 +56,11 @@ class WeAppUserLoginController extends BaseController
 
         $this->storeUser($user_info, $token, $sessionKey);
 
-        $user = $this->userRepository->getUserByToken($token,config('model.user.user.user_visible'));
+        $user = $this->userRepository->getUserByToken($token);
 
-        return $this->response->success()->data($user->toArray())->json();
+        $user = visible_data($user->toArray(),config('model.user.user.user_visible'));
+
+        return $this->response->success()->data($user)->json();
     }
     /**
      * 通过 code 换取 session key

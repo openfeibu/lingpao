@@ -37,8 +37,11 @@ $api->version('v1', function ($api) {
 
     $api->post('/weapp/code','App\Http\Controllers\Api\Auth\WeAppUserLoginController@code');
     $api->post('/weapp/login','App\Http\Controllers\Api\Auth\WeAppUserLoginController@login');
-    $api->post('/submit_phone','App\Http\Controllers\Api\UserController@submitPhone');
-    $api->post('/submit_location','App\Http\Controllers\Api\UserController@submitLocation');
+    $api->post('/user/submit_phone','App\Http\Controllers\Api\UserController@submitPhone');
+    $api->post('/user/submit_location','App\Http\Controllers\Api\UserController@submitLocation');
+    $api->post('/user/set_pay_password', 'App\Http\Controllers\Api\UserController@setPayPassword');
+    $api->post('/user/change_pay_password', 'App\Http\Controllers\Api\UserController@changePayPassword');
+    //$api->post('/user/reset_password', 'App\Http\Controllers\Api\UserController@resetPassword');
 
     $api->get('/user_address','App\Http\Controllers\Api\UserAddressController@getUserAddresses');
     $api->get('/user_address/{id}','App\Http\Controllers\Api\UserAddressController@getUserAddress');
@@ -52,4 +55,6 @@ $api->version('v1', function ($api) {
     $api->post('payment/wechat-notify','App\Http\Controllers\Api\PaymentController@wechatNotify');
 
     $api->get('/setting','App\Http\Controllers\Api\HomeController@setting');
+
+    $api->post('/take_order/create_order','App\Http\Controllers\Api\User\TakeOrderController@createOrder');
 });

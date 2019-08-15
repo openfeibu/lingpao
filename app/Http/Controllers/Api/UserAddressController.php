@@ -106,7 +106,7 @@ class UserAddressController extends BaseController
 			'consignee' => $request->consignee,
 			'address' => $request->address,
 			'mobile' => $request->mobile,
-			'is_default' => $request->is_default ,
+			'is_default' => $request->is_default,
     	];
     	$where = ['id' => $request->address_id,'user_id' => $this->user->id];
         UserAddress::where($where)->update($userAddress);

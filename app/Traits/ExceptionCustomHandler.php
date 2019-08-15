@@ -58,6 +58,13 @@ trait ExceptionCustomHandler
                     'message' => '页面Token 失效，请重新进入',
                 ];
                 break;
+            case ($exception instanceof \App\Exceptions\NotFoundPayPasswordException):
+                $responseJson = [
+                    'code' => 3001,
+                    'status' => 'error',
+                    'message' => $exception->getMessage() ? $exception->getMessage() : '未设置支付密码',
+                ];
+                break;
             default:
                 return false;
                 break;

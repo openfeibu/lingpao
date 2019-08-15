@@ -7,18 +7,21 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Services\WXBizDataCryptService;
 use App\Services\AmapService;
+use App\Repositories\Eloquent\UserRepositoryInterface;
 use Log;
 
 class UserController extends BaseController
 {
-    public function __construct()
+    public function __construct(UserRepositoryInterface $userRepository)
     {
         parent::__construct();
         $this->middleware('auth.api');
+        $this->userRepository = $userRepository;
     }
     public function getUser(Request $request)
     {
-        $user = User::tokenAuth(config('model.user.user.user_visible'));
+        $user = User::tokenAuth();
+        $user = visible_data($user->toArray(),config('model.user.user.user_visible'));
         return response()->json([
             'code' => '200',
             'data' => $user,
@@ -66,5 +69,40 @@ class UserController extends BaseController
             'city' => $data['regeocode']['addressComponent']['city'],
         ]);
         return $this->response->success('提交成功')->data($data['regeocode']['addressComponent']['city'])->json();
+    }
+
+    /*设置支付密码*/
+    public function setPayPassword (Request $request)
+    {
+        $user = User::tokenAuth();
+        if($user->is_pay_password){
+            throw new \App\Exceptions\OutputServerMessageException('已设置过支付密码');
+        }
+        $rule = [
+            'pay_password' => 'required|string',
+        ];
+        validateParameter($rule);
+
+        $update = $this->userRepository->updatePayPassword($user->id,$request->pay_password);
+
+        throw new \App\Exceptions\RequestSuccessException();
+    }
+    /*修改支付密码*/
+    public function changePayPassword (Request $request)
+    {
+        $user = User::tokenAuth();
+        if(!$user->is_pay_password){
+            throw new \App\Exceptions\OutputServerMessageException('未设置支付密码');
+        }
+        $rule = [
+            'new_pay_password' => 'required|string',
+            'old_pay_password' => 'required|string',
+        ];
+        validateParameter($rule);
+        if (!password_verify($request->old_pay_password, $user->pay_password)) {
+            throw new \App\Exceptions\OutputServerMessageException('原支付密码错误');
+        }
+        $this->userRepository->updatePayPassword($user->id,$request->new_pay_password);
+        throw new \App\Exceptions\RequestSuccessException();
     }
 }
