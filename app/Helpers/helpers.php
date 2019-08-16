@@ -936,3 +936,13 @@ if (!function_exists('visible_data')) {
         return $return_data;
     }
 }
+if (!function_exists('check_urgent_price')) {
+    function check_urgent_price($urgent_price)
+    {
+        $urgent_min_price = setting('urgent_min_price');
+        if($urgent_price && $urgent_price < setting('urgent_min_price'))
+        {
+            throw new \App\Exceptions\OutputServerMessageException("加急费用最低".$urgent_min_price."元");
+        }
+    }
+}

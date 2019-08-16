@@ -66,6 +66,8 @@ class TakeOrderController extends BaseController
         $urgent_price =  !empty($order_data['urgent_price']) ? $order_data['urgent_price'] * $express_count : 0;
         $total_price = setting('take_order_min_price') * $express_count + $urgent_price + $tip;
 
+        check_urgent_price($urgent_price);
+
         $user_coupon_id = isset($request->coupon_id) ? intval($request->coupon_id): 0;
         if($user_coupon_id)
         {
