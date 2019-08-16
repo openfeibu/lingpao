@@ -18,5 +18,8 @@ class UserCouponRepository extends BaseRepository implements UserCouponRepositor
     {
         return config('model.coupon.user_coupon.model');
     }
-
+    public function getAvailableCoupon($where,$min_price)
+    {
+        return $this->where($where)->where('min_price','<=', $min_price)->where('status','unused')->where('overdue','>',date('Y-m-d'))->first();
+    }
 }

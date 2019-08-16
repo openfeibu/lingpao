@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\User;
 use App\Exceptions\NotFoundPayPasswordException;
 use App\Exceptions\OutputServerMessageException;
 use App\Models\User;
+use App\Repositories\Eloquent\UserCouponRepositoryInterface;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\BaseController;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
@@ -16,12 +17,14 @@ class TakeOrderController extends BaseController
 {
     public function __construct(TakeOrderRepositoryInterface $takeOrderRepository,
                                 TakeOrderExpressRepositoryInterface $takeOrderExpressRepository,
+                                UserCouponRepositoryInterface $userCouponRepository,
                                 PayService $payService)
     {
         parent::__construct();
         $this->middleware('auth.api',['except' => ['extractExpressInfo']]);
         $this->takeOrderRepository = $takeOrderRepository;
         $this->takeOrderExpressRepository = $takeOrderExpressRepository;
+        $this->userCouponRepository = $userCouponRepository;
         $this->payService = $payService;
     }
     public function createOrder(Request $request)
@@ -63,6 +66,17 @@ class TakeOrderController extends BaseController
         $urgent_price =  !empty($order_data['urgent_price']) ? $order_data['urgent_price'] * $express_count : 0;
         $total_price = setting('take_order_min_price') * $express_count + $urgent_price + $tip;
 
+        $user_coupon_id = isset($request->coupon_id) ? intval($request->coupon_id): 0;
+        if($user_coupon_id)
+        {
+            $coupon = $this->userCouponRepository->getAvailableCoupon(['user_id' => $user->id,'id' => $user_coupon_id],$total_price);
+            if(!$coupon)
+            {
+                throw new \App\Exceptions\OutputServerMessageException('优惠券不存在或不可用');
+            }
+            $total_price =  $total_price - $coupon->price;
+        }
+
         if($order_data['payment'] == 'balance')
         {
             if(!$user->is_pay_password)
@@ -76,7 +90,7 @@ class TakeOrderController extends BaseController
                 throw new \App\Exceptions\OutputServerMessageException('余额不足,请选择其他支付方式');
             }
         }
-        $order_sn = generate_order_sn('TAKEORDER');
+        $order_sn = generate_order_sn('TAKEORDER-');
         $order_data = [
             'order_sn' => $order_sn,
             'user_id' => $user->id,
@@ -85,6 +99,7 @@ class TakeOrderController extends BaseController
             'tip' => !empty($order_data['tip']) ? $order_data['tip'] : 0,
             'payment' => $order_data['payment'],
             'total_price' => $total_price,
+            'express_count' => $express_count,
         ];
 
         $order = $this->takeOrderRepository->create($order_data);
@@ -103,6 +118,7 @@ class TakeOrderController extends BaseController
             'trade_type' => 'CREATE_TAKE_ORDER',
             'payment' => $request->payment,
             'pay_from' => 'TakeOrder',
+            'user_coupon_id' => $user_coupon_id,
         ];
         $data = $this->payService->payHandle($data);
 

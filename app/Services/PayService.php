@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Repositories\Eloquent\BalanceRecordRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\TradeRecordRepositoryInterface;
+use App\Repositories\Eloquent\UserCouponRepositoryInterface;
 use App\Repositories\Eloquent\UserRepositoryInterface;
 use Validator,Request,DB,Log;
 use App\Models\Setting;
@@ -20,12 +21,14 @@ class PayService
     public function __construct(TakeOrderRepositoryInterface $takeOrderRepository,
                                 UserRepositoryInterface $userRepository,
                                 BalanceRecordRepositoryInterface $balanceRecordRepository,
-                                TradeRecordRepositoryInterface $tradeRecordRepository)
+                                TradeRecordRepositoryInterface $tradeRecordRepository,
+                                UserCouponRepositoryInterface $userCouponRepository)
     {
         $this->takeOrderRepository = $takeOrderRepository;
         $this->userRepository = $userRepository;
         $this->balanceRecordRepository = $balanceRecordRepository;
         $this->tradeRecordRepository = $tradeRecordRepository;
+        $this->userCouponRepository = $userCouponRepository;
     }
 
     public function payHandle($data)
@@ -86,6 +89,7 @@ class PayService
                     );
                     $this->tradeRecordRepository->create($trade);
                     $this->takeOrderRepository->where('order_sn',$data['order_sn'])->updateData(['order_status' => 'new']);
+                    $this->userCouponRepository->update(['status' => 'used'],$data['user_coupon_id']);
                     return [
                         'order_id' => $data['order_id'],
                         'order_sn' => $data['order_sn'],
