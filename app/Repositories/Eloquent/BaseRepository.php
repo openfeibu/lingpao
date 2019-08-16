@@ -258,4 +258,9 @@ abstract class BaseRepository extends PrettusRepository implements RepositoryInt
         $this->model = $this->model->limit($count);
         return $this;
     }
+    public function updateData($attributes)
+    {
+        $this->model = $this->model->update($attributes);
+        return $this;
+    }
 }

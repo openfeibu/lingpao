@@ -9,17 +9,20 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Api\BaseController;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderExpressRepositoryInterface;
+use App\Services\PayService;
 use Log;
 
 class TakeOrderController extends BaseController
 {
     public function __construct(TakeOrderRepositoryInterface $takeOrderRepository,
-                                TakeOrderExpressRepositoryInterface $takeOrderExpressRepository)
+                                TakeOrderExpressRepositoryInterface $takeOrderExpressRepository,
+                                PayService $payService)
     {
         parent::__construct();
         $this->middleware('auth.api',['except' => ['extractExpressInfo']]);
         $this->takeOrderRepository = $takeOrderRepository;
         $this->takeOrderExpressRepository = $takeOrderExpressRepository;
+        $this->payService = $payService;
     }
     public function createOrder(Request $request)
     {
@@ -73,7 +76,7 @@ class TakeOrderController extends BaseController
                 throw new \App\Exceptions\OutputServerMessageException('余额不足,请选择其他支付方式');
             }
         }
-        $order_sn = generate_order_sn();
+        $order_sn = generate_order_sn('TAKEORDER');
         $order_data = [
             'order_sn' => $order_sn,
             'user_id' => $user->id,
@@ -94,12 +97,12 @@ class TakeOrderController extends BaseController
         $data = [
             'order_id' => $order->id,
             'order_sn' => $order_sn,
-            'subject' => "代拿",
             'body' => "代拿",
+            'detail' => "代拿",
             'total_price' => $total_price,
-            'trade_type' => 'create_take_order',
+            'trade_type' => 'CREATE_TAKE_ORDER',
             'payment' => $request->payment,
-            'pay_from' => 'take_order',
+            'pay_from' => 'TakeOrder',
         ];
         $data = $this->payService->payHandle($data);
 

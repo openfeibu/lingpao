@@ -828,9 +828,9 @@ if (!function_exists('avatar')) {
     }
 }
 if (!function_exists('generate_order_sn')) {
-    function generate_order_sn()
+    function generate_order_sn($prefix='')
     {
-        $order_sn = date('Ymd') . substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 8);
+        $order_sn = $prefix.date('Ymd') . substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 8);
         return $order_sn;
     }
 }
