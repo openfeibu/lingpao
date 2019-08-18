@@ -103,4 +103,9 @@ class UserController extends BaseController
         $this->userRepository->updatePayPassword($user->id,$request->new_pay_password);
         throw new \App\Exceptions\RequestSuccessException();
     }
+    public function getBalance(Request $request)
+    {
+        $user = User::tokenAuth();
+        return $this->response->success()->data(['balance' => $user->balance])->json();
+    }
 }

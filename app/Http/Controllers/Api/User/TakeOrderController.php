@@ -172,7 +172,8 @@ class TakeOrderController extends BaseController
                 ->orderBy('id','desc')
                 ->paginate($limit);
 
-
+        $data = $orders->toArray()['data'];
+        return $this->response->success()->count($orders->total())->data($data)->json();
     }
     public function getOrder(Request $request,$id)
     {
@@ -184,5 +185,6 @@ class TakeOrderController extends BaseController
             'user' => $user,
             'deliverer' => $deliverer
         ];
+        return $this->response->success()->data($data)->json();
     }
 }
