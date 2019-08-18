@@ -2,22 +2,24 @@
 
 namespace App\Http\Controllers\Api\User;
 
+use App\Http\Controllers\Api\BaseController;
 use App\Exceptions\NotFoundPayPasswordException;
 use App\Exceptions\OutputServerMessageException;
 use App\Models\User;
 use App\Repositories\Eloquent\UserCouponRepositoryInterface;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Api\BaseController;
+use App\Repositories\Eloquent\UserRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderExpressRepositoryInterface;
 use App\Services\PayService;
 use Log;
+use Illuminate\Http\Request;
 
 class TakeOrderController extends BaseController
 {
     public function __construct(TakeOrderRepositoryInterface $takeOrderRepository,
                                 TakeOrderExpressRepositoryInterface $takeOrderExpressRepository,
                                 UserCouponRepositoryInterface $userCouponRepository,
+                                UserRepositoryInterface $userRepository,
                                 PayService $payService)
     {
         parent::__construct();
@@ -25,6 +27,7 @@ class TakeOrderController extends BaseController
         $this->takeOrderRepository = $takeOrderRepository;
         $this->takeOrderExpressRepository = $takeOrderExpressRepository;
         $this->userCouponRepository = $userCouponRepository;
+        $this->userRepository = $userRepository;
         $this->payService = $payService;
     }
     public function createOrder(Request $request)
@@ -171,8 +174,15 @@ class TakeOrderController extends BaseController
 
 
     }
-    public function getOrder(Request $request)
+    public function getOrder(Request $request,$id)
     {
-
+        $take_order = $this->takeOrderRepository->find($id);
+        $user = $this->userRepository->find($take_order->user_id);
+        $deliverer = $this->userRepository->first($take_order->deliverer_id);
+        $data = [
+            'take_order' => $take_order,
+            'user' => $user,
+            'deliverer' => $deliverer
+        ];
     }
 }
