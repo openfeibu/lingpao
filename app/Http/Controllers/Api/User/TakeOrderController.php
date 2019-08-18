@@ -115,7 +115,11 @@ class TakeOrderController extends BaseController
             'payment' => $order_data['payment'],
             'total_price' => $total_price,
             'express_price' => $express_price,
+            'original_price' => $express_price * $express_count ,
             'express_count' => $express_count,
+            'coupon_id' => $user_coupon_id,
+            'coupon_name' => isset($coupon) && !empty($coupon) ? '满'.$coupon->min_price.'减'.$coupon->price : '',
+            'coupon_price' => isset($coupon) && !empty($coupon) ? $coupon->price : 0,
         ];
 
         $order = $this->takeOrderRepository->create($order_data);
@@ -188,15 +192,15 @@ class TakeOrderController extends BaseController
     public function getOrder(Request $request,$id)
     {
         $user = User::tokenAuth();
-        $take_order = $this->takeOrderRepository->find($id);
-
+        $take_order = $this->takeOrderRepository->find($id,['id','order_sn','user_id','deliverer_id','urgent','urgent_price','tip','coupon_id','coupon_name','coupon_price','original_price','total_price','order_status','express_count','express_price','created_at']);
+        $take_order_data = $take_order->toArray();
         $take_order_expresses = $this->takeOrderExpressRepository->where('take_order_id',$take_order->id)
             ->orderBy('id','asc')
             ->get();
 
         if(in_array($take_order->order_status,['unpaid']))
         {
-
+            throw OutputServerMessageException("该订单无效");
         }
 //        if($take_order->user_id != $user->id)
 //        {
@@ -204,22 +208,32 @@ class TakeOrderController extends BaseController
 //        }
         $take_order_user = $this->userRepository->find($take_order->user_id);
         $take_order_deliverer = $this->userRepository->where('id',$take_order->deliverer_id)->first();
-        if($take_order->user_id != $user->id)
+
+        $user_field = ['id','avatar_url','nickname'];
+        $take_order_expresses_field = ['take_place','address'];
+        if($take_order->deliverer_id == $user->id)
         {
+            array_add($user_field,'phone');
 
         }
         if($take_order->order_status == 'new')
         {
-            $take_order_expresses_field = ['take_place','address'];
             foreach ($take_order_expresses as $key => $take_order_express)
             {
                 $take_order_expresses_data[] = visible_data($take_order_express->toArray(),$take_order_expresses_field);
             }
+            $take_order_data['expresses'] = $take_order_expresses_data;
         }
+        else{
+            $take_order['expresses'] = $take_order_expresses->toArray();
+        }
+
+        $take_order_user_data = visible_data($take_order_user->toArray(),$user_field);
+        $take_order_deliverer_data = $take_order_deliverer ? visible_data($take_order_deliverer->toArray(),$user_field) : [];
         $data = [
-            'take_order' => $take_order,
-            'user' => $take_order_user,
-            'deliverer' => $take_order_deliverer
+            'take_order' => $take_order_data,
+            'user' => $take_order_user_data,
+            'deliverer' => $take_order_deliverer_data
         ];
         return $this->response->success()->data($data)->json();
     }

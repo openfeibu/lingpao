@@ -41,7 +41,7 @@ return [
         'visible'      => [],
         'guarded'      => ['*'],
         'slugs'        => [],
-        'fillable'     => ['take_order_id','take_place','consignee','mobile','address','description','take_code','express_company','express_arrive_date','coupon_price','original_price','total_price','order_status','payment','created_at','updated_at'],
+        'fillable'     => ['take_order_id','take_place','consignee','mobile','address','description','take_code','express_company','express_arrive_date','created_at','updated_at'],
         'translate'    => [],
         'upload_folder' => '/take_order',
         'encrypt'      => ['id'],
