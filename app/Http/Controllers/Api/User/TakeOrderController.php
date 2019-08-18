@@ -109,7 +109,7 @@ class TakeOrderController extends BaseController
         $order_data = [
             'order_sn' => $order_sn,
             'user_id' => $user->id,
-            'urgent' => !empty($order_data['urgent']) ? $order_data['urgent'] : 0,
+            'urgent' => $urgent,
             'urgent_price' => $urgent_price,
             'tip' => !empty($order_data['tip']) ? $order_data['tip'] : 0,
             'payment' => $order_data['payment'],
