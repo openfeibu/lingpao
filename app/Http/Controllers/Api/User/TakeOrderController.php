@@ -76,7 +76,7 @@ class TakeOrderController extends BaseController
             $express_price = setting('urgent_min_price');
             $urgent_price = setting('urgent_min_price');
         }
-        $total_price = $urgent_price * $express_count + $tip;
+        $total_price = $express_price * $express_count + $tip;
 
         //check_urgent_price($urgent_price);
 
