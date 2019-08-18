@@ -183,15 +183,19 @@ class TakeOrderController extends BaseController
     public function getOrders(Request $request)
     {
         $limit = $request->input('limit',config('app.limit'));
-        $orders = TakeOrder::join('users','users.id','=','take_orders.user_id')
+        $take_orders = TakeOrder::join('users','users.id','=','take_orders.user_id')
                 ->whereIn('take_orders.order_status', ['new','accepted','finish','completed'])
                 ->orderBy('status_num','asc')
                 ->orderBy('take_orders.id','desc')
-                ->select(DB::raw('take_orders.id,take_orders.order_sn,take_orders.user_id,take_orders.deliverer_id,take_orders.urgent,take_orders.total_price,express_count,CASE take_orders.order_status WHEN "new" THEN 1 ELSE 2 END as status_num,users.id,users.nickname,users.avatar_url'))
+                ->select(DB::raw('take_orders.id,take_orders.order_sn,take_orders.user_id,take_orders.deliverer_id,take_orders.urgent,take_orders.total_price,express_count,CASE take_orders.order_status WHEN "new" THEN 1 ELSE 2 END as status_num,users.nickname,users.avatar_url'))
                 ->paginate($limit);
-
-        $data = $orders->toArray()['data'];
-        return $this->response->success()->count($orders->total())->data($data)->json();
+        foreach ($take_orders as $key => $take_order)
+        {
+            $take_order->expresses = $this->takeOrderExpressRepository->where('take_order_id',$take_order->id)
+                ->orderBy('id','asc')->get(['take_place','address']);
+        }
+        $data = $take_orders->toArray()['data'];
+        return $this->response->success()->count($take_orders->total())->data($data)->json();
     }
     public function getOrder(Request $request,$id)
     {
@@ -217,8 +221,8 @@ class TakeOrderController extends BaseController
         $take_order_expresses_field = ['take_place','address'];
         if($take_order->deliverer_id == $user->id)
         {
-            array_add($user_field,'phone');
-
+            $user_field = array_merge($user_field,['phone']);
+            $take_order_expresses_field = ['take_place','consignee','mobile','address','description','take_code','express_company','express_arrive_date'];
         }
         if($take_order->order_status == 'new')
         {
