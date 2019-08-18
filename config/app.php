@@ -111,7 +111,7 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
-    'limit' => 10,
+    'limit' => 20,
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers

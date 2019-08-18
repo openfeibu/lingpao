@@ -59,4 +59,5 @@ $api->version('v1', function ($api) {
     $api->get('/setting','App\Http\Controllers\Api\HomeController@setting');
 
     $api->post('/take_order/create_order','App\Http\Controllers\Api\User\TakeOrderController@createOrder');
+    $api->get('/take_order/order','App\Http\Controllers\Api\User\TakeOrderController@getOrders');
 });

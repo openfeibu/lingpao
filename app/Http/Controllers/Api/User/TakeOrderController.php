@@ -21,7 +21,7 @@ class TakeOrderController extends BaseController
                                 PayService $payService)
     {
         parent::__construct();
-        $this->middleware('auth.api',['except' => ['extractExpressInfo']]);
+        $this->middleware('auth.api',['except' => ['extractExpressInfo','getOrders']]);
         $this->takeOrderRepository = $takeOrderRepository;
         $this->takeOrderExpressRepository = $takeOrderExpressRepository;
         $this->userCouponRepository = $userCouponRepository;
@@ -68,9 +68,10 @@ class TakeOrderController extends BaseController
 
         check_urgent_price($urgent_price);
 
-        $user_coupon_id = isset($request->coupon_id) ? intval($request->coupon_id): 0;
+        $user_coupon_id = !empty($request->coupon_id) ? intval($request->coupon_id): 0;
         if($user_coupon_id)
         {
+
             $coupon = $this->userCouponRepository->getAvailableCoupon(['user_id' => $user->id,'id' => $user_coupon_id],$total_price);
             if(!$coupon)
             {
@@ -161,9 +162,17 @@ class TakeOrderController extends BaseController
         return $this->response->success()->data($data)->json();
 
     }
-    public function getOrders()
+    public function getOrders(Request $request)
+    {
+        $limit = $request->input('limit',config('app.limit'));
+        $orders = $this->takeOrderRepository
+                ->orderBy('id','desc')
+                ->paginate($limit);
+
+
+    }
+    public function getOrder(Request $request)
     {
 
     }
-
 }

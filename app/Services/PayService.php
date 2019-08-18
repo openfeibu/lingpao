@@ -89,7 +89,7 @@ class PayService
                     );
                     $this->tradeRecordRepository->create($trade);
                     $this->takeOrderRepository->where('order_sn',$data['order_sn'])->updateData(['order_status' => 'new']);
-                    $this->userCouponRepository->update(['status' => 'used'],$data['user_coupon_id']);
+                    $data['user_coupon_id'] ? $this->userCouponRepository->update(['status' => 'used'],$data['user_coupon_id']) : '';
                     return [
                         'order_id' => $data['order_id'],
                         'order_sn' => $data['order_sn'],
