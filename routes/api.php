@@ -61,4 +61,5 @@ $api->version('v1', function ($api) {
 
     $api->post('/take_order/create_order','App\Http\Controllers\Api\User\TakeOrderController@createOrder');
     $api->get('/take_order/order','App\Http\Controllers\Api\User\TakeOrderController@getOrders');
+    $api->get('/take_order/order/{id}','App\Http\Controllers\Api\User\TakeOrderController@getOrder');
 });

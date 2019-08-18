@@ -44,6 +44,13 @@ trait ExceptionCustomHandler
                     'message' => $exception->getMessage(),
                 ];
                 break;
+            case ($exception instanceof \App\Exceptions\PermissionDeniedException):
+                $responseJson = [
+                    'code' => 403,
+                    'status' => 'error',
+                    'message' => $exception->getMessage() ? $exception->getMessage() : '没有访问权限',
+                ];
+                break;
             case ($exception instanceof \App\Exceptions\DataNotFoundException):
                 $responseJson = [
                     'code' => 404,

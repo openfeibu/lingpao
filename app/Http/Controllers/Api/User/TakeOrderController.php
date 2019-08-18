@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\User;
 
+use App\Exceptions\PermissionDeniedException;
 use App\Http\Controllers\Api\BaseController;
 use App\Exceptions\NotFoundPayPasswordException;
 use App\Exceptions\OutputServerMessageException;
@@ -66,10 +67,18 @@ class TakeOrderController extends BaseController
         }
 
         $tip = !empty($order_data['tip']) ? $order_data['tip'] : 0;
-        $urgent_price =  !empty($order_data['urgent_price']) ? $order_data['urgent_price'] * $express_count : 0;
-        $total_price = setting('take_order_min_price') * $express_count + $urgent_price + $tip;
 
-        check_urgent_price($urgent_price);
+        $urgent = !empty($order_data['urgent']) ? $order_data['urgent'] : 0;
+        $express_price = setting('take_order_min_price');
+        $urgent_price = 0;
+        if($urgent)
+        {
+            $express_price = setting('urgent_min_price');
+            $urgent_price = setting('urgent_min_price');
+        }
+        $total_price = $urgent_price * $express_count + $tip;
+
+        //check_urgent_price($urgent_price);
 
         $user_coupon_id = !empty($request->coupon_id) ? intval($request->coupon_id): 0;
         if($user_coupon_id)
@@ -101,10 +110,11 @@ class TakeOrderController extends BaseController
             'order_sn' => $order_sn,
             'user_id' => $user->id,
             'urgent' => !empty($order_data['urgent']) ? $order_data['urgent'] : 0,
-            'urgent_price' => !empty($order_data['urgent_price']) ? $order_data['urgent_price'] : 0,
+            'urgent_price' => $urgent_price,
             'tip' => !empty($order_data['tip']) ? $order_data['tip'] : 0,
             'payment' => $order_data['payment'],
             'total_price' => $total_price,
+            'express_price' => $express_price,
             'express_count' => $express_count,
         ];
 
@@ -177,13 +187,39 @@ class TakeOrderController extends BaseController
     }
     public function getOrder(Request $request,$id)
     {
+        $user = User::tokenAuth();
         $take_order = $this->takeOrderRepository->find($id);
-        $user = $this->userRepository->find($take_order->user_id);
-        $deliverer = $this->userRepository->first($take_order->deliverer_id);
+
+        $take_order_expresses = $this->takeOrderExpressRepository->where('take_order_id',$take_order->id)
+            ->orderBy('id','asc')
+            ->get();
+
+        if(in_array($take_order->order_status,['unpaid']))
+        {
+
+        }
+//        if($take_order->user_id != $user->id)
+//        {
+//            throw new PermissionDeniedException();
+//        }
+        $take_order_user = $this->userRepository->find($take_order->user_id);
+        $take_order_deliverer = $this->userRepository->where('id',$take_order->deliverer_id)->first();
+        if($take_order->user_id != $user->id)
+        {
+
+        }
+        if($take_order->order_status == 'new')
+        {
+            $take_order_expresses_field = ['take_place','address'];
+            foreach ($take_order_expresses as $key => $take_order_express)
+            {
+                $take_order_expresses_data[] = visible_data($take_order_express->toArray(),$take_order_expresses_field);
+            }
+        }
         $data = [
             'take_order' => $take_order,
-            'user' => $user,
-            'deliverer' => $deliverer
+            'user' => $take_order_user,
+            'deliverer' => $take_order_deliverer
         ];
         return $this->response->success()->data($data)->json();
     }
