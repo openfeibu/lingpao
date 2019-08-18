@@ -161,4 +161,9 @@ class TakeOrderController extends BaseController
         return $this->response->success()->data($data)->json();
 
     }
+    public function getOrders()
+    {
+
+    }
+
 }
