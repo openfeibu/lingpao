@@ -64,7 +64,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
     public function getOrderDetail($id)
     {
         $user = User::tokenAuth();
-        $take_order = $this->find($id,['id','order_sn','user_id','deliverer_id','urgent','urgent_price','tip','coupon_id','coupon_name','coupon_price','original_price','total_price','order_status','express_count','postscript','express_price','created_at']);
+        $take_order = $this->find($id,['id','order_sn','user_id','deliverer_id','urgent','urgent_price','tip','coupon_id','coupon_name','coupon_price','original_price','total_price','order_status','express_count','express_price','postscript','created_at']);
         $take_order->friendly_date = friendly_date($take_order->created_at);
         $take_order_data = $take_order->toArray();
         $take_order_expresses = app(TakeOrderExpressRepository::class)->where('take_order_id',$take_order->id)
