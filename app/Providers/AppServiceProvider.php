@@ -70,6 +70,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Repositories\Eloquent\UserAddressRepository::class
         );
         $this->app->bind(
+            'App\Repositories\Eloquent\TaskOrderRepositoryInterface',
+            \App\Repositories\Eloquent\TaskOrderRepository::class
+        );
+        $this->app->bind(
             'App\Repositories\Eloquent\TakeOrderRepositoryInterface',
             \App\Repositories\Eloquent\TakeOrderRepository::class
         );

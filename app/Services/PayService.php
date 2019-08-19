@@ -7,11 +7,10 @@ use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\TradeRecordRepositoryInterface;
 use App\Repositories\Eloquent\UserCouponRepositoryInterface;
 use App\Repositories\Eloquent\UserRepositoryInterface;
+use App\Repositories\Eloquent\TaskOrderRepositoryInterface;
 use Validator,Request,DB,Log;
 use App\Models\Setting;
 use App\Models\User;
-//use App\TradeAccount;
-//use App\ShippingConfig;
 //use Illuminate\Http\Request;
 
 class PayService
@@ -22,12 +21,14 @@ class PayService
                                 UserRepositoryInterface $userRepository,
                                 BalanceRecordRepositoryInterface $balanceRecordRepository,
                                 TradeRecordRepositoryInterface $tradeRecordRepository,
+                                TaskOrderRepositoryInterface $taskOrderRepository,
                                 UserCouponRepositoryInterface $userCouponRepository)
     {
         $this->takeOrderRepository = $takeOrderRepository;
         $this->userRepository = $userRepository;
         $this->balanceRecordRepository = $balanceRecordRepository;
         $this->tradeRecordRepository = $tradeRecordRepository;
+        $this->taskOrderRepository = $taskOrderRepository;
         $this->userCouponRepository = $userCouponRepository;
     }
 
@@ -90,6 +91,7 @@ class PayService
                     $this->tradeRecordRepository->create($trade);
                     $this->takeOrderRepository->where('order_sn',$data['order_sn'])->updateData(['order_status' => 'new']);
                     $data['user_coupon_id'] ? $this->userCouponRepository->update(['status' => 'used'],$data['user_coupon_id']) : '';
+                    $this->taskOrderRepository->where('type','take_order')->where('id',$data['order_id'])->updateData(['order_status' => 'new']);
                     return [
                         'order_id' => $data['order_id'],
                         'order_sn' => $data['order_sn'],

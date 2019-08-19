@@ -44,7 +44,7 @@ class UserAddressRepository extends BaseRepository implements UserAddressReposit
     }
     public function getUserAddress($where)
     {
-        return $this->model->where($where)->orderBy('is_default','desc')->first();
+        return $this->model->where($where)->orderBy('is_default','desc')->orderBy('id','desc')->first();
     }
     public function getUserAddresses($where)
     {

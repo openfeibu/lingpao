@@ -12,16 +12,25 @@ use App\Repositories\Eloquent\UserCouponRepositoryInterface;
 use App\Repositories\Eloquent\UserRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderExpressRepositoryInterface;
+use App\Repositories\Eloquent\TaskOrderRepositoryInterface;
 use App\Services\PayService;
 use Log,DB;
 use Illuminate\Http\Request;
 
 class TakeOrderController extends BaseController
 {
+    public $takeOrderRepository;
+    public $takeOrderExpressRepository;
+    public $userCouponRepository;
+    public $userRepository;
+    public $taskOrderRepository;
+    public $payService;
+
     public function __construct(TakeOrderRepositoryInterface $takeOrderRepository,
                                 TakeOrderExpressRepositoryInterface $takeOrderExpressRepository,
                                 UserCouponRepositoryInterface $userCouponRepository,
                                 UserRepositoryInterface $userRepository,
+                                TaskOrderRepositoryInterface $taskOrderRepository,
                                 PayService $payService)
     {
         parent::__construct();
@@ -30,6 +39,7 @@ class TakeOrderController extends BaseController
         $this->takeOrderExpressRepository = $takeOrderExpressRepository;
         $this->userCouponRepository = $userCouponRepository;
         $this->userRepository = $userRepository;
+        $this->taskOrderRepository = $taskOrderRepository;
         $this->payService = $payService;
     }
     public function createOrder(Request $request)
@@ -79,6 +89,8 @@ class TakeOrderController extends BaseController
         }
         $total_price = $express_price * $express_count + $tip;
 
+        //骑手所得款项
+        $deliverer_price = $express_price * $express_count + $tip;
         //check_urgent_price($urgent_price);
 
         $user_coupon_id = !empty($request->coupon_id) ? intval($request->coupon_id): 0;
@@ -121,10 +133,17 @@ class TakeOrderController extends BaseController
             'coupon_id' => $user_coupon_id,
             'coupon_name' => isset($coupon) && !empty($coupon) ? '满'.$coupon->min_price.'减'.$coupon->price : '',
             'coupon_price' => isset($coupon) && !empty($coupon) ? $coupon->price : 0,
+            'deliverer_price' => $deliverer_price,
+            'order_status' => 'unpaid',
         ];
 
         $order = $this->takeOrderRepository->create($order_data);
-
+        $this->taskOrderRepository->create([
+            'name' => '代拿',
+            'objective_id' => $order->id,
+            'objective_model' => 'TakeOrder',
+            'type' => 'take_order',
+        ]);
         foreach ($expresses as $key => $express)
         {
             $express['take_order_id'] = $order->id;
@@ -182,69 +201,14 @@ class TakeOrderController extends BaseController
     }
     public function getOrders(Request $request)
     {
-        $limit = $request->input('limit',config('app.limit'));
-        $take_orders = TakeOrder::join('users','users.id','=','take_orders.user_id')
-                ->whereIn('take_orders.order_status', ['new','accepted','finish','completed'])
-                ->orderBy('status_num','asc')
-                ->orderBy('take_orders.id','desc')
-                ->select(DB::raw('take_orders.id,take_orders.order_sn,take_orders.user_id,take_orders.deliverer_id,take_orders.urgent,take_orders.total_price,express_count,take_orders.order_status,take_orders.created_at,CASE take_orders.order_status WHEN "new" THEN 1 ELSE 2 END as status_num,users.nickname,users.avatar_url'))
-                ->paginate($limit);
-        foreach ($take_orders as $key => $take_order)
-        {
-            $take_order->friendly_date = friendly_date($take_order->created_at);
-            $take_order->expresses = $this->takeOrderExpressRepository->where('take_order_id',$take_order->id)
-                ->orderBy('id','asc')->get(['take_place','address']);
-        }
+        $take_orders = $this->takeOrderRepository->getOrders();
         $data = $take_orders->toArray()['data'];
         return $this->response->success()->count($take_orders->total())->data($data)->json();
     }
     public function getOrder(Request $request,$id)
     {
-        $user = User::tokenAuth();
-        $take_order = $this->takeOrderRepository->find($id,['id','order_sn','user_id','deliverer_id','urgent','urgent_price','tip','coupon_id','coupon_name','coupon_price','original_price','total_price','order_status','express_count','express_price','created_at']);
-        $take_order->friendly_date = friendly_date($take_order->created_at);
-        $take_order_data = $take_order->toArray();
-        $take_order_expresses = $this->takeOrderExpressRepository->where('take_order_id',$take_order->id)
-            ->orderBy('id','asc')
-            ->get();
+        $take_order = $this->takeOrderRepository->getOrderDetail($id);
 
-        if(in_array($take_order->order_status,['unpaid']))
-        {
-            throw OutputServerMessageException("该订单无效");
-        }
-//        if($take_order->user_id != $user->id)
-//        {
-//            throw new PermissionDeniedException();
-//        }
-        $take_order_user = $this->userRepository->find($take_order->user_id);
-        $take_order_deliverer = $this->userRepository->where('id',$take_order->deliverer_id)->first();
-
-        $user_field = ['id','avatar_url','nickname'];
-        $take_order_expresses_field = ['take_place','address'];
-        if($take_order->deliverer_id == $user->id || $take_order->user_id == $user->id)
-        {
-            $user_field = array_merge($user_field,['phone']);
-            $take_order_expresses_field = ['take_place','consignee','mobile','address','description','take_code','express_company','express_arrive_date'];
-        }
-        if($take_order->order_status == 'new')
-        {
-            foreach ($take_order_expresses as $key => $take_order_express)
-            {
-                $take_order_expresses_data[] = visible_data($take_order_express->toArray(),$take_order_expresses_field);
-            }
-            $take_order_data['expresses'] = $take_order_expresses_data;
-        }
-        else{
-            $take_order['expresses'] = $take_order_expresses->toArray();
-        }
-
-        $take_order_user_data = visible_data($take_order_user->toArray(),$user_field);
-        $take_order_deliverer_data = $take_order_deliverer ? visible_data($take_order_deliverer->toArray(),$user_field) : [];
-        $data = [
-            'take_order' => $take_order_data,
-            'user' => $take_order_user_data,
-            'deliverer' => $take_order_deliverer_data
-        ];
-        return $this->response->success()->data($data)->json();
+        return $this->response->success()->data($take_order)->json();
     }
 }
