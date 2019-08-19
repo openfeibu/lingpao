@@ -946,3 +946,112 @@ if (!function_exists('check_urgent_price')) {
         }
     }
 }
+/**
+ * 友好的时间显示
+ *
+ * @param  int    $sTime 待显示的时间
+ * @param  string $type  类型. normal | mohu | full | ymd | other
+ * @param  string $alt   已失效
+ * @return string
+ */
+if(!function_exists('friendly_date')){
+    function friendly_date($sTime, $type = 'mohu', $alt = 'false')
+    {
+        if (!$sTime) {
+            return '';
+        }
+        //	var_dump($sTime);exit;
+        $sTime = strtotime($sTime);
+        //sTime=源时间，cTime=当前时间，dTime=时间差
+        $cTime = time();
+        $dTime = $cTime - $sTime;
+        $dDay = ceil($dTime/3600/24);
+        //$dDay     =   intval($dTime/3600/24);
+        $dYear = intval(date('Y', $cTime)) - intval(date('Y', $sTime));
+        //normal：n秒前，n分钟前，n小时前，日期
+        if ($type == 'normal') {
+            if ($dTime < 60) {
+                if ($dTime < 10) {
+                    return '刚刚';    //by yangjs
+                } else {
+                    return intval(floor($dTime / 10) * 10).'秒前';
+                }
+            } elseif ($dTime < 3600) {
+                return intval($dTime / 60).'分钟前';
+                //今天的数据.年份相同.日期相同.
+            } elseif ($dYear == 0 && $dDay == 0) {
+                //return intval($dTime/3600)."小时前";
+                return '今天'.date('H:i', $sTime);
+            } elseif ($dYear == 0) {
+                return date('m月d日 H:i', $sTime);
+            } else {
+                return date('Y-m-d H:i', $sTime);
+            }
+        }elseif ($type == 'weixin'){
+            //返回的时间
+            $timeStr = "";
+            //获取当前时间
+            $addTime = explode(',', date('Y,n,j,w,a,h,i,y', $sTime));//年，月，日，星期，上下午，时，分
+            $nowTime = explode(',', date('Y,n,j,w,a,h,i,y', $cTime));
+
+            $dayPerMonthAddTime = getDayPerMonth($addTime[0]);
+            $week = array(0=>"星期日",1=>"星期一",2=>"星期二",3=>"星期三",4=>"星期四",5=>"星期五",6=>"星期六");
+            //如果时间差小于一天的,显示（上午 时间） / （下午 时间）
+            if($addTime[0] == $nowTime[0] && $addTime[1] == $nowTime[1] && $addTime[2] == $nowTime[2]) {
+                $timeStr .= $addTime[5] . ":" . $addTime[6];
+            } else if(($addTime[0] == $nowTime[0] && $addTime[1] == $nowTime[1] && $addTime[2] == $nowTime[2]-1)
+                || ($addTime[0] == $nowTime[0] && $nowTime[1]-$addTime[1] == 1 && $dayPerMonthAddTime[$addTime[1]] == $addTime[2] && $nowTime[2] == 1)
+                || ($nowTime[0]-$addTime[0] == 1 && $addTime[1] == 12 && $addTime[2] == 31 && $nowTime[1] == 1 && $nowTime[2] == 1)) {
+                //如果时间差在昨天,三种情况（同一月份内跨一天、月末跨越到月初、年末跨越到年初）显示格式：昨天 时:分 上午/下午
+                $timeStr .= "昨天 " . $addTime[5] . ":" . $addTime[6] . " ";
+            } else if(($addTime[0] == $nowTime[0] && $addTime[1] == $nowTime[1] && $nowTime[2] - $addTime[2] < 7)
+                || ($addTime[0] == $nowTime[0] && $nowTime[1]-$addTime[1] == 1 && $dayPerMonthAddTime[$addTime[1]]-$addTime[2]+$nowTime[2] < 7
+                    || ($nowTime[0]-$addTime[0] == 1 && $addTime[1] == 12 && $nowTime[1] == 1 && 31-$addTime[2]+$nowTime[2] < 7))) { //如果时间差在一个星期之内的,也是三种情况，显示格式：星期 时:分 上午/下午
+
+                $timeStr .= $week[$addTime[3]] . " " . $addTime[5] . ":" . $addTime[6];
+            } else { //显示格式：月/日/年 时:分 上午/下午
+                $timeStr .= $addTime[1] . "/" . $addTime[2] . "/" . $addTime[7] . " " . $addTime[5] . ":" . $addTime[6];
+            }
+
+            if($addTime[4] == "am") {
+                $timeStr .= " 上午";
+            } else if($addTime[4] == "pm") {
+                $timeStr .= " 下午";
+            }
+
+            return $timeStr;
+        }elseif ($type == 'mohu') {
+            if ($dTime < 60) {
+                return $dTime.'秒前';
+            } elseif ($dTime < 3600) {
+                return intval($dTime / 60).'分钟前';
+            } elseif ($dTime >= 3600 && $dTime < 3600 * 24) {
+                return intval($dTime / 3600).'小时前';
+            } elseif ($dDay > 0 && $dDay <= 7) {
+                return intval($dDay).'天前';
+            } elseif ($dDay > 7 &&  $dDay <= 30) {
+                return intval($dDay / 7).'周前';
+            } elseif ($dDay > 30) {
+                return intval($dDay / 30).'个月前';
+            }
+            var_dump($dDay);exit;
+            //full: Y-m-d , H:i:s
+        } elseif ($type == 'full') {
+            return date('Y-m-d , H:i:s', $sTime);
+        } elseif ($type == 'ymd') {
+            return date('Y-m-d', $sTime);
+        } else {
+            if ($dTime < 60) {
+                return $dTime.'秒前';
+            } elseif ($dTime < 3600) {
+                return intval($dTime / 60).'分钟前';
+            } elseif ($dTime >= 3600 && $dDay == 0) {
+                return intval($dTime / 3600).'小时前';
+            } elseif ($dYear == 0) {
+                return date('Y-m-d H:i:s', $sTime);
+            } else {
+                return date('Y-m-d H:i:s', $sTime);
+            }
+        }
+    }
+}
