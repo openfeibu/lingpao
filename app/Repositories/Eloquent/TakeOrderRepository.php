@@ -37,7 +37,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
     {
         $limit = Request::get('limit',config('app.limit'));
         $take_orders = $this->model->join('users','users.id','=','take_orders.user_id')
-            ->select(DB::raw('take_orders.id,take_orders.order_sn,take_orders.user_id,take_orders.deliverer_id,take_orders.urgent,take_orders.total_price,express_count,take_orders.order_status,take_orders.created_at,CASE take_orders.order_status WHEN "new" THEN 1 ELSE 2 END as status_num,users.nickname,users.avatar_url'))
+            ->select(DB::raw('take_orders.id,take_orders.order_sn,take_orders.user_id,take_orders.deliverer_id,take_orders.urgent,take_orders.total_price,express_count,take_orders.order_status,take_orders.postscript,take_orders.created_at,CASE take_orders.order_status WHEN "new" THEN 1 ELSE 2 END as status_num,users.nickname,users.avatar_url'))
             ->whereIn('take_orders.order_status', ['new','accepted','finish','completed'])
             ->orderBy('status_num','asc')
             ->orderBy('take_orders.id','desc')
@@ -53,7 +53,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
     public function getOrder($id)
     {
         $take_order = $this->model->join('users','users.id','=','take_orders.user_id')
-            ->select(DB::raw('take_orders.id,take_orders.order_sn,take_orders.user_id,take_orders.deliverer_id,take_orders.urgent,take_orders.total_price,express_count,take_orders.order_status,take_orders.created_at,users.nickname,users.avatar_url'))
+            ->select(DB::raw('take_orders.id,take_orders.order_sn,take_orders.user_id,take_orders.deliverer_id,take_orders.urgent,take_orders.total_price,express_count,take_orders.order_status,take_orders.postscript,take_orders.created_at,users.nickname,users.avatar_url'))
             ->where('take_orders.id',$id)
             ->first();
         $take_order->friendly_date = friendly_date($take_order->created_at);
@@ -64,7 +64,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
     public function getOrderDetail($id)
     {
         $user = User::tokenAuth();
-        $take_order = $this->find($id,['id','order_sn','user_id','deliverer_id','urgent','urgent_price','tip','coupon_id','coupon_name','coupon_price','original_price','total_price','order_status','express_count','express_price','created_at']);
+        $take_order = $this->find($id,['id','order_sn','user_id','deliverer_id','urgent','urgent_price','tip','coupon_id','coupon_name','coupon_price','original_price','total_price','order_status','express_count','postscript','express_price','created_at']);
         $take_order->friendly_date = friendly_date($take_order->created_at);
         $take_order_data = $take_order->toArray();
         $take_order_expresses = app(TakeOrderExpressRepository::class)->where('take_order_id',$take_order->id)

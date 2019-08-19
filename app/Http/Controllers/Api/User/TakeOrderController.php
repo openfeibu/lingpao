@@ -51,6 +51,7 @@ class TakeOrderController extends BaseController
             'urgent_price' => 'sometimes|numeric|min:0',
             'tip' => 'sometimes|numeric|min:0',
             'payment' => "required|in:wechat,balance",
+            "postscript" => 'sometimes|required|string'
         ];
         validateCustomParameter($order_data,$rule);
 
@@ -135,6 +136,7 @@ class TakeOrderController extends BaseController
             'coupon_price' => isset($coupon) && !empty($coupon) ? $coupon->price : 0,
             'deliverer_price' => $deliverer_price,
             'order_status' => 'unpaid',
+            'postscript' => !empty($order_data['postscript']) ? $order_data['postscript'] : '',
         ];
 
         $order = $this->takeOrderRepository->create($order_data);
