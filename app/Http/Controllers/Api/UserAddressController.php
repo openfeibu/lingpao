@@ -119,7 +119,7 @@ class UserAddressController extends BaseController
         	'address_id' 		=> 'required|integer',
     	];
     	validateParameter($rules);
-    	$where = ['address_id' => $request->address_id,'user_id' => $this->user->id ];
+    	$where = ['id' => $request->address_id,'user_id' => $this->user->id ];
     	$this->userAddressRepository->deleteWhere($where);
     	throw new \App\Exceptions\RequestSuccessException('删除成功');
     }

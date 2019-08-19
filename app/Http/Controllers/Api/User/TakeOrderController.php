@@ -221,7 +221,7 @@ class TakeOrderController extends BaseController
 
         $user_field = ['id','avatar_url','nickname'];
         $take_order_expresses_field = ['take_place','address'];
-        if($take_order->deliverer_id == $user->id)
+        if($take_order->deliverer_id == $user->id || $take_order->user_id == $user->id)
         {
             $user_field = array_merge($user_field,['phone']);
             $take_order_expresses_field = ['take_place','consignee','mobile','address','description','take_code','express_company','express_arrive_date'];
