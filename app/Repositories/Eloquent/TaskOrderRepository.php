@@ -30,6 +30,9 @@ class TaskOrderRepository extends BaseRepository implements TaskOrderRepositoryI
     {
         return config('model.task_order.task_order.model');
     }
-
+    public function getTaskOrder($type,$objective_id)
+    {
+        return $this->where('type',$type)->where('objective_id',$objective_id)->first();
+    }
 
 }

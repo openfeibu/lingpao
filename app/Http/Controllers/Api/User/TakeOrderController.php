@@ -140,7 +140,7 @@ class TakeOrderController extends BaseController
         ];
 
         $order = $this->takeOrderRepository->create($order_data);
-        $this->taskOrderRepository->create([
+        $task_order = $this->taskOrderRepository->create([
             'name' => '代拿',
             'objective_id' => $order->id,
             'objective_model' => 'TakeOrder',
@@ -152,7 +152,8 @@ class TakeOrderController extends BaseController
             $this->takeOrderExpressRepository->create($express);
         }
         $data = [
-            'order_id' => $order->id,
+            'task_order_id' => $task_order->id,
+            'take_order_id' => $order->id,
             'order_sn' => $order_sn,
             'body' => "代拿",
             'detail' => "代拿",
@@ -213,4 +214,119 @@ class TakeOrderController extends BaseController
 
         return $this->response->success()->data($take_order)->json();
     }
+    /*
+    public function cancelOrder(Request $request)
+    {
+//检验请求参数
+        $rule = [
+            'id' => 'required|integer',
+        ];
+        $this->helpService->validateParameter($rule);
+
+        $user = User::tokenAuth();
+
+        //检验任务是否已被接
+        $order = $this->takeOrderRepository->find($request->order_id);
+
+        if ($order->courier_id == $this->user->uid) {
+
+            if ($order->status != 'accepted') {
+                throw new \App\Exceptions\Custom\OutputServerMessageException('当前任务状态不允许取消');
+            }
+            $param = [
+                'order_id' => $request->order_id,
+                'only_in_status' => ['accepted'],
+                'status' => 'new',
+                'courier_cancel' => true
+            ];
+            //重新生成取款码
+            if($order->type == 'business')
+            {
+                $this->orderInfoService->uploadPickCode(['order_id' => $order->order_id]);
+            }
+            else if($order->type == 'canteen')
+            {
+                $this->orderInfoService->updateOrderInfoById($order->order_id,['shipping_status' => 0]);
+            }
+
+            $this->orderService->updateOrderStatus($param);
+
+            throw new \App\Exceptions\Custom\RequestSuccessException();
+        }
+
+        if($order->owner_id == $this->user->uid){
+            if ($order->status != 'new') {
+                throw new \App\Exceptions\Custom\OutputServerMessageException('当前任务状态不允许取消');
+            }
+
+            $param = [
+                'order_id' => $request->order_id,
+                'only_in_status' => ['new'],
+            ];
+
+            if($order->type == 'business')
+            {
+                //商家任务取消
+                $param['status'] = 'cancelled';
+                $this->orderService->delete(['oid' => $request->order_id ]);
+                //更新订单状态
+                $this->orderInfoService->updateOrderInfoById($order->order_id,['shipping_status' => 0]);
+                return [
+                    'code' => 200,
+                    'detail' => '取消任务成功，请重新发货',
+                ];
+            }
+            else
+            {
+                //个人任务取消
+                if($order->pay_id == 3){
+                    $walletData = array(
+                        'uid' => $this->user->uid,
+                        'wallet' => $this->user->wallet + $order->fee,
+                        'fee'	=> $order->fee,
+                        'service_fee' => 0,
+                        'out_trade_no' => $order->order_sn,
+                        'pay_id' => $order->pay_id,
+                        'wallet_type' => 1,
+                        'trade_type' => 'CancelTask',
+                        'description' => '取消任务',
+                    );
+                    $this->walletService->store($walletData);
+                    $tradeData = array(
+                        'wallet_type' => 1,
+                        'trade_type' => 'CancelTask',
+                        'description' => '取消任务',
+                        'trade_status' => 'refunded',
+                    );
+                    $param['status'] = 'cancelled';
+                    $this->walletService->updateWallet($order->owner_id,$this->user->wallet + $order->fee);
+                    $this->tradeAccountService->updateTradeAccount($order->order_sn,$tradeData);
+                    //取消任务
+                    $this->orderService->updateOrderStatus($param);
+                    return [
+                        'code' => 200,
+                        'detail' => '取消任务成功，任务费用已返回您的钱包，请查收',
+                    ];
+                }
+                else{
+                    $tradeData = array(
+                        'wallet_type' => 1,
+                        'trade_type' => 'CancelTask',
+                        'trade_status' => 'refunding',
+                        'description' => '取消任务',
+                    );
+                    $param['status'] = 'cancelling';
+                    $this->tradeAccountService->updateTradeAccount($order->order_sn,$tradeData);
+                    //取消任务
+                    $this->orderService->updateOrderStatus($param);
+                    return [
+                        'code' => 200,
+                        'detail' => '取消任务成功，等待管理员审核',
+                    ];
+                }
+            }
+        }
+        throw new \App\Exceptions\OutputServerMessageException('没有取消该任务的权限');
+    }
+    */
 }

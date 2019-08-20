@@ -260,8 +260,8 @@ abstract class BaseRepository extends PrettusRepository implements RepositoryInt
     }
     public function updateData($attributes)
     {
-        $this->model = $this->model->update($attributes);
-        return $this;
+        return $this->model->update($attributes);
+
     }
     public function join($table, $first, $operator = null, $second = null, $type = 'inner', $where = false)
     {

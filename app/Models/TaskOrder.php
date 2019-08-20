@@ -14,5 +14,4 @@ class TaskOrder extends BaseModel
 
     protected $config = 'model.task_order.task_order';
 
-
 }

@@ -14,5 +14,13 @@ class TakeOrder extends BaseModel
 
     protected $config = 'model.take_order.take_order';
 
+    protected $appends = ['task_order_id'];
+
+    public function getTaskOrderIdAttribute()
+    {
+        $id = $this->attributes['id'];
+        return TaskOrder::where('type','take_order')->where('objective_id',$id)->value('id');
+    }
+
 
 }

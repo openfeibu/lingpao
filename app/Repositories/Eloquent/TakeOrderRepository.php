@@ -130,6 +130,9 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
                 'order_status' => 'accepted',
                 'deliverer_id' => User::tokenAuthCache()->id,
             ],$take_order->id);
+
+            //TODO:消息推送
+
         } catch (Exception $e) {
             throw new \App\Exceptions\RequestFailedException('无法接受任务');
         }

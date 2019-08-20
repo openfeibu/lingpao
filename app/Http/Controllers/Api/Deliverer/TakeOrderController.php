@@ -40,11 +40,10 @@ class TakeOrderController extends BaseController
             User::isRole('deliverer');
 
             $take_order = $this->takeOrderRepository->find($request->id);
-
             //接受任务
             $this->takeOrderRepository->acceptOrder($take_order);
 
-            throw new \App\Exceptions\RequestSuccessException("恭喜，接单成功！");
+            return $this->response->success("恭喜，接单成功")->data(['task_order_id' => $take_order->task_order_id,'take_order_id' => $take_order->id])->json();
         }
         else {
             throw new \App\Exceptions\OutputServerMessageException('接单失败，系统繁忙！');
