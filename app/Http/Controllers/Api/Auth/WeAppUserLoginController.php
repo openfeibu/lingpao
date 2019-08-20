@@ -133,7 +133,7 @@ class WeAppUserLoginController extends BaseController
                 'nickname' => $user_info->nickName,
                 'session_key' => $session_key,
                 'token' => $token,
-                'gender' => isset($user_info->gender) && !empty($user_info->gender) ? $user_info->gender : '',
+                'gender' => isset($user_info->gender) && !empty($user_info->gender) ? $user_info->gender : 0,
             ]);
         }
     }
