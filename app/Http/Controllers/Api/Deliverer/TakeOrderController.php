@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Deliverer;
 
+use App\Exceptions\OutputServerMessageException;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Controllers\Api\BaseController;
@@ -21,7 +22,7 @@ class TakeOrderController extends BaseController
         $this->takeOrderRepository = $takeOrderRepository;
         $this->takeOrderExpressRepository = $takeOrderExpressRepository;
         $this->userRepository = $userRepository;
-        $this->deliverer = Auth::user();
+        $this->deliverer = User::tokenAuth();
     }
     public function acceptOrder(Request $request)
     {
@@ -39,10 +40,9 @@ class TakeOrderController extends BaseController
             User::isRole('deliverer');
 
             $take_order = $this->takeOrderRepository->find($request->id);
-            //接受任务
-            $this->takeOrderRepository->acceptOrder($take_order->id);
 
-            $this->messageService->SystemMessage2SingleOne($take_order->user_id, trans('task.take_order.be_accepted'));
+            //接受任务
+            $this->takeOrderRepository->acceptOrder($take_order);
 
             throw new \App\Exceptions\RequestSuccessException("恭喜，接单成功！");
         }

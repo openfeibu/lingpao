@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Exceptions\Roles\PermissionDeniedException;
+use App\Exceptions\PermissionDeniedException;
 use DB,Hash,Auth,Request;
 use App\Models\Auth as AuthModel;
 use App\Traits\Database\Slugger;

@@ -124,6 +124,7 @@ class WeAppUserLoginController extends BaseController
                 'token' => $token,
                 'session_key' => $session_key,
                 'city' => isset($user_info->city) && !empty($user_info->city) ? $user_info->city : $res->city,
+                'sex' => isset($user_info->sex) && !empty($user_info->sex) ? $user_info->sex : $res->sex,
             ]);
         } else {
             User::create([
@@ -132,6 +133,7 @@ class WeAppUserLoginController extends BaseController
                 'nickname' => $user_info->nickName,
                 'session_key' => $session_key,
                 'token' => $token,
+                'sex' => isset($user_info->sex) && !empty($user_info->sex) ? $user_info->sex : '',
             ]);
         }
     }
