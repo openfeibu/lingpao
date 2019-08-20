@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Deliverer;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 use App\Http\Controllers\Api\BaseController;
 use Log;
 use App\Repositories\Eloquent\UserRepositoryInterface;
@@ -22,7 +23,7 @@ class TakeOrderController extends BaseController
         $this->userRepository = $userRepository;
         $this->deliverer = Auth::user();
     }
-    public function claimOrder(Request $request)
+    public function acceptOrder(Request $request)
     {
         //    $this->messageService->SystemMessage2SingleOne(77, '取货码：1233');exit;
         //检验请求参数
@@ -34,29 +35,15 @@ class TakeOrderController extends BaseController
             ];
             validateParameter($rule);
 
-            //检验是否已实名
-            $this->userRepository->isRealnameAuth($this->deliverer);
+            //检验是否骑手
+            User::isRole('deliverer');
 
+            $take_order = $this->takeOrderRepository->find($request->id);
             //接受任务
-            $this->takeOrderRepository->claimOrder(['id' => $request->id]);
+            $this->takeOrderRepository->acceptOrder($take_order->id);
 
-            $order = $this->orderService->getSingleOrderAllInfo($request->order_id);
+            $this->messageService->SystemMessage2SingleOne($take_order->user_id, trans('task.take_order.be_accepted'));
 
-            $this->messageService->SystemMessage2SingleOne($order->owner_id, trans('task.task_be_accepted'));
-
-            //推送给发单者
-
-            $data = [
-                'refresh' => 1,
-                'target' => '',
-                'open' => 'task',
-                'data' => [
-                    'id' => $request->order_id,
-                    'title' => '校汇任务',
-                    'content' => trans('task.task_be_accepted'),
-                ],
-            ];
-            $this->pushService->PushUserTokenDevice('校汇任务', trans('task.task_be_accepted'), $order->owner_id,2,$data);
             throw new \App\Exceptions\RequestSuccessException("恭喜，接单成功！");
         }
         else {

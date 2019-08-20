@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Exceptions\Roles\PermissionDeniedException;
 use DB,Hash,Auth,Request;
 use App\Models\Auth as AuthModel;
 use App\Traits\Database\Slugger;
@@ -35,6 +36,22 @@ class User extends AuthModel
             throw new UnauthorizedHttpException('jwt-auth', 'token过期请重新登陆');
         }
         return $user;
+    }
+    /*
+     * $role :common,deliverer,expert_deliverer
+     */
+    public static function isRole($role='deliverer')
+    {
+        $user_role = self::$user->role;
+        if($user_role != $role)
+        {
+            throw new PermissionDeniedException("请先在个人中心申请骑手认证");
+        }
+    }
+
+    public function deliverer()
+    {
+        return true;
     }
     public function getIsPayPasswordAttribute()
     {

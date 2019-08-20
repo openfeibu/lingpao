@@ -95,7 +95,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             $take_order_data['expresses'] = $take_order_expresses_data;
         }
         else{
-            $take_order['expresses'] = $take_order_expresses->toArray();
+            $take_order_data['expresses'] = $take_order_expresses->toArray();
         }
 
         $take_order_user_data = visible_data($take_order_user->toArray(),$user_field);
@@ -106,5 +106,9 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             'deliverer' => $take_order_deliverer_data
         ];
         return $data;
+    }
+    public function acceptOrder()
+    {
+
     }
 }

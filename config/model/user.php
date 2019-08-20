@@ -64,16 +64,15 @@ return [
 
     ],
     'user'     => [
-
         'model'         => \App\Models\User::class,
         'table'         => 'users',
         'hidden'        => [],
         'visible'       => [],
-        'user_visible'  => ['id','nickname','phone','avatar_url','city','token','session_key','is_pay_password','balance'],
+        'user_visible'  => ['id','nickname','phone','avatar_url','city','token','session_key','is_pay_password','balance','role'],
         'guarded'       => ['*'],
         //'slugs'         => [],
         'dates'         => ['created_at', 'updated_at'],
-        'fillable'      => ['name','email','nickname','open_id','session_key','phone','avatar_url','city','password','remember_token','pay_password','balance','created_at','updated_at','verified','verification_token'],
+        'fillable'      => ['name','email','nickname','open_id','session_key','phone','avatar_url','city','password','remember_token','pay_password','balance','role','created_at','updated_at','verified','verification_token'],
         'translate'     => [],
         'upload_folder' => 'user/user',
         'uploads'       => [
