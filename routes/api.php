@@ -66,4 +66,6 @@ $api->version('v1', function ($api) {
     $api->get('/take_order/order','App\Http\Controllers\Api\User\TakeOrderController@getOrders');
     $api->get('/take_order/order/{id}','App\Http\Controllers\Api\User\TakeOrderController@getOrder');
     $api->post('/take_order/accept_order','App\Http\Controllers\Api\Deliverer\TakeOrderController@acceptOrder');
+    $api->post('/take_order/finish_order','App\Http\Controllers\Api\Deliverer\TakeOrderController@finishOrder');
+    $api->post('/take_order/complete_order','App\Http\Controllers\Api\User\TakeOrderController@completeOrder');
 });

@@ -126,7 +126,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             throw new \App\Exceptions\OutputServerMessageException('任务已过有效期');
         }
         try {
-            $this->update([
+            $this->updateOrderStatus([
                 'order_status' => 'accepted',
                 'deliverer_id' => User::tokenAuthCache()->id,
             ],$take_order->id);
@@ -139,5 +139,53 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
         return $take_order;
 
     }
+    public function updateOrderStatus($data,$id)
+    {
+        $this->update($data,$id);
+        app(TaskOrderRepository::class)->where('type','take_order')->where('objective_id',$id)->updateData([
+            'order_status' => $data['order_status']
+        ]);
+    }
+    public function completeOrder($take_order)
+    {
+        if ($take_order->order_status != 'finish') {
+            throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许结算任务');
+        }
 
+        $deliverer = app(UserRepository::class)->where('id',$take_order->deliverer_id)->first();
+        $new_balance = $deliverer->balance + $take_order->deliverer_price;
+        $balanceData = array(
+            'user_id' => $deliverer->id,
+            'balance' => $new_balance,
+            'price'	=> $take_order->deliverer_price,
+            'out_trade_no' => $take_order->order_sn,
+            'fee' => 0,
+            'type' => 1,
+            'trade_type' => 'ACCEPT_TAKE_ORDER',
+            'description' => '接代拿任务',
+        );
+
+        $trade_no = 'BALANCE-'.generate_order_sn('LP');
+        $trade = array(
+            'user_id' => $deliverer->id,
+            'out_trade_no' => $take_order->order_sn,
+            'trade_no' => $trade_no,
+            'trade_status' => 'income',
+            'type' => 1,
+            'pay_from' => 'TakeOrder',
+            'trade_type' => 'ACCEPT_TAKE_ORDER',
+            'price' => $take_order->deliverer_price,
+            'payment' => $take_order->payment,
+            'description' => '接代拿任务',
+        );
+
+        $this->updateOrderStatus(['order_status' => 'completed'],$take_order->id);
+
+        app(UserRepository::class)->update(['balance' => $new_balance],$deliverer->id);
+        app(BalanceRecordRepository::class)->create($balanceData);
+
+        app(TradeRecordRepository::class)->create($trade);
+
+        return "success";
+    }
 }

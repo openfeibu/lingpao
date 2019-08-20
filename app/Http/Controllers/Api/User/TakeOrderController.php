@@ -329,4 +329,35 @@ class TakeOrderController extends BaseController
         throw new \App\Exceptions\OutputServerMessageException('没有取消该任务的权限');
     }
     */
+    /**
+     * 发单人结算任务
+     */
+    public function completeOrder(Request $request)
+    {
+        //检验请求参数
+        $rule = [
+            'id' => 'required|integer',
+            'pay_password' => 'required|string',
+        ];
+        validateParameter($rule);
+
+        $user = User::tokenAuth();
+
+        $take_order = $this->takeOrderRepository->find($request->id);
+
+        if($take_order->user_id != $user->id)
+        {
+            throw new PermissionDeniedException();
+        }
+        if(!$user->is_pay_password){
+            throw new NotFoundPayPasswordException();
+        }
+        if (!password_verify($request->pay_password, $user->pay_password)) {
+            throw new \App\Exceptions\OutputServerMessageException('支付密码错误');
+        }
+
+        $this->takeOrderRepository->completeOrder($take_order);
+
+        throw new \App\Exceptions\RequestSuccessException("确认成功！");
+    }
 }

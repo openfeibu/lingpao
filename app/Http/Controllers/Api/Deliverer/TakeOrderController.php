@@ -51,4 +51,28 @@ class TakeOrderController extends BaseController
         @fclose($fp);
     }
 
+    /**
+     * 接单人完成任务
+     */
+    public function finishOrder(Request $request)
+    {
+        //检验请求参数
+        $rule = [
+            'id' => 'required|integer',
+        ];
+        validateParameter($rule);
+
+        $take_order = $this->takeOrderRepository->find($request->id);
+        //检验任务是否已接
+        if ($take_order->order_status != 'accepted') {
+            throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许完成任务');
+        }
+
+        $this->takeOrderRepository->updateOrderStatus(['order_status' => 'finish'],$take_order->id);
+
+        //TODO:通知
+
+        throw new \App\Exceptions\RequestSuccessException("恭喜，已完成任务！等待用户确认！");
+    }
+
 }

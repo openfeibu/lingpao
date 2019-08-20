@@ -89,10 +89,8 @@ class PayService
                         'description' => $data['detail'],
                     );
                     $this->tradeRecordRepository->create($trade);
-                    $this->takeOrderRepository->where('order_sn',$data['order_sn'])->updateData(['order_status' => 'new']);
+                    $this->takeOrderRepository->updateOrderStatus(['order_status' => 'new'],$data['take_order_id']);
                     $data['user_coupon_id'] ? $this->userCouponRepository->update(['status' => 'used'],$data['user_coupon_id']) : '';
-
-                    $task_order = $this->taskOrderRepository->where('type','take_order')->where('objective_id',$data['take_order_id'])->updateData(['order_status' => 'new']);
                     return [
                         'task_order_id' => $data['task_order_id'],
                         'take_order_id' => $data['take_order_id'],
