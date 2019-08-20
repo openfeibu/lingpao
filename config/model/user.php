@@ -31,7 +31,7 @@ return [
             'slugs'         => [],
             'dates'         => ['created_at', 'updated_at', 'deleted_at', 'dob'],
             'appends'       => [],
-            'fillable'      => ['user_id', 'name', 'email', 'parent_id', 'password', 'api_token', 'remember_token', 'sex', 'dob', 'designation', 'mobile', 'phone', 'address', 'street', 'city', 'district', 'state', 'country', 'photo', 'web', 'permissions'],
+            'fillable'      => ['user_id', 'name', 'email', 'parent_id', 'password', 'api_token', 'remember_token', 'gender', 'dob', 'designation', 'mobile', 'phone', 'address', 'street', 'city', 'district', 'state', 'country', 'photo', 'web', 'permissions'],
             'translate'     => [],
 
             'upload_folder' => 'user/user',
@@ -51,7 +51,7 @@ return [
             'search'        => [
                 'name'        => 'like',
                 'email'       => 'like',
-                'sex'         => 'like',
+                'gender'         => 'like',
                 'dob'         => 'like',
                 'designation' => 'like',
                 'mobile'      => 'like',
@@ -68,11 +68,11 @@ return [
         'table'         => 'users',
         'hidden'        => [],
         'visible'       => [],
-        'user_visible'  => ['id','nickname','phone','avatar_url','city','sex','token','session_key','is_pay_password','balance','role'],
+        'user_visible'  => ['id','nickname','phone','avatar_url','city','gender','token','session_key','is_pay_password','balance','role'],
         'guarded'       => ['*'],
         //'slugs'         => [],
         'dates'         => ['created_at', 'updated_at'],
-        'fillable'      => ['name','email','nickname','open_id','session_key','phone','avatar_url','city','sex','password','remember_token','pay_password','balance','role','created_at','updated_at','verified','verification_token'],
+        'fillable'      => ['name','email','nickname','open_id','session_key','phone','avatar_url','city','gender','password','remember_token','pay_password','balance','role','created_at','updated_at','verified','verification_token'],
         'translate'     => [],
         'upload_folder' => 'user/user',
         'uploads'       => [
