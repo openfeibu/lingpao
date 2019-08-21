@@ -51,4 +51,16 @@ class TaskOrderController extends BaseController
         $order_detail['type'] = $order->type;
         return $this->response->success()->data($order_detail)->json();
     }
+    public function getUserOrders(Request $request)
+    {
+        $user = User::tokenAuth();
+        $orders_data = $this->taskOrderRepository->getUserTaskOrders(['user_id' => $user->id]);
+        return $this->response->success()->count($orders_data['count'])->data($orders_data['data'])->json();
+    }
+    public function getDelivererOrders(Request $request)
+    {
+        $user = User::tokenAuth();
+        $orders_data = $this->taskOrderRepository->getUserTaskOrders(['deliverer_id' => $user->id]);
+        return $this->response->success()->count($orders_data['count'])->data($orders_data['data'])->json();
+    }
 }

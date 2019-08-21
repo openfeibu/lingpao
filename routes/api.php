@@ -61,6 +61,8 @@ $api->version('v1', function ($api) {
 
     $api->get('/task_order','App\Http\Controllers\Api\TaskOrderController@getOrders');
     $api->get('/task_order/{id}','App\Http\Controllers\Api\TaskOrderController@getOrder');
+    $api->get('/task_order/user/order','App\Http\Controllers\Api\TaskOrderController@getUserOrders');
+    $api->get('/task_order/deliverer/order','App\Http\Controllers\Api\TaskOrderController@getDelivererOrders');
 
     $api->post('/take_order/create_order','App\Http\Controllers\Api\User\TakeOrderController@createOrder');
     $api->get('/take_order/order','App\Http\Controllers\Api\User\TakeOrderController@getOrders');
