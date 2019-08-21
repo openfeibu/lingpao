@@ -93,6 +93,10 @@ class AppServiceProvider extends ServiceProvider
             'App\Repositories\Eloquent\TradeRecordRepositoryInterface',
             \App\Repositories\Eloquent\TradeRecordRepository::class
         );
+        $this->app->bind(
+            'App\Repositories\Eloquent\RemarkRepositoryInterface',
+            \App\Repositories\Eloquent\RemarkRepository::class
+        );
         $this->app->bind('filer', function ($app) {
             return new \App\Helpers\Filer\Filer();
         });

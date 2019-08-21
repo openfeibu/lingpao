@@ -1055,3 +1055,12 @@ if(!function_exists('friendly_date')){
         }
     }
 }
+function get_task_objective_model($objective_model)
+{
+    switch ($objective_model)
+    {
+        case "TakeOrder":
+            return app(\App\Models\TakeOrder::class);
+            break;
+    }
+}

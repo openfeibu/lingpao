@@ -13,6 +13,7 @@ use App\Repositories\Eloquent\UserRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderExpressRepositoryInterface;
 use App\Repositories\Eloquent\TaskOrderRepositoryInterface;
+use App\Repositories\Eloquent\RemarkRepositoryInterface;
 use Log,DB;
 use Illuminate\Http\Request;
 
@@ -27,7 +28,8 @@ class TaskOrderController extends BaseController
     public function __construct(TakeOrderRepositoryInterface $takeOrderRepository,
                                 TakeOrderExpressRepositoryInterface $takeOrderExpressRepository,
                                 UserRepositoryInterface $userRepository,
-                                TaskOrderRepositoryInterface $taskOrderRepository)
+                                TaskOrderRepositoryInterface $taskOrderRepository,
+                                RemarkRepositoryInterface $remarkRepository)
     {
         parent::__construct();
         $this->middleware('auth.api',['except' => ['getOrders']]);
@@ -35,6 +37,7 @@ class TaskOrderController extends BaseController
         $this->takeOrderExpressRepository = $takeOrderExpressRepository;
         $this->userRepository = $userRepository;
         $this->taskOrderRepository = $taskOrderRepository;
+        $this->remarkRepository = $remarkRepository;
     }
     public function getOrders(Request $request)
     {
@@ -62,5 +65,37 @@ class TaskOrderController extends BaseController
         $user = User::tokenAuth();
         $orders_data = $this->taskOrderRepository->getUserTaskOrders(['deliverer_id' => $user->id]);
         return $this->response->success()->count($orders_data['count'])->data($orders_data['data'])->json();
+    }
+    public function remark(Request $request)
+    {
+        $rule = [
+            'task_order_id' => 'required|integer',
+            'service_grade' => 'required|between:0,5',
+            'speed_grade' => 'required|between:0,5',
+            'comment' => 'sometimes',
+        ];
+        validateParameter($rule);
+
+        $user = User::tokenAuth();
+
+        $task_order = $this->taskOrderRepository->find($request->task_order_id);
+
+        if($task_order->user_id != $user->id){
+            throw new PermissionDeniedException();
+        }
+        if ($task_order->order_status != 'completed')
+        {
+            throw new \App\Exceptions\OutputServerMessageException('该任务未结算，请结算后再评价');
+        }
+        $remark = $this->remarkRepository->create([
+            'user_id' => $user->id,
+            'deliverer_id' => $task_order->deliverer_id,
+            'service_grade' => $request->service_grade,
+            'speed_grade' => $request->speed_grade,
+            'comment' => isset($request->comment) && !empty($request->comment) ? $request->comment : '' ,
+            'task_order_id' => $task_order->id,
+        ]);
+        $this->taskOrderRepository->updateOrderStatus(['order_status' => 'remarked'],$task_order);
+        return $this->response->success("评价成功")->data(['remark_id' => $remark->id])->json();
     }
 }

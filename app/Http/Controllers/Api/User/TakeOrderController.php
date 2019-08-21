@@ -13,6 +13,7 @@ use App\Repositories\Eloquent\UserRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderExpressRepositoryInterface;
 use App\Repositories\Eloquent\TaskOrderRepositoryInterface;
+use App\Repositories\Eloquent\RemarkRepositoryInterface;
 use App\Services\PayService;
 use Log,DB;
 use Illuminate\Http\Request;
@@ -31,6 +32,7 @@ class TakeOrderController extends BaseController
                                 UserCouponRepositoryInterface $userCouponRepository,
                                 UserRepositoryInterface $userRepository,
                                 TaskOrderRepositoryInterface $taskOrderRepository,
+                                RemarkRepositoryInterface $remarkRepository,
                                 PayService $payService)
     {
         parent::__construct();
@@ -280,25 +282,5 @@ class TakeOrderController extends BaseController
 
         $this->takeOrderRepository->agreeCancelOrder($take_order);
     }
-    public function remark(Request $request)
-    {
-        $rule = [
-            'id' => 'required|integer',
-        ];
-        validateParameter($rule);
 
-        $user = User::tokenAuth();
-
-        $take_order = $this->takeOrderRepository->find($request->id);
-
-        if($take_order->user_id != $user->id){
-            throw new PermissionDeniedException();
-        }
-        if ($take_order->order_status != 'completed')
-        {
-            throw new \App\Exceptions\OutputServerMessageException('该任务未结算，请结算后再评价');
-        }
-
-
-    }
 }
