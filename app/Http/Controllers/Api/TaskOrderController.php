@@ -38,9 +38,8 @@ class TaskOrderController extends BaseController
     }
     public function getOrders(Request $request)
     {
-
-
-        return $this->response->success()->count($orders->total())->data($orders_data)->json();
+        $orders_data = $this->taskOrderRepository->getTaskOrders();
+        return $this->response->success()->count($orders_data['count'])->data($orders_data['data'])->json();
     }
     public function getOrder(Request $request,$id)
     {

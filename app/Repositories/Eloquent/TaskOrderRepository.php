@@ -5,7 +5,7 @@ namespace App\Repositories\Eloquent;
 use App\Repositories\Eloquent\TaskOrderRepositoryInterface;
 use App\Repositories\Eloquent\BaseRepository;
 use App\Models\User;
-use Request;
+use Request,DB;
 
 class TaskOrderRepository extends BaseRepository implements TaskOrderRepositoryInterface
 {
@@ -62,7 +62,10 @@ class TaskOrderRepository extends BaseRepository implements TaskOrderRepositoryI
             $order_detail->type = $order->type;
             $orders_data[] = $order_detail;
         }
-        return $orders_data;
+        return [
+            'data' => $orders_data,
+            'count' => $orders->total()
+        ];
     }
     public function getTaskOrder($type,$objective_id)
     {
