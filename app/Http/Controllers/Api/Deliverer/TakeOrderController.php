@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Deliverer;
 
 use App\Exceptions\OutputServerMessageException;
+use App\Exceptions\PermissionDeniedException;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Controllers\Api\BaseController;
