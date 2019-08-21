@@ -214,21 +214,21 @@ class TakeOrderController extends BaseController
 
         return $this->response->success()->data($take_order)->json();
     }
-    /*
+/*
     public function cancelOrder(Request $request)
     {
 //检验请求参数
         $rule = [
             'id' => 'required|integer',
         ];
-        $this->helpService->validateParameter($rule);
+        validateParameter($rule);
 
         $user = User::tokenAuth();
 
         //检验任务是否已被接
-        $order = $this->takeOrderRepository->find($request->order_id);
+        $take_order = $this->takeOrderRepository->find($request->order_id);
 
-        if ($order->courier_id == $this->user->uid) {
+        if ($take_order->courier_id == $this->user->uid) {
 
             if ($order->status != 'accepted') {
                 throw new \App\Exceptions\Custom\OutputServerMessageException('当前任务状态不允许取消');
@@ -328,7 +328,7 @@ class TakeOrderController extends BaseController
         }
         throw new \App\Exceptions\OutputServerMessageException('没有取消该任务的权限');
     }
-    */
+*/
     /**
      * 发单人结算任务
      */
@@ -348,12 +348,6 @@ class TakeOrderController extends BaseController
         if($take_order->user_id != $user->id)
         {
             throw new PermissionDeniedException();
-        }
-        if(!$user->is_pay_password){
-            throw new NotFoundPayPasswordException();
-        }
-        if (!password_verify($request->pay_password, $user->pay_password)) {
-            throw new \App\Exceptions\OutputServerMessageException('支付密码错误');
         }
 
         $this->takeOrderRepository->completeOrder($take_order);
