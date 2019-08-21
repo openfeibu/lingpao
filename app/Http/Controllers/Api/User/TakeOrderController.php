@@ -217,7 +217,6 @@ class TakeOrderController extends BaseController
 /*
     public function cancelOrder(Request $request)
     {
-//检验请求参数
         $rule = [
             'id' => 'required|integer',
         ];
@@ -228,10 +227,10 @@ class TakeOrderController extends BaseController
         //检验任务是否已被接
         $take_order = $this->takeOrderRepository->find($request->order_id);
 
-        if ($take_order->courier_id == $this->user->uid) {
+        if ($take_order->deliverer_id == $user->id) {
 
-            if ($order->status != 'accepted') {
-                throw new \App\Exceptions\Custom\OutputServerMessageException('当前任务状态不允许取消');
+            if ($take_order->order_status != 'accepted') {
+                throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许取消');
             }
             $param = [
                 'order_id' => $request->order_id,
@@ -239,24 +238,18 @@ class TakeOrderController extends BaseController
                 'status' => 'new',
                 'courier_cancel' => true
             ];
-            //重新生成取款码
-            if($order->type == 'business')
-            {
-                $this->orderInfoService->uploadPickCode(['order_id' => $order->order_id]);
-            }
-            else if($order->type == 'canteen')
-            {
-                $this->orderInfoService->updateOrderInfoById($order->order_id,['shipping_status' => 0]);
-            }
 
-            $this->orderService->updateOrderStatus($param);
+            $this->takeOrderRepository->updateOrderStatus($param);
 
-            throw new \App\Exceptions\Custom\RequestSuccessException();
+            throw new \App\Exceptions\RequestSuccessException();
         }
 
-        if($order->owner_id == $this->user->uid){
-            if ($order->status != 'new') {
-                throw new \App\Exceptions\Custom\OutputServerMessageException('当前任务状态不允许取消');
+        if($take_order->user_id == $user->id){
+            if ($take_order->order_status == 'accepted') {
+                throw new \App\Exceptions\OutputServerMessageException('已被接单，请联系骑手取消任务');
+            }
+            if ($take_order->order_status != 'new') {
+                throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许取消');
             }
 
             $param = [
@@ -264,21 +257,7 @@ class TakeOrderController extends BaseController
                 'only_in_status' => ['new'],
             ];
 
-            if($order->type == 'business')
-            {
-                //商家任务取消
-                $param['status'] = 'cancelled';
-                $this->orderService->delete(['oid' => $request->order_id ]);
-                //更新订单状态
-                $this->orderInfoService->updateOrderInfoById($order->order_id,['shipping_status' => 0]);
-                return [
-                    'code' => 200,
-                    'detail' => '取消任务成功，请重新发货',
-                ];
-            }
-            else
-            {
-                //个人任务取消
+
                 if($order->pay_id == 3){
                     $walletData = array(
                         'uid' => $this->user->uid,
@@ -337,7 +316,6 @@ class TakeOrderController extends BaseController
         //检验请求参数
         $rule = [
             'id' => 'required|integer',
-            'pay_password' => 'required|string',
         ];
         validateParameter($rule);
 
