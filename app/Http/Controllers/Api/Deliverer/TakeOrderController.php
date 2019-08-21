@@ -65,7 +65,7 @@ class TakeOrderController extends BaseController
 
         $take_order = $this->takeOrderRepository->find($request->id);
         //检验任务是否已接
-        if($take_order->user_id != $this->deliverer->id)
+        if($take_order->deliverer_id != $this->deliverer->id)
         {
             throw new PermissionDeniedException();
         }
