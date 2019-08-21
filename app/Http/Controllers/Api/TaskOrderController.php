@@ -38,29 +38,7 @@ class TaskOrderController extends BaseController
     }
     public function getOrders(Request $request)
     {
-        $type = $request->input('type','all');
-        $limit = $request->input('limit',config('app.limit'));
-        $orders = TaskOrder::select(DB::raw('*,CASE order_status WHEN "new" THEN 1 ELSE 2 END as status_num'));
-        if($type != 'all')
-        {
-            $orders->where('type',$type);
-        }
-        $orders = $orders->whereIn('order_status', ['new','accepted'])
-            ->orderBy('status_num','asc')
-            ->orderBy('id','desc')
-            ->paginate($limit);
 
-        $orders_data = [];
-        foreach ($orders as $key => $order)
-        {
-            if($order->type == 'take_order')
-            {
-                $order_detail = $this->takeOrderRepository->getOrder($order->objective_id);
-            }
-            $order_detail->task_order_id = $order->id;
-            $order_detail->type = $order->type;
-            $orders_data[] = $order_detail;
-        }
 
         return $this->response->success()->count($orders->total())->data($orders_data)->json();
     }

@@ -42,6 +42,10 @@ class TakeOrderController extends BaseController
         $this->taskOrderRepository = $taskOrderRepository;
         $this->payService = $payService;
     }
+    public function getUserOrders(Request $request)
+    {
+
+    }
     public function createOrder(Request $request)
     {
         $user = User::tokenAuth();
@@ -142,6 +146,7 @@ class TakeOrderController extends BaseController
         $order = $this->takeOrderRepository->create($order_data);
         $task_order = $this->taskOrderRepository->create([
             'name' => '发代拿任务',
+            'user_id' => $user->id,
             'objective_id' => $order->id,
             'objective_model' => 'TakeOrder',
             'type' => 'take_order',
