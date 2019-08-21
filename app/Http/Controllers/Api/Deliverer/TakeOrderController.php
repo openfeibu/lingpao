@@ -64,6 +64,10 @@ class TakeOrderController extends BaseController
 
         $take_order = $this->takeOrderRepository->find($request->id);
         //检验任务是否已接
+        if($take_order->user_id != $this->deliverer->id)
+        {
+            throw new PermissionDeniedException();
+        }
         if ($take_order->order_status != 'accepted') {
             throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许完成任务');
         }
