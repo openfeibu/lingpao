@@ -22,7 +22,7 @@ return [
         'visible'      => [],
         'guarded'      => ['*'],
         'slugs'        => [],
-        'fillable'     => ['order_sn','user_id','deliverer_id','urgent','urgent_price','tip','coupon_id','coupon_name','coupon_price','original_price','total_price','order_status','payment','express_count','express_price','deliverer_price','postscript','created_at','updated_at'],
+        'fillable'     => ['order_sn','user_id','deliverer_id','urgent','urgent_price','tip','coupon_id','coupon_name','coupon_price','original_price','total_price','order_status','order_cancel_status','payment','express_count','express_price','deliverer_price','postscript','created_at','updated_at'],
         'translate'    => [],
         'upload_folder' => '/take_order',
         'encrypt'      => ['id'],

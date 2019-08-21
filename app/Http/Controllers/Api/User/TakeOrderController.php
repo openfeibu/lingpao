@@ -141,7 +141,7 @@ class TakeOrderController extends BaseController
 
         $order = $this->takeOrderRepository->create($order_data);
         $task_order = $this->taskOrderRepository->create([
-            'name' => '代拿',
+            'name' => '发代拿任务',
             'objective_id' => $order->id,
             'objective_model' => 'TakeOrder',
             'type' => 'take_order',
@@ -214,7 +214,7 @@ class TakeOrderController extends BaseController
 
         return $this->response->success()->data($take_order)->json();
     }
-/*
+
     public function cancelOrder(Request $request)
     {
         $rule = [
@@ -225,8 +225,8 @@ class TakeOrderController extends BaseController
         $user = User::tokenAuth();
 
         //检验任务是否已被接
-        $take_order = $this->takeOrderRepository->find($request->order_id);
-
+        $take_order = $this->takeOrderRepository->find($request->id);
+        /*
         if ($take_order->deliverer_id == $user->id) {
 
             if ($take_order->order_status != 'accepted') {
@@ -243,71 +243,14 @@ class TakeOrderController extends BaseController
 
             throw new \App\Exceptions\RequestSuccessException();
         }
-
-        if($take_order->user_id == $user->id){
-            if ($take_order->order_status == 'accepted') {
-                throw new \App\Exceptions\OutputServerMessageException('已被接单，请联系骑手取消任务');
-            }
-            if ($take_order->order_status != 'new') {
-                throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许取消');
-            }
-
-            $param = [
-                'order_id' => $request->order_id,
-                'only_in_status' => ['new'],
-            ];
-
-
-                if($order->pay_id == 3){
-                    $walletData = array(
-                        'uid' => $this->user->uid,
-                        'wallet' => $this->user->wallet + $order->fee,
-                        'fee'	=> $order->fee,
-                        'service_fee' => 0,
-                        'out_trade_no' => $order->order_sn,
-                        'pay_id' => $order->pay_id,
-                        'wallet_type' => 1,
-                        'trade_type' => 'CancelTask',
-                        'description' => '取消任务',
-                    );
-                    $this->walletService->store($walletData);
-                    $tradeData = array(
-                        'wallet_type' => 1,
-                        'trade_type' => 'CancelTask',
-                        'description' => '取消任务',
-                        'trade_status' => 'refunded',
-                    );
-                    $param['status'] = 'cancelled';
-                    $this->walletService->updateWallet($order->owner_id,$this->user->wallet + $order->fee);
-                    $this->tradeAccountService->updateTradeAccount($order->order_sn,$tradeData);
-                    //取消任务
-                    $this->orderService->updateOrderStatus($param);
-                    return [
-                        'code' => 200,
-                        'detail' => '取消任务成功，任务费用已返回您的钱包，请查收',
-                    ];
-                }
-                else{
-                    $tradeData = array(
-                        'wallet_type' => 1,
-                        'trade_type' => 'CancelTask',
-                        'trade_status' => 'refunding',
-                        'description' => '取消任务',
-                    );
-                    $param['status'] = 'cancelling';
-                    $this->tradeAccountService->updateTradeAccount($order->order_sn,$tradeData);
-                    //取消任务
-                    $this->orderService->updateOrderStatus($param);
-                    return [
-                        'code' => 200,
-                        'detail' => '取消任务成功，等待管理员审核',
-                    ];
-                }
-            }
+        */
+        if($take_order->user_id != $user->id){
+            throw new \App\Exceptions\OutputServerMessageException('没有取消该任务的权限');
         }
-        throw new \App\Exceptions\OutputServerMessageException('没有取消该任务的权限');
+        $this->takeOrderRepository->userCancelOrder($take_order);
+
     }
-*/
+
     /**
      * 发单人结算任务
      */

@@ -39,7 +39,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
     {
         $limit = Request::get('limit',config('app.limit'));
         $take_orders = $this->model->join('users','users.id','=','take_orders.user_id')
-            ->select(DB::raw('take_orders.id,take_orders.order_sn,take_orders.user_id,take_orders.deliverer_id,take_orders.urgent,take_orders.total_price,take_orders.deliverer_price,take_orders.express_count,take_orders.order_status,take_orders.postscript,take_orders.created_at,CASE take_orders.order_status WHEN "new" THEN 1 ELSE 2 END as status_num,users.nickname,users.avatar_url'))
+            ->select(DB::raw('take_orders.id,take_orders.order_sn,take_orders.user_id,take_orders.deliverer_id,take_orders.urgent,take_orders.total_price,take_orders.deliverer_price,take_orders.express_count,take_orders.order_status,take_orders.order_cancel_status,take_orders.postscript,take_orders.created_at,CASE take_orders.order_status WHEN "new" THEN 1 ELSE 2 END as status_num,users.nickname,users.avatar_url'))
             ->whereIn('take_orders.order_status', ['new','accepted','finish','completed'])
             //->where('take_orders.created_at','>',date("Y-m-d 00:00:00"))
             ->orderBy('status_num','asc')
@@ -56,7 +56,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
     public function getOrder($id)
     {
         $take_order = $this->model->join('users','users.id','=','take_orders.user_id')
-            ->select(DB::raw('take_orders.id,take_orders.order_sn,take_orders.user_id,take_orders.deliverer_id,take_orders.urgent,take_orders.total_price,take_orders.deliverer_price,express_count,take_orders.order_status,take_orders.postscript,take_orders.created_at,users.nickname,users.avatar_url'))
+            ->select(DB::raw('take_orders.id,take_orders.order_sn,take_orders.user_id,take_orders.deliverer_id,take_orders.urgent,take_orders.total_price,take_orders.deliverer_price,express_count,take_orders.order_status,take_orders.order_cancel_status,take_orders.postscript,take_orders.created_at,users.nickname,users.avatar_url'))
             ->where('take_orders.id',$id)
             ->first();
         $take_order->friendly_date = friendly_date($take_order->created_at);
@@ -67,7 +67,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
     public function getOrderDetail($id)
     {
         $user = User::tokenAuth();
-        $take_order = $this->find($id,['id','order_sn','user_id','deliverer_id','urgent','urgent_price','tip','coupon_id','coupon_name','coupon_price','original_price','total_price','order_status','express_count','express_price','deliverer_price','postscript','created_at']);
+        $take_order = $this->find($id,['id','order_sn','user_id','deliverer_id','urgent','urgent_price','tip','coupon_id','coupon_name','coupon_price','original_price','total_price','order_status','order_cancel_status','express_count','express_price','deliverer_price','postscript','created_at']);
         $take_order->friendly_date = friendly_date($take_order->created_at);
         $take_order_data = $take_order->toArray();
         $take_order_expresses = app(TakeOrderExpressRepository::class)->where('take_order_id',$take_order->id)
@@ -187,5 +187,56 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
         app(TradeRecordRepository::class)->create($trade);
 
         return "success";
+    }
+    public function userCancelOrder($take_order)
+    {
+        $user = User::tokenAuth();
+        if ($take_order->order_status == 'accepted') {
+            throw new \App\Exceptions\OutputServerMessageException('已被接单，请联系骑手取消任务');
+        }
+        if ($take_order->order_status != 'new') {
+            throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许取消');
+        }
+
+        if($take_order->payment == 'balance')
+        {
+            $new_balance = $user->balance + $take_order->total_price;
+            $balanceData = array(
+                'user_id' => $user->id,
+                'balance' => $new_balance,
+                'price'	=> $take_order->total_price,
+                'out_trade_no' => $take_order->order_sn,
+                'fee' => 0,
+                'type' => 1,
+                'trade_type' => 'CANCEL_TAKE_ORDER',
+                'description' => '取消代拿任务',
+            );
+            app(BalanceRecordRepository::class)->create($balanceData);
+            app(UserRepository::class)->update(['balance' => $new_balance],$user->id);
+
+            $trade = array(
+                'trade_status' => 'refunded',
+                'type' => 1,
+                'trade_type' => 'CANCEL_TAKE_ORDER',
+                'description' => '取消代拿任务',
+            );
+            app(TradeRecordRepository::class)->where('out_trade_no',$take_order->order_sn)->updateData($trade);
+            $this->updateOrderStatus(['order_status' => 'cancel','order_cancel_status' => 'refunded'],$take_order->id);
+            throw new \App\Exceptions\RequestSuccessException("取消任务成功，任务费用已退回您的钱包，请查收!");
+        }else{
+            //TODO:在线支付退款
+            exit;
+            $trade = array(
+                'wallet_type' => 1,
+                'trade_type' => 'CANCEL_TAKE_ORDER',
+                'trade_status' => 'refunding',
+                'description' => '取消代拿任务',
+            );
+            app(TradeRecordRepository::class)->where('out_trade_no',$take_order->order_sn)->updateData($trade);
+            $this->updateOrderStatus(['order_status' => 'cancel'],$take_order->id);
+
+            throw new \App\Exceptions\RequestSuccessException("取消任务成功，任务费用已原路退回，请查收");
+        }
+
     }
 }
