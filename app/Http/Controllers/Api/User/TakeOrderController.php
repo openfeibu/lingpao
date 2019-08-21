@@ -215,42 +215,6 @@ class TakeOrderController extends BaseController
         return $this->response->success()->data($take_order)->json();
     }
 
-    public function cancelOrder(Request $request)
-    {
-        $rule = [
-            'id' => 'required|integer',
-        ];
-        validateParameter($rule);
-
-        $user = User::tokenAuth();
-
-        //检验任务是否已被接
-        $take_order = $this->takeOrderRepository->find($request->id);
-        /*
-        if ($take_order->deliverer_id == $user->id) {
-
-            if ($take_order->order_status != 'accepted') {
-                throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许取消');
-            }
-            $param = [
-                'order_id' => $request->order_id,
-                'only_in_status' => ['accepted'],
-                'status' => 'new',
-                'courier_cancel' => true
-            ];
-
-            $this->takeOrderRepository->updateOrderStatus($param);
-
-            throw new \App\Exceptions\RequestSuccessException();
-        }
-        */
-        if($take_order->user_id != $user->id){
-            throw new \App\Exceptions\OutputServerMessageException('没有取消该任务的权限');
-        }
-        $this->takeOrderRepository->userCancelOrder($take_order);
-
-    }
-
     /**
      * 发单人结算任务
      */
@@ -275,4 +239,41 @@ class TakeOrderController extends BaseController
 
         throw new \App\Exceptions\RequestSuccessException("确认成功！");
     }
+
+    public function cancelOrder(Request $request)
+    {
+        $rule = [
+            'id' => 'required|integer',
+        ];
+        validateParameter($rule);
+
+        $user = User::tokenAuth();
+
+        $take_order = $this->takeOrderRepository->find($request->id);
+
+        if($take_order->user_id != $user->id){
+            throw new PermissionDeniedException('没有取消该任务的权限');
+        }
+        $this->takeOrderRepository->userCancelOrder($take_order);
+
+    }
+
+    public function agreeCancelOrder(Request $request)
+    {
+        $rule = [
+            'id' => 'required|integer',
+        ];
+        validateParameter($rule);
+
+        $user = User::tokenAuth();
+
+        $take_order = $this->takeOrderRepository->find($request->id);
+
+        if($take_order->user_id != $user->id){
+            throw new PermissionDeniedException();
+        }
+
+        $this->takeOrderRepository->agreeCancelOrder($take_order);
+    }
+
 }

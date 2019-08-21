@@ -197,7 +197,28 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
         if ($take_order->order_status != 'new') {
             throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许取消');
         }
+        $this->refund($take_order,$user);
+    }
+    public function delivererCancelOrder($take_order)
+    {
+        if ($take_order->order_status != 'accepted') {
+            throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许取消');
+        }
+        $this->updateOrderStatus(['order_status' => 'cancel','order_cancel_status' => 'deliverer_apply_cancel'],$take_order->id);
 
+        throw new \App\Exceptions\RequestSuccessException("操作成功，请等待或联系用户确认！");
+    }
+    public function agreeCancelOrder($take_order)
+    {
+        $user = User::tokenAuth();
+        if ($take_order->order_cancel_status != 'deliverer_apply_cancel') {
+            throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许同意取消');
+        }
+        $this->updateOrderStatus(['order_status' => 'cancel','order_cancel_status' => 'user_agree_cancel'],$take_order->id);
+        $this->refund($take_order,$user);
+    }
+    public function refund($take_order,$user)
+    {
         if($take_order->payment == 'balance')
         {
             $new_balance = $user->balance + $take_order->total_price;
@@ -237,6 +258,5 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
 
             throw new \App\Exceptions\RequestSuccessException("取消任务成功，任务费用已原路退回，请查收");
         }
-
     }
 }

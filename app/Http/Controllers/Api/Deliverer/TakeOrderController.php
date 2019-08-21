@@ -75,9 +75,27 @@ class TakeOrderController extends BaseController
 
         $this->takeOrderRepository->updateOrderStatus(['order_status' => 'finish'],$take_order->id);
 
-        //TODO:通知
+        //TODO:通知 $take_order->user_id
 
         throw new \App\Exceptions\RequestSuccessException("恭喜，已完成任务！等待用户确认！");
+    }
+    public function cancelOrder(Request $request)
+    {
+        $rule = [
+            'id' => 'required|integer',
+        ];
+        validateParameter($rule);
+
+        $take_order = $this->takeOrderRepository->find($request->id);
+
+        if($take_order->deliverer_id != $this->deliverer->id){
+            throw new PermissionDeniedException('没有取消该任务的权限');
+        }
+
+        $this->takeOrderRepository->delivererCancelOrder($take_order);
+
+        throw new \App\Exceptions\RequestSuccessException();
+
     }
 
 }
