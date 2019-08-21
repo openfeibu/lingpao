@@ -256,7 +256,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             //TODO:在线支付退款
             exit;
             $trade = array(
-                'wallet_type' => 1,
+                'type' => 1,
                 'trade_type' => 'CANCEL_TAKE_ORDER',
                 'trade_status' => 'refunding',
                 'description' => '取消代拿任务',
