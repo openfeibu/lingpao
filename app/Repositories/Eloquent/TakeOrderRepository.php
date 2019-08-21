@@ -40,11 +40,12 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
         $limit = Request::get('limit',config('app.limit'));
         $take_orders = $this->model->join('users','users.id','=','take_orders.user_id')
             ->select(DB::raw('take_orders.id,take_orders.order_sn,take_orders.user_id,take_orders.deliverer_id,take_orders.urgent,take_orders.total_price,take_orders.deliverer_price,take_orders.express_count,take_orders.order_status,take_orders.order_cancel_status,take_orders.postscript,take_orders.created_at,CASE take_orders.order_status WHEN "new" THEN 1 ELSE 2 END as status_num,users.nickname,users.avatar_url'))
-            ->whereIn('take_orders.order_status', ['new','accepted','finish','completed'])
+            ->whereIn('take_orders.order_status', ['new','accepted'])
             //->where('take_orders.created_at','>',date("Y-m-d 00:00:00"))
             ->orderBy('status_num','asc')
             ->orderBy('take_orders.id','desc')
             ->paginate($limit);
+
         foreach ($take_orders as $key => $take_order)
         {
             $take_order->friendly_date = friendly_date($take_order->created_at);

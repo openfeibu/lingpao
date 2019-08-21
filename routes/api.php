@@ -72,4 +72,6 @@ $api->version('v1', function ($api) {
     $api->post('/take_order/deliverer/cancel_order','App\Http\Controllers\Api\Deliverer\TakeOrderController@cancelOrder');
     $api->post('/take_order/agree_cancel_order','App\Http\Controllers\Api\User\TakeOrderController@agreeCancelOrder');
 
+    $api->get('/take_order/user/order','App\Http\Controllers\Api\User\TakeOrderController@getUserOrders');
+    $api->get('/take_order/deliverer/order','App\Http\Controllers\Api\Deliverer\TakeOrderController@getDelivererOrders');
 });

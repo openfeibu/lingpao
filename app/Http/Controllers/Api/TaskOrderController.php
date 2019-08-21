@@ -45,7 +45,8 @@ class TaskOrderController extends BaseController
         {
             $orders->where('type',$type);
         }
-        $orders = $orders->orderBy('status_num','asc')
+        $orders = $orders->whereIn('order_status', ['new','accepted'])
+            ->orderBy('status_num','asc')
             ->orderBy('id','desc')
             ->paginate($limit);
 
