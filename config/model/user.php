@@ -68,7 +68,7 @@ return [
         'table'         => 'users',
         'hidden'        => [],
         'visible'       => [],
-        'user_visible'  => ['id','nickname','phone','avatar_url','city','gender','token','session_key','is_pay_password','balance','role'],
+        'user_visible'  => ['id','open_id','nickname','phone','avatar_url','city','gender','token','session_key','is_pay_password','balance','role'],
         'guarded'       => ['*'],
         //'slugs'         => [],
         'dates'         => ['created_at', 'updated_at'],

@@ -251,7 +251,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             );
             app(TradeRecordRepository::class)->where('out_trade_no',$take_order->order_sn)->updateData($trade);
             $this->updateOrderStatus(['order_status' => 'cancel','order_cancel_status' => 'refunded'],$take_order->id);
-            throw new \App\Exceptions\RequestSuccessException("取消任务成功，任务费用已退回您的钱包，请查收!");
+            throw new \App\Exceptions\RequestSuccessException("取消任务成功，任务费用已原路退回，请注意查收!");
         }else{
             //TODO:在线支付退款
             exit;
@@ -264,7 +264,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             app(TradeRecordRepository::class)->where('out_trade_no',$take_order->order_sn)->updateData($trade);
             $this->updateOrderStatus(['order_status' => 'cancel'],$take_order->id);
 
-            throw new \App\Exceptions\RequestSuccessException("取消任务成功，任务费用已原路退回，请查收");
+            throw new \App\Exceptions\RequestSuccessException("取消任务成功，任务费用已原路退回，请注意查收");
         }
     }
 }

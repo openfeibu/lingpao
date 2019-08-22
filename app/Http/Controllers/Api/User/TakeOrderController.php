@@ -125,7 +125,7 @@ class TakeOrderController extends BaseController
                 throw new \App\Exceptions\OutputServerMessageException('余额不足,请选择其他支付方式');
             }
         }
-        $order_sn = generate_order_sn('TAKEORDER-');
+        $order_sn = generate_order_sn('TAKE-');
         $order_data = [
             'order_sn' => $order_sn,
             'user_id' => $user->id,

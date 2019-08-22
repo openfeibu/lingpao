@@ -12,6 +12,8 @@ use Validator,Request,DB,Log;
 use App\Models\Setting;
 use App\Models\User;
 //use Illuminate\Http\Request;
+use EasyWeChat\Factory;
+
 
 class PayService
 {
@@ -59,7 +61,7 @@ class PayService
                     'total_price'      => $data['total_price'] * 100, // 单位：分
                     'notify_url'       => config('common.wechat_notify_url'),
                 ];
-                return $this->wechat($data,$parameter);
+                return $this->wechat($parameter);
                 break;
             case 'balance':
                 $new_balance = $this->user->balance - $data['total_price'];
@@ -102,8 +104,30 @@ class PayService
                 break;
         }
     }
-    private function wechat($data,$parameter)
+    private function wechat($parameter)
     {
+        $config = [
+            'app_id' => config('wechat.mini_program.default.app_id'),
+            'mch_id' => config('wechat.payment.default.mch_id'),
+            'key' => config('wechat.payment.default.key'),
+        ];
+        $app = Factory::payment($config);
+        $jssdk = $app->jssdk;
+        $result = $app->order->unify([
+            'body' => $parameter['body'],
+            'out_trade_no' => $parameter['out_trade_no'],
+            'total_fee' => $parameter['total_price'],
+            'notify_url' => $parameter['notify_url'], // 支付结果通知网址，如果不设置则会使用配置里的默认地址
+            'trade_type' => 'JSAPI', // 请对应换成你的支付方式对应的值类型
+            'openid' => $this->user->open_id,
+        ]);
 
+        if ($result['return_code'] == 'SUCCESS'){
+            $prepayId = $result['prepay_id'];
+            $pay_config = $jssdk->bridgeConfig($prepayId, false);
+        }else{
+            throw new \App\Exceptions\OutputServerMessageException('未知错误,请使用其他支付方式！');
+        }
+        return $pay_config;
     }
 }
