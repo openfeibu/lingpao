@@ -61,7 +61,13 @@ class PayService
                     'total_price'      => $data['total_price'] * 100, // 单位：分
                     'notify_url'       => config('common.wechat_notify_url'),
                 ];
-                return $this->wechat($parameter);
+                $pay_config =  $this->wechat($parameter);
+                return [
+                    'task_order_id' => $data['task_order_id'],
+                    'take_order_id' => $data['take_order_id'],
+                    'order_sn' => $data['order_sn'],
+                    'pay_config' => $pay_config,
+                ];
                 break;
             case 'balance':
                 $new_balance = $this->user->balance - $data['total_price'];
