@@ -32,7 +32,7 @@ class PaymentNotifyController extends BaseController
             'key' => config('wechat.payment.default.key'),
         ];
         $app = Factory::payment($config);
-        $response = $app->handlePaidNotify(function ($notify, $fail) {
+        $app->handlePaidNotify(function ($notify, $fail) {
             $out_trade_no = $notify['out_trade_no'];
             $trade_no = $notify['transaction_id'];
             Log::debug("wechat_out_trade_no:".$out_trade_no);
@@ -40,7 +40,7 @@ class PaymentNotifyController extends BaseController
             return $this->handleNotify($out_trade_no,$trade_no);
            // $fail('Order not exists.');
         });
-        return $response;
+        return "true";
     }
     private function handleNotify($out_trade_no,$trade_no)
     {
@@ -69,6 +69,6 @@ class PaymentNotifyController extends BaseController
                 break;
         }
         $this->tradeRecordRepository->create($trade);
-        return true;
+        return "true";
     }
 }
