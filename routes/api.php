@@ -78,4 +78,6 @@ $api->version('v1', function ($api) {
 
     $api->get('/take_order/user/order','App\Http\Controllers\Api\User\TakeOrderController@getUserOrders');
     $api->get('/take_order/deliverer/order','App\Http\Controllers\Api\Deliverer\TakeOrderController@getDelivererOrders');
+
+    $api->get('payment/wechat-notify','App\Http\Controllers\Api\TakeOrderController@getDelivererOrders');
 });

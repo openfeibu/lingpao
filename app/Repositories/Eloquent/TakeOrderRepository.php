@@ -267,4 +267,5 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             throw new \App\Exceptions\RequestSuccessException("取消任务成功，任务费用已原路退回，请注意查收");
         }
     }
+
 }

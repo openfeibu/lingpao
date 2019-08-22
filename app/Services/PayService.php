@@ -130,4 +130,8 @@ class PayService
         }
         return $pay_config;
     }
+    public function paySuccess()
+    {
+
+    }
 }

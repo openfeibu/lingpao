@@ -160,7 +160,7 @@ class TakeOrderController extends BaseController
         }
         $data = [
             'task_order_id' => $task_order->id,
-            'take_order_id' => $order->id,
+            'order_id' => $order->id,
             'order_sn' => $order_sn,
             'body' => "发布代拿",
             'detail' => "发布代拿",
@@ -282,5 +282,4 @@ class TakeOrderController extends BaseController
 
         $this->takeOrderRepository->agreeCancelOrder($take_order);
     }
-
 }
