@@ -173,7 +173,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             'description' => '接代拿任务',
         );
 
-        $trade_no = 'BALANCE-'.generate_order_sn('LP');
+        $trade_no = 'BALANCE-'.generate_order_sn();
         $trade = array(
             'user_id' => $deliverer->id,
             'out_trade_no' => $take_order->order_sn,

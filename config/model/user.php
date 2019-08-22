@@ -104,20 +104,32 @@ return [
         'fillable'      => ['user_id','consignee','mobile','address','is_default','created_at','updated_at'],
         'translate'     => [],
         'upload_folder' => 'user/user',
-        'uploads'       => [
-            'photo' => [
-                'count' => 1,
-                'type'  => 'image',
-            ],
-        ],
         'casts'         => [
         ],
         'revision'      => [],
         'perPage'       => '20',
         'search'        => [
-            'name'        => 'like',
-            'email'       => 'like',
+
         ],
     ],
+    'withdraw'  => [
+        'model'         => \App\Models\Withdraw::class,
+        'table'         => 'withdraws',
+        'hidden'        => [],
+        'visible'       => [],
+        'guarded'       => ['*'],
+        //'slugs'         => [],
+        'dates'         => ['created_at', 'updated_at'],
+        'appends'       => [],
+        'fillable'      => ['user_id','partner_trade_no','price','status','created_at','updated_at'],
+        'translate'     => [],
+        'upload_folder' => 'user/user',
+        'casts'         => [
+        ],
+        'revision'      => [],
+        'perPage'       => '20',
+        'search'        => [
 
+        ],
+    ],
 ];

@@ -2,22 +2,33 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\NotFoundPayPasswordException;
 use App\Exceptions\OutputServerMessageException;
+use App\Exceptions\RequestSuccessException;
 use App\Http\Controllers\Api\BaseController;
+use App\Repositories\Eloquent\WithdrawRepositoryInterface;
+use App\Repositories\Eloquent\UserRepositoryInterface;
+use App\Repositories\Eloquent\BalanceRecordRepositoryInterface;
+use App\Repositories\Eloquent\TradeRecordRepositoryInterface;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Services\WXBizDataCryptService;
 use App\Services\AmapService;
-use App\Repositories\Eloquent\UserRepositoryInterface;
 use Log;
 
 class UserController extends BaseController
 {
-    public function __construct(UserRepositoryInterface $userRepository)
+    public function __construct(UserRepositoryInterface $userRepository,
+                                BalanceRecordRepositoryInterface $balanceRecordRepository,
+                                TradeRecordRepositoryInterface $tradeRecordRepository,
+                                WithdrawRepositoryInterface $withdrawRepository)
     {
         parent::__construct();
         $this->middleware('auth.api');
         $this->userRepository = $userRepository;
+        $this->balanceRecordRepository = $balanceRecordRepository;
+        $this->tradeRecordRepository = $tradeRecordRepository;
+        $this->withdrawRepository = $withdrawRepository;
     }
     public function getUser(Request $request)
     {
@@ -107,5 +118,67 @@ class UserController extends BaseController
     {
         $user = User::tokenAuth();
         return $this->response->success()->data(['balance' => $user->balance])->json();
+    }
+
+    public function withdrawApply (Request $request)
+    {
+        $user = User::tokenAuth();
+        if(!$user->is_pay_password){
+            throw new NotFoundPayPasswordException('请先设置支付密码');
+        }
+
+        $rule = [
+            'price' => 'required|integer|min:30',
+            'pay_password' => 'required|string',
+        ];
+
+        validateParameter($rule);
+
+        if (!password_verify($request->pay_password, $user->pay_password)) {
+            throw new \App\Exceptions\OutputServerMessageException('支付密码错误');
+        }
+
+        if($user->balance < $request->balance)
+        {
+            throw new \App\Exceptions\OutputServerMessageException('最多只能提取 '.floor($user->balance).'元');
+        }
+
+        $out_trade_no = generate_order_sn();
+        $price = $request->price; //出账金额
+        $new_balance = $user->balance - $price; //钱包余额
+
+        $balanceData = array(
+            'user_id' => $user->id,
+            'price' => $price,
+            'balance' => $new_balance,
+            'out_trade_no' => $out_trade_no,
+            'type' => -1,
+            'trade_type' => 'WITHDRAWALS',
+            'description' => '提现',
+        );
+        $trade_no = 'BALANCE-'.$out_trade_no;
+        $trade = array(
+            'user_id' => $user->id,
+            'out_trade_no' => $out_trade_no,
+            'trade_no' => $trade_no,
+            'trade_status' => 'checking',
+            'type' => -1,
+            'pay_from' => 'WITHDRAWAL',
+            'trade_type' => 'WITHDRAWALS',
+            'price' => $price,
+            'payment' => 'balance',
+            'description' => '提现',
+        );
+        $withdrawData = array(
+            'user_id' => $user->id,
+            'partner_trade_no' => $out_trade_no,
+            'price' => $price,
+            'status' => 'checking',
+        );
+        $this->withdrawRepository->create($withdrawData);
+        $this->userRepository->update(['balance' => $new_balance],$user->id);
+        $this->balanceRecordRepository->create($balanceData);
+        $this->tradeRecordRepository->create($trade);
+        throw new RequestSuccessException('您的提现申请已提交，我们会尽快给您转账，请您耐心等待！');
     }
 }

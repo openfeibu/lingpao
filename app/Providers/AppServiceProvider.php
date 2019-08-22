@@ -97,6 +97,10 @@ class AppServiceProvider extends ServiceProvider
             'App\Repositories\Eloquent\RemarkRepositoryInterface',
             \App\Repositories\Eloquent\RemarkRepository::class
         );
+        $this->app->bind(
+            'App\Repositories\Eloquent\WithdrawRepositoryInterface',
+            \App\Repositories\Eloquent\WithdrawRepository::class
+        );
         $this->app->bind('filer', function ($app) {
             return new \App\Helpers\Filer\Filer();
         });

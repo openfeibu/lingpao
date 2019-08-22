@@ -83,7 +83,7 @@ class PayService
                         'description' => $data['detail'],
                     );
                     $this->balanceRecordRepository->create($balanceData);
-                    $trade_no = 'balance'.$data['order_sn'];
+                    $trade_no = 'BALANCE-'.$data['order_sn'];
                     $trade = array(
                         'user_id' => $this->user->id,
                         'out_trade_no' => $data['order_sn'],
