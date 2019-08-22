@@ -11,5 +11,5 @@ return [
     'file_size' => 1024 * 1024 * 10,
     'default_avatar' => '/system/avatar.jpeg',
     'auth_file' => '/system/auth_file.jpeg',
-    'wechat_notify_url' =>  config("app.api_url").'/payment/wechat-notify/',
+    'wechat_notify_url' => config("app.api_url").'/wechat/notify',
 ];
