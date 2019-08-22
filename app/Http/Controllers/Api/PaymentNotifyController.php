@@ -69,6 +69,6 @@ class PaymentNotifyController extends BaseController
                 break;
         }
         $this->tradeRecordRepository->create($trade);
-        return "true";
+        return true;
     }
 }
