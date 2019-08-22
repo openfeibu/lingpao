@@ -56,8 +56,6 @@ $api->version('v1', function ($api) {
 
     $api->post('/extract_express_info','App\Http\Controllers\Api\User\TakeOrderController@extractExpressInfo');
 
-    $api->post('payment/wechat-notify','App\Http\Controllers\Api\PaymentController@wechatNotify');
-
     $api->get('/setting','App\Http\Controllers\Api\HomeController@setting');
 
     $api->get('/task_order','App\Http\Controllers\Api\TaskOrderController@getOrders');
