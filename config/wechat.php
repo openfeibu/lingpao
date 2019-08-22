@@ -112,7 +112,7 @@ return [
              'key'                => env('WECHAT_PAYMENT_KEY', 'XomEXFYJjm6NSkkGmYDKqWbObpTodkdQ'),
              'cert_path'          => env('WECHAT_PAYMENT_CERT_PATH', storage_path('app/cert/apiclient_cert.pem')), // XXX: 绝对路径！！！！
              'key_path'           => env('WECHAT_PAYMENT_KEY_PATH', storage_path('app/cert/apiclient_key.pem')),      // XXX: 绝对路径！！！！
-             'notify_url'         => config("app.api_url").'/payment/wechat-notify/',
+             'notify_url'         => config("app.api_url").'/wechat/notify',
          ],
      ],
 

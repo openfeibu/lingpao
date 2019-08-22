@@ -24,7 +24,7 @@ class PaymentNotifyController extends BaseController
         $this->tradeRecordRepository = $tradeRecordRepository;
 
     }
-    public function wechatNotify()
+    public function wechatNotify(Request $request)
     {
         $config = [
             'app_id' => config('wechat.mini_program.default.app_id'),
@@ -37,21 +37,21 @@ class PaymentNotifyController extends BaseController
             $trade_no = $notify['transaction_id'];
             Log::debug("wechat_out_trade_no:".$out_trade_no);
             Log::debug("wechat_trade_no:".$trade_no);
-            return $this->handleNotify($out_trade_no,$trade_no,'wechat');
+            return $this->handleNotify($out_trade_no,$trade_no);
            // $fail('Order not exists.');
         });
         return $response;
     }
-    private function handleNotify($out_trade_no,$trade_no,$payment)
+    private function handleNotify($out_trade_no,$trade_no)
     {
-        $order_type_arr = explode('-'.$out_trade_no);
+        $order_type_arr = explode('-',$out_trade_no);
         $order_type = $order_type_arr[0];
         switch ($order_type)
         {
             case 'TAKE':
-                $take_order = $this->takeOrderRepository->where('order_sn',$out_trade_no)->first(['id','user_id','total_price','coupon_id']);
+                $take_order = $this->takeOrderRepository->where('order_sn',$out_trade_no)->first(['id','user_id','total_price','payment','coupon_id']);
                 $trade = array(
-                    'user_id' => $this->user->id,
+                    'user_id' => $take_order->user_id,
                     'out_trade_no' => $out_trade_no,
                     'trade_no' => $trade_no,
                     'trade_status' => 'success',
@@ -59,7 +59,7 @@ class PaymentNotifyController extends BaseController
                     'pay_from' => 'TakeOrder',
                     'trade_type' => 'CREATE_TAKE_ORDER',
                     'price' => $take_order->total_price,
-                    'payment' => $payment,
+                    'payment' => $take_order->payment,
                     'description' => '发布代拿',
                 );
                 $this->takeOrderRepository->updateOrderStatus(['order_status' => 'new'],$take_order->id);
