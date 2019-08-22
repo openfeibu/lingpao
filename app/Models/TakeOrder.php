@@ -14,7 +14,7 @@ class TakeOrder extends BaseModel
 
     protected $config = 'model.take_order.take_order';
 
-    protected $appends = ['task_order_id'];
+    protected $appends = ['task_order_id','status_desc'];
 
     public function getTaskOrderIdAttribute()
     {
@@ -22,5 +22,15 @@ class TakeOrder extends BaseModel
         return TaskOrder::where('type','take_order')->where('objective_id',$id)->value('id');
     }
 
+    public function getStatusDescAttribute()
+    {
+        $order_status = $this->attributes['order_status'];
+        $order_cancel_status = $this->attributes['order_cancel_status'];
+        if($order_status == 'cancel')
+        {
+            return trans('task.take_order.user_status_desc.'.$order_cancel_status);
+        }
+        return trans('task.take_order.user_status_desc.'.$order_status);
+    }
 
 }
