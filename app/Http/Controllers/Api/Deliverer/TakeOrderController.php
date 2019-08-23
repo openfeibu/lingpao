@@ -130,7 +130,6 @@ class TakeOrderController extends BaseController
                 'take_order_id' => $take_order->id,
                 'service_price' => $service_price,
                 'total_price' => $total_price,
-                //'account' => 'wechat',
                 'status' => 'unpaid'
             ]);
         }
