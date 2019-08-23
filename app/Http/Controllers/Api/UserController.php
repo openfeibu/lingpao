@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Services\WXBizDataCryptService;
 use App\Services\AmapService;
-use Log;
+use Log,Input;
 
 class UserController extends BaseController
 {
@@ -181,5 +181,22 @@ class UserController extends BaseController
         $this->balanceRecordRepository->create($balanceData);
         $this->tradeRecordRepository->create($trade);
         throw new RequestSuccessException('您的提现申请已提交，我们会尽快给您转账，请您耐心等待！');
+    }
+    public function uploadImage(Request $request)
+    {
+        $images_url = app('image_service')->uploadImages(Input::all(),'deliverer');
+
+        return response()->json([
+            'code' => '200',
+            'data' => $images_url
+        ],200);
+    }
+    public function beDeliverer(Request $request)
+    {
+        $rule = [
+            'name' => 'required|string',
+            'student_id_card' => 'required|string',
+        ];
+
     }
 }

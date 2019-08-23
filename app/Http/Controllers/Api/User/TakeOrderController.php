@@ -294,6 +294,10 @@ class TakeOrderController extends BaseController
         if($take_order->user_id != $user->id){
             throw new PermissionDeniedException();
         }
+        if($take_order_extra_price->status == 'paid' || $take_order->order_status != 'accepted')
+        {
+            throw new OutputServerMessageException("该任务状态不支持支付");
+        }
         $total_price = $take_order_extra_price->total_price;
         if($request->payment == 'balance')
         {
