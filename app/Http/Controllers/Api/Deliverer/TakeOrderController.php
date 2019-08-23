@@ -124,7 +124,9 @@ class TakeOrderController extends BaseController
                 'total_price' => $total_price,
             ],$take_order_extra_price->id);
         }else{
+            $order_sn = 'TAKEEXTRA-'.generate_order_sn();
             $this->takeOrderExtraPriceRepository->create([
+                'order_sn' => $order_sn,
                 'take_order_id' => $take_order->id,
                 'service_price' => $service_price,
                 'total_price' => $total_price,

@@ -14,6 +14,7 @@ use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderExpressRepositoryInterface;
 use App\Repositories\Eloquent\TaskOrderRepositoryInterface;
 use App\Repositories\Eloquent\RemarkRepositoryInterface;
+use App\Repositories\Eloquent\TakeOrderExtraPriceRepositoryInterface;
 use App\Services\PayService;
 use Log,DB;
 use Illuminate\Http\Request;
@@ -29,6 +30,7 @@ class TakeOrderController extends BaseController
 
     public function __construct(TakeOrderRepositoryInterface $takeOrderRepository,
                                 TakeOrderExpressRepositoryInterface $takeOrderExpressRepository,
+                                TakeOrderExtraPriceRepositoryInterface $takeOrderExtraPriceRepository,
                                 UserCouponRepositoryInterface $userCouponRepository,
                                 UserRepositoryInterface $userRepository,
                                 TaskOrderRepositoryInterface $taskOrderRepository,
@@ -42,6 +44,7 @@ class TakeOrderController extends BaseController
         $this->userCouponRepository = $userCouponRepository;
         $this->userRepository = $userRepository;
         $this->taskOrderRepository = $taskOrderRepository;
+        $this->takeOrderExtraPriceRepository = $takeOrderExtraPriceRepository;
         $this->payService = $payService;
     }
     public function getUserOrders(Request $request)
@@ -112,18 +115,10 @@ class TakeOrderController extends BaseController
             $total_price =  $total_price - $coupon->price;
         }
 
+
         if($order_data['payment'] == 'balance')
         {
-            if(!$user->is_pay_password)
-            {
-                throw new NotFoundPayPasswordException();
-            }
-            if (!password_verify($request->pay_password, $user->pay_password)) {
-                throw new \App\Exceptions\OutputServerMessageException('支付密码错误');
-            }
-            if($total_price > $user->balance){
-                throw new \App\Exceptions\OutputServerMessageException('余额不足,请选择其他支付方式');
-            }
+            checkBalance($user);
         }
         $order_sn = generate_order_sn('TAKE-');
         $order_data = [
@@ -282,10 +277,12 @@ class TakeOrderController extends BaseController
 
         $this->takeOrderRepository->agreeCancelOrder($take_order);
     }
+    //额外费用支付（服务费等）
     public function payServicePrice(Request $request)
     {
         $rule = [
             'id' => 'required|integer',
+            'payment' => "required|in:wechat,balance",
         ];
         validateParameter($rule);
 
@@ -293,9 +290,26 @@ class TakeOrderController extends BaseController
 
         $take_order = $this->takeOrderRepository->find($request->id);
 
+        $take_order_extra_price = $this->takeOrderExtraPriceRepository->where('take_order_id',$take_order->id)->first();
         if($take_order->user_id != $user->id){
             throw new PermissionDeniedException();
         }
 
+        if($request->payment == 'balance')
+        {
+            checkBalance($user);
+        }
+        $data = [
+            'order_sn' => $take_order_extra_price->order_sn,
+            'total_price' => $take_order_extra_price->total_price,
+            'body' => "代拿增加服务费",
+            'detail' => "代拿增加服务费",
+            'trade_type' => 'TAKE_ORDER_EXTRA_PRICE',
+            'payment' => $request->payment,
+            'pay_from' => 'TakeOrderExtraPrice',
+        ];
+        $data = $this->payService->payHandle($data);
+
+        return $this->response->success()->data($data)->json();
     }
 }

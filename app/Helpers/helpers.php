@@ -1064,3 +1064,18 @@ function get_task_objective_model($objective_model)
             break;
     }
 }
+
+function checkBalance($user,$price)
+{
+    if(!$user->is_pay_password)
+    {
+        throw new NotFoundPayPasswordException();
+    }
+    $pay_password  = Request::get('pay_password');
+    if (!password_verify($pay_password, $user->pay_password)) {
+        throw new \App\Exceptions\OutputServerMessageException('支付密码错误');
+    }
+    if($price > $user->balance){
+        throw new \App\Exceptions\OutputServerMessageException('余额不足,请选择其他支付方式');
+    }
+}

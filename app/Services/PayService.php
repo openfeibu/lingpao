@@ -42,6 +42,9 @@ class PayService
             case 'TakeOrder':
                 return $this->takeOrderPayHandle($data);
                 break;
+            case 'TakeOrderExtraPrice':
+                return $this->takeOrderExtraPricePayHandle($data);
+                break;
             default :
                 throw new \App\Exceptions\OutputServerMessageException('操作失败');
                 break;
@@ -70,33 +73,10 @@ class PayService
                 ];
                 break;
             case 'balance':
-                $new_balance = $this->user->balance - $data['total_price'];
-                $update_balance = $this->userRepository->update(['balance' => $new_balance],$this->user->id);
-                if($update_balance){
-                    $balanceData = array(
-                        'user_id' => $this->user->id,
-                        'balance' => $new_balance,
-                        'price'	=> $data['total_price'],
-                        'out_trade_no' => $data['order_sn'],
-                        'type' => -1,
-                        'trade_type' => $data['trade_type'],
-                        'description' => $data['detail'],
-                    );
-                    $this->balanceRecordRepository->create($balanceData);
-                    $trade_no = 'BALANCE-'.$data['order_sn'];
-                    $trade = array(
-                        'user_id' => $this->user->id,
-                        'out_trade_no' => $data['order_sn'],
-                        'trade_no' => $trade_no,
-                        'trade_status' => 'success',
-                        'type' => -1,
-                        'pay_from' => $data['pay_from'],
-                        'trade_type' => $data['trade_type'],
-                        'price' => $data['total_price'],
-                        'payment' => $data['payment'],
-                        'description' => $data['detail'],
-                    );
-                    $this->tradeRecordRepository->create($trade);
+
+                $result = $this->balance($data);
+                if($result['return_code'] == 'SUCCESS')
+                {
                     $this->takeOrderRepository->updateOrderStatus(['order_status' => 'new'],$data['take_order_id']);
                     $data['user_coupon_id'] ? $this->userCouponRepository->update(['status' => 'used'],$data['user_coupon_id']) : '';
                     return [
@@ -104,9 +84,29 @@ class PayService
                         'take_order_id' => $data['take_order_id'],
                         'order_sn' => $data['order_sn'],
                     ];
-                }else{
-                    throw new \App\Exceptions\OutputServerMessageException('支付失败');
                 }
+                break;
+        }
+    }
+    private function takeOrderExtraPricePayHandle($data)
+    {
+        switch($data['payment']) {
+            //微信
+            case 'wechat':
+                $parameter = [
+                    'body'             => $data['body'],
+                    'detail'           => $data['detail'],
+                    'out_trade_no'     => $data['order_sn'],
+                    'total_price'      => $data['total_price'] * 100, // 单位：分
+                    'notify_url'       => config('common.wechat_notify_url'),
+                ];
+                $pay_config =  $this->wechat($parameter);
+                return [
+                    'pay_config' => $pay_config,
+                ];
+                break;
+            case "balance":
+                $data = $this->balance($data);
                 break;
         }
     }
@@ -135,6 +135,42 @@ class PayService
             throw new \App\Exceptions\OutputServerMessageException('未知错误,请使用其他支付方式！');
         }
         return $pay_config;
+    }
+    private function balance($data)
+    {
+        $new_balance = $this->user->balance - $data['total_price'];
+        $update_balance = $this->userRepository->update(['balance' => $new_balance],$this->user->id);
+        if($update_balance){
+            $balanceData = array(
+                'user_id' => $this->user->id,
+                'balance' => $new_balance,
+                'price'	=> $data['total_price'],
+                'out_trade_no' => $data['order_sn'],
+                'type' => -1,
+                'trade_type' => $data['trade_type'],
+                'description' => $data['detail'],
+            );
+            $this->balanceRecordRepository->create($balanceData);
+            $trade_no = 'BALANCE-'.$data['order_sn'];
+            $trade = array(
+                'user_id' => $this->user->id,
+                'out_trade_no' => $data['order_sn'],
+                'trade_no' => $trade_no,
+                'trade_status' => 'success',
+                'type' => -1,
+                'pay_from' => $data['pay_from'],
+                'trade_type' => $data['trade_type'],
+                'price' => $data['total_price'],
+                'payment' => $data['payment'],
+                'description' => $data['detail'],
+            );
+            $this->tradeRecordRepository->create($trade);
+            return [
+                'return_code' => 'SUCCESS',
+            ];
+        }else{
+            throw new \App\Exceptions\OutputServerMessageException('支付失败');
+        }
     }
     public function paySuccess()
     {

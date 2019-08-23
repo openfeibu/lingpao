@@ -58,7 +58,7 @@ return [
         'visible'      => [],
         'guarded'      => ['*'],
         'slugs'        => [],
-        'fillable'     => ['take_order_id','service_price','total_price','payment','status','created_at','updated_at'],
+        'fillable'     => ['take_order_id','order_sn','service_price','total_price','payment','status','created_at','updated_at'],
         'translate'    => [],
         'upload_folder' => '/take_order',
         'encrypt'      => ['id'],
