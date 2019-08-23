@@ -83,6 +83,13 @@ class TaskOrderController extends BaseController
         if($task_order->user_id != $user->id){
             throw new PermissionDeniedException();
         }
+
+        $remark = $this->remarkRepository->where('task_order_id',$task_order->id)->first(['id']);
+        if($remark)
+        {
+            throw new \App\Exceptions\OutputServerMessageException('已评价，请勿重复提交');
+        }
+
         if ($task_order->order_status != 'completed')
         {
             throw new \App\Exceptions\OutputServerMessageException('该任务未结算，请结算后再评价');
