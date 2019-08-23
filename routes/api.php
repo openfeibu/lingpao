@@ -68,12 +68,13 @@ $api->version('v1', function ($api) {
     $api->post('/take_order/create_order','App\Http\Controllers\Api\User\TakeOrderController@createOrder');
     $api->get('/take_order/order','App\Http\Controllers\Api\User\TakeOrderController@getOrders');
     $api->get('/take_order/order/{id}','App\Http\Controllers\Api\User\TakeOrderController@getOrder');
-    $api->post('/take_order/accept_order','App\Http\Controllers\Api\Deliverer\TakeOrderController@acceptOrder');
-    $api->post('/take_order/finish_order','App\Http\Controllers\Api\Deliverer\TakeOrderController@finishOrder');
     $api->post('/take_order/complete_order','App\Http\Controllers\Api\User\TakeOrderController@completeOrder');
     $api->post('/take_order/user/cancel_order','App\Http\Controllers\Api\User\TakeOrderController@cancelOrder');
-    $api->post('/take_order/deliverer/cancel_order','App\Http\Controllers\Api\Deliverer\TakeOrderController@cancelOrder');
     $api->post('/take_order/agree_cancel_order','App\Http\Controllers\Api\User\TakeOrderController@agreeCancelOrder');
+    $api->post('/take_order/accept_order','App\Http\Controllers\Api\Deliverer\TakeOrderController@acceptOrder');
+    $api->post('/take_order/finish_order','App\Http\Controllers\Api\Deliverer\TakeOrderController@finishOrder');
+    $api->post('/take_order/deliverer/cancel_order','App\Http\Controllers\Api\Deliverer\TakeOrderController@cancelOrder');
+    $api->post('/take_order/submit_service_price','App\Http\Controllers\Api\Deliverer\TakeOrderController@submitServicePrice');
 
     $api->get('/take_order/user/order','App\Http\Controllers\Api\User\TakeOrderController@getUserOrders');
     $api->get('/take_order/deliverer/order','App\Http\Controllers\Api\Deliverer\TakeOrderController@getDelivererOrders');

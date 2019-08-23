@@ -82,6 +82,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Repositories\Eloquent\TakeOrderExpressRepository::class
         );
         $this->app->bind(
+            'App\Repositories\Eloquent\TakeOrderExtraPriceRepositoryInterface',
+            \App\Repositories\Eloquent\TakeOrderExtraPriceRepository::class
+        );
+        $this->app->bind(
             'App\Repositories\Eloquent\UserCouponRepositoryInterface',
             \App\Repositories\Eloquent\UserCouponRepository::class
         );

@@ -5,7 +5,7 @@ return [
     /*
      * Modules .
      */
-    'modules'  => ['take_order','take_order_express'],
+    'modules'  => ['take_order','take_order_express','take_order_extra_price'],
 
 
     /*
@@ -26,10 +26,9 @@ return [
         'translate'    => [],
         'upload_folder' => '/take_order',
         'encrypt'      => ['id'],
-        'revision'     => ['name', 'title'],
+        'revision'     => [],
         'perPage'      => '20',
         'search'        => [
-            'coupon_name'  => 'like',
             'order_sn'  => 'like',
         ],
     ],
@@ -45,11 +44,28 @@ return [
         'translate'    => [],
         'upload_folder' => '/take_order',
         'encrypt'      => ['id'],
-        'revision'     => ['name', 'title'],
+        'revision'     => [],
         'perPage'      => '20',
         'search'        => [
-            'coupon_name'  => 'like',
-            'order_sn'  => 'like',
+
+        ],
+    ],
+    'take_order_extra_price'     => [
+        'model'        => 'App\Models\TakeOrderExtraPrice',
+        'table'        => 'take_order_extra_prices',
+        'primaryKey'   => 'id',
+        'hidden'       => [],
+        'visible'      => [],
+        'guarded'      => ['*'],
+        'slugs'        => [],
+        'fillable'     => ['take_order_id','service_price','total_price','payment','status','created_at','updated_at'],
+        'translate'    => [],
+        'upload_folder' => '/take_order',
+        'encrypt'      => ['id'],
+        'revision'     => [],
+        'perPage'      => '20',
+        'search'        => [
+
         ],
     ],
 ];

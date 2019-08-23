@@ -4,24 +4,28 @@ namespace App\Http\Controllers\Api\Deliverer;
 
 use App\Exceptions\OutputServerMessageException;
 use App\Exceptions\PermissionDeniedException;
+use App\Exceptions\RequestSuccessException;
+use App\Repositories\Eloquent\UserRepositoryInterface;
+use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
+use App\Repositories\Eloquent\TakeOrderExpressRepositoryInterface;
+use App\Repositories\Eloquent\TakeOrderExtraPriceRepositoryInterface;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Controllers\Api\BaseController;
 use Log;
-use App\Repositories\Eloquent\UserRepositoryInterface;
-use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
-use App\Repositories\Eloquent\TakeOrderExpressRepositoryInterface;
 
 class TakeOrderController extends BaseController
 {
     public function __construct(TakeOrderRepositoryInterface $takeOrderRepository,
                                 TakeOrderExpressRepositoryInterface $takeOrderExpressRepository,
+                                TakeOrderExtraPriceRepositoryInterface $takeOrderExtraPriceRepository,
                                 UserRepositoryInterface $userRepository)
     {
         parent::__construct();
         $this->middleware('auth.api',['except' => []]);
         $this->takeOrderRepository = $takeOrderRepository;
         $this->takeOrderExpressRepository = $takeOrderExpressRepository;
+        $this->takeOrderExtraPriceRepository = $takeOrderExtraPriceRepository;
         $this->userRepository = $userRepository;
         $this->deliverer = User::tokenAuth();
     }
@@ -64,11 +68,9 @@ class TakeOrderController extends BaseController
         validateParameter($rule);
 
         $take_order = $this->takeOrderRepository->find($request->id);
-        //检验任务是否已接
-        if($take_order->deliverer_id != $this->deliverer->id)
-        {
-            throw new PermissionDeniedException();
-        }
+
+        $this->checkDelivererPermission($take_order->deliverer_id);
+
         if ($take_order->order_status != 'accepted') {
             throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许完成任务');
         }
@@ -88,14 +90,54 @@ class TakeOrderController extends BaseController
 
         $take_order = $this->takeOrderRepository->find($request->id);
 
-        if($take_order->deliverer_id != $this->deliverer->id){
-            throw new PermissionDeniedException('没有取消该任务的权限');
-        }
+        $this->checkDelivererPermission($take_order->deliverer_id);
 
         $this->takeOrderRepository->delivererCancelOrder($take_order);
 
         throw new \App\Exceptions\RequestSuccessException();
-
     }
+    public function submitServicePrice(Request $request)
+    {
+        $rule = [
+            'id' => 'required|integer',
+            'service_price' => 'required|integer',
+        ];
+        validateParameter($rule);
+        $total_price = $service_price = $request->service_price;
+        $take_order = $this->takeOrderRepository->find($request->id);
+        $this->checkDelivererPermission($take_order->deliverer_id);
 
+        if ($take_order->order_status != 'accepted') {
+            throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许该操作');
+        }
+
+        $take_order_extra_price = $this->takeOrderExtraPriceRepository->where('take_order_id',$take_order->id)->first(['id','status']);
+
+        if($take_order_extra_price)
+        {
+            if($take_order_extra_price->status != 'unpaid')
+            {
+                throw new \App\Exceptions\OutputServerMessageException('已支付，不允许该操作');
+            }
+            $this->takeOrderExtraPriceRepository->update([
+                'service_price' => $service_price,
+                'total_price' => $total_price,
+            ],$take_order_extra_price->id);
+        }else{
+            $this->takeOrderExtraPriceRepository->create([
+                'take_order_id' => $take_order->id,
+                'service_price' => $service_price,
+                'total_price' => $total_price,
+                //'account' => 'wechat',
+                'status' => 'unpaid'
+            ]);
+        }
+        throw new RequestSuccessException();
+    }
+    private function checkDelivererPermission($deliverer_id,$message="")
+    {
+        if($deliverer_id != $this->deliverer->id){
+            throw new PermissionDeniedException($message);
+        }
+    }
 }
