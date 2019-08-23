@@ -85,7 +85,7 @@ class PaymentNotifyController extends BaseController
                     'trade_type' => 'CREATE_TAKE_ORDER',
                     'price' => $extra_price->total_price,
                     'payment' => $extra_price->payment,
-                    'description' => '代拿服务费',
+                    'description' => '代拿增加服务费',
                 );
                 $this->takeOrderExtraPriceRepository->update(['status' => 'paid'],$extra_price->id);
                 break;
