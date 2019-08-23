@@ -282,4 +282,20 @@ class TakeOrderController extends BaseController
 
         $this->takeOrderRepository->agreeCancelOrder($take_order);
     }
+    public function payServicePrice(Request $request)
+    {
+        $rule = [
+            'id' => 'required|integer',
+        ];
+        validateParameter($rule);
+
+        $user = User::tokenAuth();
+
+        $take_order = $this->takeOrderRepository->find($request->id);
+
+        if($take_order->user_id != $user->id){
+            throw new PermissionDeniedException();
+        }
+
+    }
 }
