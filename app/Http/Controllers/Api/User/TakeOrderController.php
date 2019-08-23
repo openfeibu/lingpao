@@ -300,6 +300,7 @@ class TakeOrderController extends BaseController
             checkBalance($user,$total_price);
         }
         $data = [
+            'extra_price_id' => $take_order_extra_price->id,
             'order_sn' => $take_order_extra_price->order_sn,
             'total_price' => $total_price,
             'body' => "代拿增加服务费",

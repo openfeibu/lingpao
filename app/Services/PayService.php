@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Exceptions\RequestSuccessException;
 use App\Repositories\Eloquent\BalanceRecordRepositoryInterface;
+use App\Repositories\Eloquent\TakeOrderExtraPriceRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\TradeRecordRepositoryInterface;
 use App\Repositories\Eloquent\UserCouponRepositoryInterface;
@@ -24,6 +26,7 @@ class PayService
                                 BalanceRecordRepositoryInterface $balanceRecordRepository,
                                 TradeRecordRepositoryInterface $tradeRecordRepository,
                                 TaskOrderRepositoryInterface $taskOrderRepository,
+                                TakeOrderExtraPriceRepositoryInterface $takeOrderExtraPriceRepository,
                                 UserCouponRepositoryInterface $userCouponRepository)
     {
         $this->takeOrderRepository = $takeOrderRepository;
@@ -31,6 +34,7 @@ class PayService
         $this->balanceRecordRepository = $balanceRecordRepository;
         $this->tradeRecordRepository = $tradeRecordRepository;
         $this->taskOrderRepository = $taskOrderRepository;
+        $this->takeOrderExtraPriceRepository = $takeOrderExtraPriceRepository;
         $this->userCouponRepository = $userCouponRepository;
     }
 
@@ -106,7 +110,12 @@ class PayService
                 ];
                 break;
             case "balance":
-                $data = $this->balance($data);
+                $result = $this->balance($data);
+                if($result['return_code'] == 'SUCCESS')
+                {
+                    $this->takeOrderExtraPriceRepository->update(['status' => 'paid'],$data['extra_price_id']);
+                    throw new RequestSuccessException("支付成功");
+                }
                 break;
         }
     }
