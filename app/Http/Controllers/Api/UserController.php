@@ -173,6 +173,7 @@ class UserController extends BaseController
             'user_id' => $user->id,
             'partner_trade_no' => $out_trade_no,
             'price' => $price,
+            'account' => 'wechat',
             'status' => 'checking',
         );
         $this->withdrawRepository->create($withdrawData);
