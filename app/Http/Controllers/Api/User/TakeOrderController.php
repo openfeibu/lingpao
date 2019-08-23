@@ -118,7 +118,7 @@ class TakeOrderController extends BaseController
 
         if($order_data['payment'] == 'balance')
         {
-            checkBalance($user);
+            checkBalance($user,$total_price);
         }
         $order_sn = generate_order_sn('TAKE-');
         $order_data = [
@@ -294,14 +294,14 @@ class TakeOrderController extends BaseController
         if($take_order->user_id != $user->id){
             throw new PermissionDeniedException();
         }
-
+        $total_price = $take_order_extra_price->total_price;
         if($request->payment == 'balance')
         {
-            checkBalance($user);
+            checkBalance($user,$total_price);
         }
         $data = [
             'order_sn' => $take_order_extra_price->order_sn,
-            'total_price' => $take_order_extra_price->total_price,
+            'total_price' => $total_price,
             'body' => "代拿增加服务费",
             'detail' => "代拿增加服务费",
             'trade_type' => 'TAKE_ORDER_EXTRA_PRICE',
