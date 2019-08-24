@@ -45,6 +45,9 @@ $api->version('v1', function ($api) {
     $api->get('/user/balance', 'App\Http\Controllers\Api\UserController@getBalance');
     $api->get('/balance_record', 'App\Http\Controllers\Api\BalanceRecordController@getBalanceRecords');
     $api->post('/user/withdraw_apply', 'App\Http\Controllers\Api\UserController@withdrawApply');
+    $api->post('/user/upload_student_image', 'App\Http\Controllers\Api\UserController@uploadStudentImage');
+    $api->post('/user/be_deliverer', 'App\Http\Controllers\Api\UserController@beDeliverer');
+    $api->get('/user/get_deliverer_identification', 'App\Http\Controllers\Api\UserController@getDelivererIdentification');
     //$api->post('/user/reset_password', 'App\Http\Controllers\Api\UserController@resetPassword');
 
     $api->get('/user_address','App\Http\Controllers\Api\UserAddressController@getUserAddresses');

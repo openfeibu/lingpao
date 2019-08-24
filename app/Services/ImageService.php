@@ -27,7 +27,7 @@ class ImageService
      *
      * @return array        图片链接
      */
-    public function uploadImages($files, $usage,$is_thumb = 1)
+    public function uploadImages($files, $usage,$is_thumb = 0)
     {
         if(is_array($files['file']))
         {
@@ -71,24 +71,32 @@ class ImageService
             $images_url[$i]['created_at'] = date("Y-m-d H:i:s");
 
             $imgs_url[$i] = $images_url[$i]['img_url'];
+            $imgs_url_full[$i] = url('/image/original/'.$imgs_url[$i] );
             if($is_thumb)
             {
                 $thumbs_url[$i] = $this->request->getBasePath().'/' .$usage.'/thumb/'.$imageName;
+                $thumbs_url_full[$i] = url('/image/original/'.$thumbs_url[$i] );
                 image_png_size_add(storage_path().$img,storage_path().$thumb);
             }
             $i++;
         }
 
-        $image_url = implode(',',$imgs_url);
+        //$image_url = implode(',',$imgs_url);
         if($is_thumb)
         {
-            $thumb_img_url = implode(',',$thumbs_url);
+            //$thumb_img_url = implode(',',$thumbs_url);
             return [
-                'image_url' => $image_url,
-                'thumb_img_url'=> $thumb_img_url,
+                'image_url' => $imgs_url,
+                'image_url_full' => $imgs_url_full,
+                'thumb_url'=> $thumbs_url,
+                'thumb_url_full'=> $thumbs_url_full,
             ];
         }
-        return $image_url;
+        return [
+            'image_url' => $imgs_url,
+            'image_url_full' => $imgs_url_full,
+        ];
+
     }
 
 

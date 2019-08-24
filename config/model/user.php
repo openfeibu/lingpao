@@ -132,4 +132,24 @@ return [
 
         ],
     ],
+    'deliverer_identification'  => [
+        'model'         => \App\Models\DelivererIdentification::class,
+        'table'         => 'deliverer_identifications',
+        'hidden'        => [],
+        'visible'       => [],
+        'guarded'       => ['*'],
+        //'slugs'         => [],
+        'dates'         => ['created_at', 'updated_at'],
+        'appends'       => [],
+        'fillable'      => ['user_id','name','student_id_card_image','status','created_at','updated_at'],
+        'translate'     => [],
+        'upload_folder' => 'user/user',
+        'casts'         => [
+        ],
+        'revision'      => [],
+        'perPage'       => '20',
+        'search'        => [
+
+        ],
+    ],
 ];

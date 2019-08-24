@@ -288,7 +288,16 @@ abstract class Response
      */
     public function getData()
     {
-        return is_array($this->data) ? $this->data : [];
+        if(!$this->data)
+        {
+            return [];
+        }
+        if(is_array($this->data))
+        {
+            return $this->data;
+        }
+        return $this->data;
+
     }
 
     /**

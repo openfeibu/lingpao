@@ -6,6 +6,7 @@ use App\Exceptions\NotFoundPayPasswordException;
 use App\Exceptions\OutputServerMessageException;
 use App\Exceptions\RequestSuccessException;
 use App\Http\Controllers\Api\BaseController;
+use App\Repositories\Eloquent\DelivererIdentificationRepositoryInterface;
 use App\Repositories\Eloquent\WithdrawRepositoryInterface;
 use App\Repositories\Eloquent\UserRepositoryInterface;
 use App\Repositories\Eloquent\BalanceRecordRepositoryInterface;
@@ -19,6 +20,7 @@ use Log,Input;
 class UserController extends BaseController
 {
     public function __construct(UserRepositoryInterface $userRepository,
+                                DelivererIdentificationRepositoryInterface $delivererIdentificationRepository,
                                 BalanceRecordRepositoryInterface $balanceRecordRepository,
                                 TradeRecordRepositoryInterface $tradeRecordRepository,
                                 WithdrawRepositoryInterface $withdrawRepository)
@@ -29,6 +31,7 @@ class UserController extends BaseController
         $this->balanceRecordRepository = $balanceRecordRepository;
         $this->tradeRecordRepository = $tradeRecordRepository;
         $this->withdrawRepository = $withdrawRepository;
+        $this->delivererIdentificationRepository = $delivererIdentificationRepository;
     }
     public function getUser(Request $request)
     {
@@ -182,21 +185,57 @@ class UserController extends BaseController
         $this->tradeRecordRepository->create($trade);
         throw new RequestSuccessException('您的提现申请已提交，我们会尽快给您转账，请您耐心等待！');
     }
-    public function uploadImage(Request $request)
+    public function uploadStudentImage(Request $request)
     {
+        $user = User::tokenAuth();
         $images_url = app('image_service')->uploadImages(Input::all(),'deliverer');
 
-        return response()->json([
-            'code' => '200',
-            'data' => $images_url
-        ],200);
+        return $this->response->success()->data($images_url)->json();
+
+    }
+    public function getDelivererIdentification(Request $request)
+    {
+        $user = User::tokenAuth();
+
+        $identification = $this->delivererIdentificationRepository->where('user_id',$user->id)->first();
+        $identification_data = $identification ? $identification->toArray() : [];
+        $identification_data ? $identification_data['student_id_card_image_full'] = $identification->student_id_card_image_full : '';
+        return $this->response->success()->data($identification_data)->json();
     }
     public function beDeliverer(Request $request)
     {
+        $user = User::tokenAuth();
         $rule = [
             'name' => 'required|string',
-            'student_id_card' => 'required|string',
+            'student_id_card_image' => 'required|string',
         ];
 
+        validateParameter($rule);
+
+        $identification = $this->delivererIdentificationRepository->where('user_id',$user->id)->first();
+        if($identification)
+        {
+            if($identification->status == 'checking')
+            {
+                throw new OutputServerMessageException("审核中，请勿重复提交");
+            }
+            if($identification->status == 'passed')
+            {
+                throw new OutputServerMessageException("已通过审核，请勿重复提交");
+            }
+            $this->delivererIdentificationRepository->update([
+                'name' => $request->name,
+                'student_id_card_image' => $request->student_id_card_image,
+            ],$identification->id);
+            throw new RequestSuccessException();
+        }
+
+        $this->delivererIdentificationRepository->create([
+            'user_id' => $user->id,
+            'name' => $request->name,
+            'student_id_card_image' => $request->student_id_card_image,
+            'status' => 'checking',
+        ]);
+        throw new RequestSuccessException("提交成功，请等待审核");
     }
 }
