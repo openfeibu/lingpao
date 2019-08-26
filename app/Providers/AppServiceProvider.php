@@ -78,6 +78,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Repositories\Eloquent\TakeOrderRepository::class
         );
         $this->app->bind(
+            'App\Repositories\Eloquent\CustomOrderRepositoryInterface',
+            \App\Repositories\Eloquent\CustomOrderRepository::class
+        );
+        $this->app->bind(
             'App\Repositories\Eloquent\TakeOrderExpressRepositoryInterface',
             \App\Repositories\Eloquent\TakeOrderExpressRepository::class
         );

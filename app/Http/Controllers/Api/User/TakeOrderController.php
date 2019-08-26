@@ -108,10 +108,7 @@ class TakeOrderController extends BaseController
         {
 
             $coupon = $this->userCouponRepository->getAvailableCoupon(['user_id' => $user->id,'id' => $user_coupon_id],$total_price);
-            if(!$coupon)
-            {
-                throw new \App\Exceptions\OutputServerMessageException('优惠券不存在或不可用');
-            }
+
             $total_price =  $total_price - $coupon->price;
         }
 

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\RequestSuccessException;
 use App\Repositories\Eloquent\BalanceRecordRepositoryInterface;
+use App\Repositories\Eloquent\CustomOrderRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderExtraPriceRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\TradeRecordRepositoryInterface;
@@ -27,6 +28,7 @@ class PayService
                                 TradeRecordRepositoryInterface $tradeRecordRepository,
                                 TaskOrderRepositoryInterface $taskOrderRepository,
                                 TakeOrderExtraPriceRepositoryInterface $takeOrderExtraPriceRepository,
+                                CustomOrderRepositoryInterface $customOrderRepository,
                                 UserCouponRepositoryInterface $userCouponRepository)
     {
         $this->takeOrderRepository = $takeOrderRepository;
@@ -35,6 +37,7 @@ class PayService
         $this->tradeRecordRepository = $tradeRecordRepository;
         $this->taskOrderRepository = $taskOrderRepository;
         $this->takeOrderExtraPriceRepository = $takeOrderExtraPriceRepository;
+        $this->customOrderRepository = $customOrderRepository;
         $this->userCouponRepository = $userCouponRepository;
     }
 
@@ -49,6 +52,8 @@ class PayService
             case 'TakeOrderExtraPrice':
                 return $this->takeOrderExtraPricePayHandle($data);
                 break;
+            case 'CustomOrder':
+                return $this->customOrderPayHandle($data);
             default :
                 throw new \App\Exceptions\OutputServerMessageException('操作失败');
                 break;
@@ -61,13 +66,7 @@ class PayService
         {
             //微信
             case 'wechat':
-                $parameter = [
-                    'body'             => $data['body'],
-                    'detail'           => $data['detail'],
-                    'out_trade_no'     => $data['order_sn'],
-                    'total_price'      => $data['total_price'] * 100, // 单位：分
-                    'notify_url'       => config('common.wechat_notify_url'),
-                ];
+                $parameter = $this->getTaskWechatParameter($data);
                 $pay_config =  $this->wechat($parameter);
                 return [
                     'task_order_id' => $data['task_order_id'],
@@ -97,13 +96,7 @@ class PayService
         switch($data['payment']) {
             //微信
             case 'wechat':
-                $parameter = [
-                    'body'             => $data['body'],
-                    'detail'           => $data['detail'],
-                    'out_trade_no'     => $data['order_sn'],
-                    'total_price'      => $data['total_price'] * 100, // 单位：分
-                    'notify_url'       => config('common.wechat_notify_url'),
-                ];
+                $parameter = $this->getTaskWechatParameter($data);
                 $pay_config =  $this->wechat($parameter);
                 return [
                     'pay_config' => $pay_config,
@@ -118,6 +111,49 @@ class PayService
                 }
                 break;
         }
+    }
+    private function customOrderPayHandle($data)
+    {
+        switch($data['payment'])
+        {
+            //微信
+            case 'wechat':
+                $parameter = $this->getTaskWechatParameter($data);
+
+                $pay_config =  $this->wechat($parameter);
+                return [
+                    'task_order_id' => $data['task_order_id'],
+                    'custom_order_id' => $data['custom_order_id'],
+                    'order_sn' => $data['order_sn'],
+                    'pay_config' => $pay_config,
+                ];
+                break;
+            case 'balance':
+
+                $result = $this->balance($data);
+                if($result['return_code'] == 'SUCCESS')
+                {
+                    $this->customOrderRepository->updateOrderStatus(['order_status' => 'new'],$data['custom_order_id']);
+                    $data['user_coupon_id'] ? $this->userCouponRepository->update(['status' => 'used'],$data['user_coupon_id']) : '';
+                    return [
+                        'task_order_id' => $data['task_order_id'],
+                        'custom_order_id' => $data['custom_order_id'],
+                        'order_sn' => $data['order_sn'],
+                    ];
+                }
+                break;
+        }
+    }
+    private function getTaskWechatParameter($data)
+    {
+        $parameter = [
+            'body'             => $data['body'],
+            'detail'           => $data['detail'],
+            'out_trade_no'     => $data['order_sn'],
+            'total_price'      => $data['total_price'] * 100, // 单位：分
+            'notify_url'       => config('common.wechat_notify_url'),
+        ];
+        return $parameter;
     }
     private function wechat($parameter)
     {

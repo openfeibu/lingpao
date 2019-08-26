@@ -82,9 +82,19 @@ $api->version('v1', function ($api) {
     $api->post('/take_order/deliverer/cancel_order','App\Http\Controllers\Api\Deliverer\TakeOrderController@cancelOrder');
     $api->post('/take_order/submit_service_price','App\Http\Controllers\Api\Deliverer\TakeOrderController@submitServicePrice');
     $api->post('/take_order/pay_service_price','App\Http\Controllers\Api\User\TakeOrderController@payServicePrice');
-
     $api->get('/take_order/user/order','App\Http\Controllers\Api\User\TakeOrderController@getUserOrders');
     $api->get('/take_order/deliverer/order','App\Http\Controllers\Api\Deliverer\TakeOrderController@getDelivererOrders');
+
+    $api->get('/custom_order/type','App\Http\Controllers\Api\User\CustomOrderController@getTypes');
+    $api->post('/custom_order/create_order','App\Http\Controllers\Api\User\CustomOrderController@createOrder');
+    $api->get('/custom_order/order','App\Http\Controllers\Api\User\CustomOrderController@getOrders');
+    $api->get('/custom_order/order/{id}','App\Http\Controllers\Api\User\CustomOrderController@getOrder');
+    $api->post('/custom_order/complete_order','App\Http\Controllers\Api\User\CustomOrderController@completeOrder');
+    $api->post('/custom_order/user/cancel_order','App\Http\Controllers\Api\User\CustomOrderController@cancelOrder');
+    $api->post('/custom_order/agree_cancel_order','App\Http\Controllers\Api\User\CustomOrderController@agreeCancelOrder');
+    $api->post('/custom_order/accept_order','App\Http\Controllers\Api\Deliverer\CustomOrderController@acceptOrder');
+    $api->post('/custom_order/finish_order','App\Http\Controllers\Api\Deliverer\CustomOrderController@finishOrder');
+    $api->post('/custom_order/deliverer/cancel_order','App\Http\Controllers\Api\Deliverer\CustomOrderController@cancelOrder');
 
     $api->post('wechat/notify','App\Http\Controllers\Api\PaymentNotifyController@wechatNotify');
 });

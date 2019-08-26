@@ -20,6 +20,11 @@ class UserCouponRepository extends BaseRepository implements UserCouponRepositor
     }
     public function getAvailableCoupon($where,$min_price)
     {
-        return $this->where($where)->where('min_price','<=', $min_price)->where('status','unused')->where('overdue','>',date('Y-m-d'))->first();
+        $coupon = $this->where($where)->where('min_price','<=', $min_price)->where('status','unused')->where('overdue','>',date('Y-m-d'))->first();
+        if(!$coupon)
+        {
+            throw new \App\Exceptions\OutputServerMessageException('优惠券不存在或不可用');
+        }
+        return $coupon;
     }
 }
