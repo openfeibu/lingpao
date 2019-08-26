@@ -142,7 +142,7 @@ class TakeOrderController extends BaseController
 
         $order = $this->takeOrderRepository->create($order_data);
         $task_order = $this->taskOrderRepository->create([
-            'name' => '发布代拿',
+            'name' => '代拿',
             'user_id' => $user->id,
             'objective_id' => $order->id,
             'objective_model' => 'TakeOrder',
