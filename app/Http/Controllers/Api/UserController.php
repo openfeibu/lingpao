@@ -40,10 +40,7 @@ class UserController extends BaseController
     {
         $user = User::tokenAuth();
         $user = visible_data($user->toArray(),config('model.user.user.user_visible'));
-        return response()->json([
-            'code' => '200',
-            'data' => $user,
-        ]);
+
         return $this->response->success()->data($user)->json();
     }
     public function getOther(Request $request)
