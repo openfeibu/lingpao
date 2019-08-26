@@ -158,6 +158,34 @@ class UserController extends BaseController
         $this->userRepository->updatePayPassword($user->id,$request->new_pay_password);
         throw new \App\Exceptions\RequestSuccessException();
     }
+    public function resetPayPassword(Request $request)
+    {
+        $user =  User::tokenAuth();
+        $encryptedData = $request->input('encryptedData');
+        $iv = $request->input('iv');
+
+        $WXBizDataCryptService = new WXBizDataCryptService($user['session_key']);
+
+        $data = [];
+        $errCode = $WXBizDataCryptService->decryptData($encryptedData, $iv, $data );
+
+        if ($errCode != 0) {
+            throw new OutputServerMessageException('错误码：'.$errCode);
+        }
+
+        $phone_data = json_decode($data);
+
+        $phone = $phone_data->phoneNumber;
+
+        if($phone != $user->phone)
+        {
+            throw new OutputServerMessageException('手机号码验证不一致');
+        }
+        $user->pay_password = '';
+        $user->save();
+
+        throw new RequestSuccessException("验证成功");
+    }
     public function getBalance(Request $request)
     {
         $user = User::tokenAuth();
@@ -279,4 +307,5 @@ class UserController extends BaseController
         ]);
         throw new RequestSuccessException("提交成功，请等待审核");
     }
+
 }
