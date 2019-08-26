@@ -69,7 +69,7 @@ return [
         'hidden'        => [],
         'visible'       => [],
         'user_visible'  => ['id','open_id','nickname','phone','avatar_url','city','gender','token','session_key','is_pay_password','balance','role','gender'],
-        'other_visible' => ['id','nickname','avatar_url','gender'],
+        'other_visible' => ['id','nickname','avatar_url','gender','role'],
         'guarded'       => ['*'],
         //'slugs'         => [],
         'dates'         => ['created_at', 'updated_at'],
