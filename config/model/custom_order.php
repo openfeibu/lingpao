@@ -22,7 +22,7 @@ return [
         'visible'      => [],
         'guarded'      => ['*'],
         'slugs'        => [],
-        'fillable'     => ['id','order_sn','custom_order_type_id','user_id','deliverer_id','tip','coupon_id','coupon_name','coupon_price','original_price','total_price','best_time','order_status','order_cancel_status','payment','deliverer_price','content'],
+        'fillable'     => ['id','order_sn','custom_order_type_id','user_id','deliverer_id','tip','coupon_id','coupon_name','coupon_price','original_price','total_price','best_time','order_status','order_cancel_status','payment','deliverer_price','postscript'],
         'translate'    => [],
         'upload_folder' => '/custom_order',
         'encrypt'      => ['id'],

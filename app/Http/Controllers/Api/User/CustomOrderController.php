@@ -55,7 +55,7 @@ class CustomOrderController extends BaseController
             'type_id' => 'required|exists:custom_order_types,id',
             'tip' => 'sometimes|numeric|min:0',
             'payment' => "required|in:wechat,balance",
-            "content" => 'sometimes|required|string',
+            "postscript" => 'sometimes|required|string',
         ];
         validateCustomParameter($order_data,$rule);
 
@@ -92,7 +92,7 @@ class CustomOrderController extends BaseController
             'coupon_price' => isset($coupon) && !empty($coupon) ? $coupon->price : 0,
             'deliverer_price' => $deliverer_price,
             'order_status' => 'unpaid',
-            'content' => !empty($order_data['content']) ? $order_data['content'] : '',
+            'postscript' => !empty($order_data['postscript']) ? $order_data['postscript'] : '',
         ];
         $order = $this->customOrderRepository->create($order_data);
         $task_order = $this->taskOrderRepository->create([
