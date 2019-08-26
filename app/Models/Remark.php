@@ -14,5 +14,12 @@ class Remark extends BaseModel
 
     protected $config = 'model.remark.remark';
 
-
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User');
+    }
+    public function deliverer()
+    {
+        return $this->belongsTo('App\Models\User','deliverer_id');
+    }
 }

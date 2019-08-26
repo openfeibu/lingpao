@@ -48,6 +48,8 @@ $api->version('v1', function ($api) {
     $api->post('/user/upload_student_image', 'App\Http\Controllers\Api\UserController@uploadStudentImage');
     $api->post('/user/be_deliverer', 'App\Http\Controllers\Api\UserController@beDeliverer');
     $api->get('/user/get_deliverer_identification', 'App\Http\Controllers\Api\UserController@getDelivererIdentification');
+    $api->get('/user/get_other', 'App\Http\Controllers\Api\UserController@getOther');
+    $api->get('/user/remark', 'App\Http\Controllers\Api\UserController@getRemarks');
     //$api->post('/user/reset_password', 'App\Http\Controllers\Api\UserController@resetPassword');
 
     $api->get('/user_address','App\Http\Controllers\Api\UserAddressController@getUserAddresses');

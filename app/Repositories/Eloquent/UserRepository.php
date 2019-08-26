@@ -58,4 +58,8 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     {
         return User::where('token',$token)->first($custom);
     }
+    public function getOther($user_id,$custom = ['*'])
+    {
+        return $this->find($user_id,$custom);
+    }
 }

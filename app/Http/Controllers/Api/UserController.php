@@ -11,6 +11,7 @@ use App\Repositories\Eloquent\WithdrawRepositoryInterface;
 use App\Repositories\Eloquent\UserRepositoryInterface;
 use App\Repositories\Eloquent\BalanceRecordRepositoryInterface;
 use App\Repositories\Eloquent\TradeRecordRepositoryInterface;
+use App\Repositories\Eloquent\RemarkRepositoryInterface;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Services\WXBizDataCryptService;
@@ -20,14 +21,16 @@ use Log,Input;
 class UserController extends BaseController
 {
     public function __construct(UserRepositoryInterface $userRepository,
+                                RemarkRepositoryInterface $remarkRepository,
                                 DelivererIdentificationRepositoryInterface $delivererIdentificationRepository,
                                 BalanceRecordRepositoryInterface $balanceRecordRepository,
                                 TradeRecordRepositoryInterface $tradeRecordRepository,
                                 WithdrawRepositoryInterface $withdrawRepository)
     {
         parent::__construct();
-        $this->middleware('auth.api');
+        $this->middleware('auth.api',['except' => 'getRemarks']);
         $this->userRepository = $userRepository;
+        $this->remarkRepository = $remarkRepository;
         $this->balanceRecordRepository = $balanceRecordRepository;
         $this->tradeRecordRepository = $tradeRecordRepository;
         $this->withdrawRepository = $withdrawRepository;
@@ -41,6 +44,47 @@ class UserController extends BaseController
             'code' => '200',
             'data' => $user,
         ]);
+        return $this->response->success()->data($user)->json();
+    }
+    public function getOther(Request $request)
+    {
+        $rule = [
+            'user_id' => 'required',
+        ];
+        validateParameter($rule);
+        $user_id = $request->user_id;
+        $other = $this->userRepository->getOther($user_id);
+
+        $other =  visible_data($other->toArray(),config('model.user.user.other_visible'));
+        return $this->response->success()->data($other)->json();
+
+    }
+    public function getRemarks(Request $request)
+    {
+        $rule = [
+            'deliverer_id' => 'required',
+        ];
+        validateParameter($rule);
+        $limit = $request->input('limit',config('app.limit'));
+        $remarks = $this->remarkRepository
+            ->where('deliverer_id',$request->deliverer_id)
+            ->orderBy('id','desc')
+            ->paginate($limit);
+
+        foreach ($remarks as $key => $remark)
+        {
+            $remark->user = $remark->user;
+            $remark->deliverer = $remark->deliverer;
+        }
+        $remarks_data = $remarks->toArray()['data'];
+
+        foreach ($remarks_data as $key => $remark)
+        {
+            $remarks_data[$key]['user'] =  visible_data($remark['user'],config('model.user.user.other_visible'));
+            $remarks_data[$key]['deliverer'] =  visible_data($remark['deliverer'],config('model.user.user.other_visible'));
+        }
+
+        return $this->response->success()->count($remarks->total())->data($remarks_data)->json();
     }
     public function submitPhone(Request $request)
     {
