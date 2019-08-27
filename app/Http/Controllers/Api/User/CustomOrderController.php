@@ -53,28 +53,24 @@ class CustomOrderController extends BaseController
         $order_data = $request->all();
         $rule = [
             'category_id' => 'required|exists:custom_order_categories,id',
-            'tip' => 'sometimes|numeric|min:'.setting('custom_order_min_price'),
+            'tip' => 'sometimes|numeric|min:',
             'payment' => "required|in:wechat,balance",
             "postscript" => 'sometimes|required|string',
             "best_time" => 'required',
         ];
         $messages = [
-           'tip.min' => '小费最低不能低于'.setting('custom_order_min_price'),
+           'order_price.min' => '订单最低不能低于'.setting('custom_order_min_price'),
         ];
         validateCustomParameter($order_data,$rule,$messages);
-
+        $original_price = $order_price = setting('custom_order_min_price');
         $tip = !empty($order_data['tip']) ? $order_data['tip'] : 0;
 
-        $deliverer_price = $tip;
-
-        $total_price = $tip;
+        $total_price  = $deliverer_price = $order_price + $tip;
 
         $user_coupon_id = !empty($request->coupon_id) ? intval($request->coupon_id): 0;
         if($user_coupon_id)
         {
-
             $coupon = $this->userCouponRepository->getAvailableCoupon(['user_id' => $user->id,'id' => $user_coupon_id],$total_price);
-
             $total_price =  $total_price - $coupon->price;
         }
         if($order_data['payment'] == 'balance')
@@ -90,7 +86,8 @@ class CustomOrderController extends BaseController
             'tip' => $tip,
             'payment' => $order_data['payment'],
             'total_price' => $total_price,
-            'original_price' => $tip ,
+            'original_price' => $original_price ,
+            'order_price' => $order_price,
             'coupon_id' => $user_coupon_id,
             'coupon_name' => isset($coupon) && !empty($coupon) ? '满'.$coupon->min_price.'减'.$coupon->price : '',
             'coupon_price' => isset($coupon) && !empty($coupon) ? $coupon->price : 0,
