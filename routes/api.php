@@ -85,7 +85,7 @@ $api->version('v1', function ($api) {
     $api->get('/take_order/user/order','App\Http\Controllers\Api\User\TakeOrderController@getUserOrders');
     $api->get('/take_order/deliverer/order','App\Http\Controllers\Api\Deliverer\TakeOrderController@getDelivererOrders');
 
-    $api->get('/custom_order/type','App\Http\Controllers\Api\User\CustomOrderController@getTypes');
+    $api->get('/custom_order/category','App\Http\Controllers\Api\User\CustomOrderController@getCategories');
     $api->post('/custom_order/create_order','App\Http\Controllers\Api\User\CustomOrderController@createOrder');
     $api->get('/custom_order/order','App\Http\Controllers\Api\User\CustomOrderController@getOrders');
     $api->get('/custom_order/order/{id}','App\Http\Controllers\Api\User\CustomOrderController@getOrder');

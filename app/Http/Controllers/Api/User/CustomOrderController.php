@@ -34,7 +34,7 @@ class CustomOrderController extends BaseController
                                 PayService $payService)
     {
         parent::__construct();
-        $this->middleware('auth.api',['except' => ['getTypes']]);
+        $this->middleware('auth.api',['except' => ['getCategories']]);
         $this->userCouponRepository = $userCouponRepository;
         $this->userRepository = $userRepository;
         $this->taskOrderRepository = $taskOrderRepository;
@@ -42,7 +42,7 @@ class CustomOrderController extends BaseController
         $this->payService = $payService;
     }
 
-    public function getTypes(Request $request)
+    public function getCategories(Request $request)
     {
         $types = CustomOrderCategory::getCategories();
         return $this->response->success()->data($types->toArray())->json();
