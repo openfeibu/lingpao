@@ -6,8 +6,8 @@ use App\Exceptions\PermissionDeniedException;
 use App\Http\Controllers\Api\BaseController;
 use App\Exceptions\NotFoundPayPasswordException;
 use App\Exceptions\OutputServerMessageException;
+use App\Models\CustomOrderCategory;
 use App\Models\User;
-use App\Models\CustomOrderType;
 use App\Repositories\Eloquent\CustomOrderRepositoryInterface;
 use App\Repositories\Eloquent\UserCouponRepositoryInterface;
 use App\Repositories\Eloquent\UserRepositoryInterface;
@@ -44,7 +44,7 @@ class CustomOrderController extends BaseController
 
     public function getTypes(Request $request)
     {
-        $types = CustomOrderType::getTypes();
+        $types = CustomOrderCategory::getCategories();
         return $this->response->success()->data($types->toArray())->json();
     }
     public function createOrder(Request $request)
@@ -52,10 +52,11 @@ class CustomOrderController extends BaseController
         $user = User::tokenAuth();
         $order_data = $request->all();
         $rule = [
-            'type_id' => 'required|exists:custom_order_types,id',
+            'category_id' => 'required|exists:custom_order_categories,id',
             'tip' => 'sometimes|numeric|min:0',
             'payment' => "required|in:wechat,balance",
             "postscript" => 'sometimes|required|string',
+            "best_time" => 'required',
         ];
         validateCustomParameter($order_data,$rule);
 
@@ -80,7 +81,7 @@ class CustomOrderController extends BaseController
         $order_sn = generate_order_sn('CUSTOM-');
 
         $order_data = [
-            'custom_order_type_id' => $request->type_id,
+            'custom_order_category_id' => $request->category_id,
             'order_sn' => $order_sn,
             'user_id' => $user->id,
             'tip' => $tip,

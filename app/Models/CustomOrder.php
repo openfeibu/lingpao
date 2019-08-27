@@ -14,4 +14,16 @@ class CustomOrder extends BaseModel
 
     protected $config = 'model.custom_order.custom_order';
 
+    protected $appends = ['custom_order_category_name'];
+
+    public function getBestTimeAttribute($value)
+    {
+        return date('H:i',strtotime($value));
+    }
+    public function getCustomOrderCategoryNameAttribute()
+    {
+        $category_id = $this->attributes['custom_order_category_id'];
+
+        return CustomOrderCategory::where('id',$category_id)->value('name');
+    }
 }

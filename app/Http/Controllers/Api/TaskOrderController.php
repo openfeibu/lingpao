@@ -13,6 +13,7 @@ use App\Repositories\Eloquent\UserRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderExpressRepositoryInterface;
 use App\Repositories\Eloquent\TaskOrderRepositoryInterface;
+use App\Repositories\Eloquent\CustomOrderRepositoryInterface;
 use App\Repositories\Eloquent\RemarkRepositoryInterface;
 use Log,DB;
 use Illuminate\Http\Request;
@@ -29,6 +30,7 @@ class TaskOrderController extends BaseController
                                 TakeOrderExpressRepositoryInterface $takeOrderExpressRepository,
                                 UserRepositoryInterface $userRepository,
                                 TaskOrderRepositoryInterface $taskOrderRepository,
+                                CustomOrderRepositoryInterface $customOrderRepository,
                                 RemarkRepositoryInterface $remarkRepository)
     {
         parent::__construct();
@@ -38,6 +40,7 @@ class TaskOrderController extends BaseController
         $this->userRepository = $userRepository;
         $this->taskOrderRepository = $taskOrderRepository;
         $this->remarkRepository = $remarkRepository;
+        $this->customOrderRepository = $customOrderRepository;
     }
     public function getOrders(Request $request)
     {
@@ -47,10 +50,16 @@ class TaskOrderController extends BaseController
     public function getOrder(Request $request,$id)
     {
         $order = $this->taskOrderRepository->find($id);
-        if($order->type == 'take_order')
+        switch ($order->type)
         {
-            $order_detail = $this->takeOrderRepository->getOrderDetail($order->objective_id);
+            case 'take_order':
+                $order_detail = $this->takeOrderRepository->getOrderDetail($order->objective_id);
+                break;
+            case 'custom_order':
+                $order_detail = $this->customOrderRepository->getOrderDetail($order->objective_id);
+               break;
         }
+
         $order_detail['type'] = $order->type;
         return $this->response->success()->data($order_detail)->json();
     }
