@@ -53,12 +53,15 @@ class CustomOrderController extends BaseController
         $order_data = $request->all();
         $rule = [
             'category_id' => 'required|exists:custom_order_categories,id',
-            'tip' => 'sometimes|numeric|min:0',
+            'tip' => 'sometimes|numeric|min:'.setting('custom_order_min_price'),
             'payment' => "required|in:wechat,balance",
             "postscript" => 'sometimes|required|string',
             "best_time" => 'required',
         ];
-        validateCustomParameter($order_data,$rule);
+        $messages = [
+           'tip.min' => '小费最低不能低于'.setting('custom_order_min_price'),
+        ];
+        validateCustomParameter($order_data,$rule,$messages);
 
         $tip = !empty($order_data['tip']) ? $order_data['tip'] : 0;
 
@@ -93,6 +96,7 @@ class CustomOrderController extends BaseController
             'coupon_price' => isset($coupon) && !empty($coupon) ? $coupon->price : 0,
             'deliverer_price' => $deliverer_price,
             'order_status' => 'unpaid',
+            'best_time' => $request->best_time,
             'postscript' => !empty($order_data['postscript']) ? $order_data['postscript'] : '',
         ];
         $order = $this->customOrderRepository->create($order_data);
@@ -141,12 +145,38 @@ class CustomOrderController extends BaseController
     public function cancelOrder(Request $request)
     {
 
+        $rule = [
+            'id' => 'required|integer',
+        ];
+        validateParameter($rule);
+
+        $user = User::tokenAuth();
+
+        $custom_order = $this->customOrderRepository->find($request->id);
+
+        if($custom_order->user_id != $user->id){
+            throw new PermissionDeniedException('没有取消该任务的权限');
+        }
+        $this->customOrderRepository->userCancelOrder($custom_order);
 
     }
 
     public function agreeCancelOrder(Request $request)
     {
+        $rule = [
+            'id' => 'required|integer',
+        ];
+        validateParameter($rule);
 
+        $user = User::tokenAuth();
+
+        $custom_order = $this->customOrderRepository->find($request->id);
+
+        if($custom_order->user_id != $user->id){
+            throw new PermissionDeniedException();
+        }
+
+        $this->customOrderRepository->agreeCancelOrder($custom_order);
     }
     //额外费用支付（服务费等）
     public function payServicePrice(Request $request)

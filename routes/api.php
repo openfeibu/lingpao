@@ -87,8 +87,8 @@ $api->version('v1', function ($api) {
 
     $api->get('/custom_order/category','App\Http\Controllers\Api\User\CustomOrderController@getCategories');
     $api->post('/custom_order/create_order','App\Http\Controllers\Api\User\CustomOrderController@createOrder');
-    $api->get('/custom_order/order','App\Http\Controllers\Api\User\CustomOrderController@getOrders');
-    $api->get('/custom_order/order/{id}','App\Http\Controllers\Api\User\CustomOrderController@getOrder');
+    //$api->get('/custom_order/order','App\Http\Controllers\Api\User\CustomOrderController@getOrders');
+    //$api->get('/custom_order/order/{id}','App\Http\Controllers\Api\User\CustomOrderController@getOrder');
     $api->post('/custom_order/complete_order','App\Http\Controllers\Api\User\CustomOrderController@completeOrder');
     $api->post('/custom_order/user/cancel_order','App\Http\Controllers\Api\User\CustomOrderController@cancelOrder');
     $api->post('/custom_order/agree_cancel_order','App\Http\Controllers\Api\User\CustomOrderController@agreeCancelOrder');

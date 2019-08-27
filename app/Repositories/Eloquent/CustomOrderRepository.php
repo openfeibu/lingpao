@@ -2,8 +2,10 @@
 
 namespace App\Repositories\Eloquent;
 
+use App\Exceptions\OutputServerMessageException;
 use App\Repositories\Eloquent\CustomOrderRepositoryInterface;
 use App\Repositories\Eloquent\BaseRepository;
+use App\Services\RefundService;
 use App\Models\User;
 use Request,DB;
 
@@ -79,5 +81,84 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
             'deliverer' => $order_deliverer_data
         ];
         return $data;
+    }
+    public function acceptOrder($custom_order)
+    {
+        $deliverer = User::tokenAuthCache();
+
+        if($custom_order->user_id == $deliverer->id)
+        {
+            throw new OutputServerMessageException("不能接自己发的任务");
+        }
+        if ($custom_order->order_status != 'new')
+        {
+            throw new OutputServerMessageException('任务已被接');
+        }
+        if($custom_order->created_at < date('Y-m-d 00:00:00'))
+        {
+            throw new OutputServerMessageException('任务已过有效期');
+        }
+        if(date('H:i') > $custom_order->best_time)
+        {
+            throw new OutputServerMessageException('任务已过期待时间');
+        }
+        try {
+            $this->updateOrderStatus([
+                'order_status' => 'accepted',
+                'deliverer_id' => $deliverer->id,
+            ],$custom_order->id);
+            app(TaskOrderRepository::class)->where('type','take_order')->where('objective_id',$custom_order->id)->updateData([
+                'deliverer_id' => $deliverer->id
+            ]);
+            //TODO:消息推送
+
+        } catch (Exception $e) {
+            throw new \App\Exceptions\RequestFailedException('无法接受任务');
+        }
+        return $custom_order;
+    }
+
+    public function delivererCancelOrder($custom_order)
+    {
+        if ($custom_order->order_status != 'accepted') {
+            throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许取消');
+        }
+        $this->updateOrderStatus(['order_status' => 'cancel','order_cancel_status' => 'deliverer_apply_cancel'],$custom_order->id);
+
+        throw new \App\Exceptions\RequestSuccessException("操作成功，请等待或联系用户确认！");
+    }
+    public function agreeCancelOrder($custom_order)
+    {
+        if ($custom_order->order_cancel_status != 'deliverer_apply_cancel') {
+            throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许同意取消');
+        }
+        $this->updateOrderStatus(['order_status' => 'cancel','order_cancel_status' => 'user_agree_cancel'],$custom_order->id);
+        $data = [
+            'id' => $custom_order->id,
+            'total_price' => $custom_order->total_price,
+            'order_sn' =>  $custom_order->order_sn,
+            'payment' => $custom_order->payment,
+            'trade_type' => 'CANCEL_CUSTOM_ORDER',
+            'description' => '取消帮帮忙任务',
+        ];
+        app(RefundService::class)->refundHandle($data,'CustomOrder');
+    }
+    public function userCancelOrder($custom_order)
+    {
+        if ($custom_order->order_status == 'accepted') {
+            throw new \App\Exceptions\OutputServerMessageException('已被接单，请联系骑手取消任务');
+        }
+        if ($custom_order->order_status != 'new') {
+            throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许取消');
+        }
+        $data = [
+            'id' => $custom_order->id,
+            'total_price' => $custom_order->total_price,
+            'order_sn' =>  $custom_order->order_sn,
+            'payment' => $custom_order->payment,
+            'trade_type' => 'CANCEL_CUSTOM_ORDER',
+            'description' => '取消帮帮忙任务',
+        ];
+        app(RefundService::class)->refundHandle($data,'CustomOrder');
     }
 }

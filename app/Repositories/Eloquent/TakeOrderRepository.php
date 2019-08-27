@@ -6,6 +6,7 @@ use App\Exceptions\OutputServerMessageException;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\BaseRepository;
 use App\Models\User;
+use App\Services\RefundService;
 use Request,DB;
 
 class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryInterface
@@ -198,14 +199,21 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
     }
     public function userCancelOrder($take_order)
     {
-        $user = User::tokenAuth();
         if ($take_order->order_status == 'accepted') {
             throw new \App\Exceptions\OutputServerMessageException('已被接单，请联系骑手取消任务');
         }
         if ($take_order->order_status != 'new') {
             throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许取消');
         }
-        $this->refund($take_order,$user);
+        $data = [
+            'id' => $take_order->id,
+            'total_price' => $take_order->total_price,
+            'order_sn' =>  $take_order->order_sn,
+            'payment' => $take_order->payment,
+            'trade_type' => 'CANCEL_TAKE_ORDER',
+            'description' => '取消代拿任务',
+        ];
+        app(RefundService::class)->refundHandle($data,'TakeOrder');
     }
     public function delivererCancelOrder($take_order)
     {
@@ -223,7 +231,16 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许同意取消');
         }
         $this->updateOrderStatus(['order_status' => 'cancel','order_cancel_status' => 'user_agree_cancel'],$take_order->id);
-        $this->refund($take_order,$user);
+        $data = [
+            'id' => $take_order->id,
+            'total_price' => $take_order->total_price,
+            'order_sn' =>  $take_order->order_sn,
+            'payment' => $take_order->payment,
+            'trade_type' => 'CANCEL_TAKE_ORDER',
+            'description' => '取消代拿任务',
+        ];
+        app(RefundService::class)->refundHandle($data,'TakeOrder');
+        //$this->refund($take_order,$user);
     }
     public function refund($take_order,$user)
     {

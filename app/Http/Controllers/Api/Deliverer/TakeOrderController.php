@@ -31,8 +31,6 @@ class TakeOrderController extends BaseController
     }
     public function acceptOrder(Request $request)
     {
-        //    $this->messageService->SystemMessage2SingleOne(77, '取货码：1233');exit;
-        //检验请求参数
         $fp = fopen("lock.txt", "w+");
         if (flock($fp, LOCK_NB | LOCK_EX)) {
             $rule = [
