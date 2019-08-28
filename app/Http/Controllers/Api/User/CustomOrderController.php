@@ -67,12 +67,16 @@ class CustomOrderController extends BaseController
 
         $total_price  = $deliverer_price = $order_price + $tip;
 
-        $user_coupon_id = !empty($request->coupon_id) ? intval($request->coupon_id): 0;
-        if($user_coupon_id)
+        $coupon_id = !empty($request->coupon_id) ? intval($request->coupon_id): 0;
+        $coupon_price = 0;
+        if($coupon_id)
         {
-            $coupon = $this->userCouponRepository->getAvailableCoupon(['user_id' => $user->id,'id' => $user_coupon_id],$total_price);
-            $total_price =  $total_price - $coupon->price;
+            $coupon_data = $this->userAllCouponRepository->useCoupon($user->id,$coupon_id,$total_price);
+            //$coupon = $this->userCouponRepository->getAvailableCoupon(['user_id' => $user->id,'id' => $user_coupon_id],$total_price);
+            $coupon_price = $coupon_data['price'];
+            $total_price =  $total_price - $coupon_price;
         }
+
         if($order_data['payment'] == 'balance')
         {
             checkBalance($user,$total_price);
@@ -88,9 +92,9 @@ class CustomOrderController extends BaseController
             'total_price' => $total_price,
             'original_price' => $original_price ,
             'order_price' => $order_price,
-            'coupon_id' => $user_coupon_id,
-            'coupon_name' => isset($coupon) && !empty($coupon) ? '满'.$coupon->min_price.'减'.$coupon->price : '',
-            'coupon_price' => isset($coupon) && !empty($coupon) ? $coupon->price : 0,
+            'coupon_id' => $coupon_id,
+            'coupon_name' =>  isset($coupon_data) && !empty($coupon_data) ? $coupon_data['name'] : '',
+            'coupon_price' => $coupon_price,
             'deliverer_price' => $deliverer_price,
             'order_status' => 'unpaid',
             'best_time' => $request->best_time,
@@ -114,7 +118,7 @@ class CustomOrderController extends BaseController
             'trade_type' => 'CREATE_CUSTOM_ORDER',
             'payment' => $request->payment,
             'pay_from' => 'CustomOrder',
-            'user_coupon_id' => $user_coupon_id,
+            'user_coupon_id' => $coupon_id,
         ];
         $data = $this->payService->payHandle($data);
 

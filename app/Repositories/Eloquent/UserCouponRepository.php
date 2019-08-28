@@ -5,6 +5,7 @@ namespace App\Repositories\Eloquent;
 use App\Repositories\Eloquent\UserCouponRepositoryInterface;
 use App\Repositories\Eloquent\BaseRepository;
 use App\Models\User;
+use App\Models\UserBalanceCoupon;
 
 class UserCouponRepository extends BaseRepository implements UserCouponRepositoryInterface
 {

@@ -8,6 +8,7 @@ use App\Repositories\Eloquent\CustomOrderRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderExtraPriceRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\TradeRecordRepositoryInterface;
+use App\Repositories\Eloquent\UserAllCouponRepositoryInterface;
 use App\Repositories\Eloquent\UserCouponRepositoryInterface;
 use App\Repositories\Eloquent\UserRepositoryInterface;
 use App\Repositories\Eloquent\TaskOrderRepositoryInterface;
@@ -29,7 +30,8 @@ class PayService
                                 TaskOrderRepositoryInterface $taskOrderRepository,
                                 TakeOrderExtraPriceRepositoryInterface $takeOrderExtraPriceRepository,
                                 CustomOrderRepositoryInterface $customOrderRepository,
-                                UserCouponRepositoryInterface $userCouponRepository)
+                                UserCouponRepositoryInterface $userCouponRepository,
+                                UserAllCouponRepositoryInterface $userAllCouponRepository)
     {
         $this->takeOrderRepository = $takeOrderRepository;
         $this->userRepository = $userRepository;
@@ -39,6 +41,7 @@ class PayService
         $this->takeOrderExtraPriceRepository = $takeOrderExtraPriceRepository;
         $this->customOrderRepository = $customOrderRepository;
         $this->userCouponRepository = $userCouponRepository;
+        $this->userAllCouponRepository = $userAllCouponRepository;
     }
 
     public function payHandle($data)
@@ -54,7 +57,7 @@ class PayService
                 break;
             case 'CustomOrder':
                 return $this->customOrderPayHandle($data);
-            default :
+            default:
                 throw new \App\Exceptions\OutputServerMessageException('操作失败');
                 break;
         }
@@ -134,7 +137,8 @@ class PayService
                 if($result['return_code'] == 'SUCCESS')
                 {
                     $this->customOrderRepository->updateOrderStatus(['order_status' => 'new'],$data['custom_order_id']);
-                    $data['user_coupon_id'] ? $this->userCouponRepository->update(['status' => 'used'],$data['user_coupon_id']) : '';
+                    //$data['user_coupon_id'] ? $this->userCouponRepository->update(['status' => 'used'],$data['user_coupon_id']) : '';
+                    $data['user_coupon_id'] ? $this->userAllCouponRepository->usedCoupon($data['user_coupon_id']) : '';
                     return [
                         'task_order_id' => $data['task_order_id'],
                         'custom_order_id' => $data['custom_order_id'],

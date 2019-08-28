@@ -1079,3 +1079,8 @@ function checkBalance($user,$price)
         throw new \App\Exceptions\OutputServerMessageException('余额不足,请选择其他支付方式');
     }
 }
+//舍去保留两位
+function rid_two($num)
+{
+    floor($num * 100) / 100;
+}

@@ -8,6 +8,7 @@ use App\Exceptions\NotFoundPayPasswordException;
 use App\Exceptions\OutputServerMessageException;
 use App\Models\User;
 use App\Models\TakeOrder;
+use App\Repositories\Eloquent\UserAllCouponRepositoryInterface;
 use App\Repositories\Eloquent\UserCouponRepositoryInterface;
 use App\Repositories\Eloquent\UserRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
@@ -31,6 +32,7 @@ class TakeOrderController extends BaseController
     public function __construct(TakeOrderRepositoryInterface $takeOrderRepository,
                                 TakeOrderExpressRepositoryInterface $takeOrderExpressRepository,
                                 TakeOrderExtraPriceRepositoryInterface $takeOrderExtraPriceRepository,
+                                UserAllCouponRepositoryInterface $userAllCouponRepository,
                                 UserCouponRepositoryInterface $userCouponRepository,
                                 UserRepositoryInterface $userRepository,
                                 TaskOrderRepositoryInterface $taskOrderRepository,
@@ -42,6 +44,7 @@ class TakeOrderController extends BaseController
         $this->takeOrderRepository = $takeOrderRepository;
         $this->takeOrderExpressRepository = $takeOrderExpressRepository;
         $this->userCouponRepository = $userCouponRepository;
+        $this->userAllCouponRepository = $userAllCouponRepository;
         $this->userRepository = $userRepository;
         $this->taskOrderRepository = $taskOrderRepository;
         $this->takeOrderExtraPriceRepository = $takeOrderExtraPriceRepository;
@@ -103,13 +106,14 @@ class TakeOrderController extends BaseController
         $deliverer_price = $express_price * $express_count + $tip;
         //check_urgent_price($urgent_price);
 
-        $user_coupon_id = !empty($request->coupon_id) ? intval($request->coupon_id): 0;
-        if($user_coupon_id)
+        $coupon_id = !empty($request->coupon_id) ? intval($request->coupon_id): 0;
+        $coupon_price = 0;
+        if($coupon_id)
         {
-
-            $coupon = $this->userCouponRepository->getAvailableCoupon(['user_id' => $user->id,'id' => $user_coupon_id],$total_price);
-
-            $total_price =  $total_price - $coupon->price;
+            $coupon_data = $this->userAllCouponRepository->useCoupon($user->id,$coupon_id,$total_price);
+            //$coupon = $this->userCouponRepository->getAvailableCoupon(['user_id' => $user->id,'id' => $user_coupon_id],$total_price);
+            $coupon_price = $coupon_data['price'];
+            $total_price =  $total_price - $coupon_price;
         }
 
 
@@ -129,9 +133,9 @@ class TakeOrderController extends BaseController
             'express_price' => $express_price,
             'original_price' => $express_price * $express_count ,
             'express_count' => $express_count,
-            'coupon_id' => $user_coupon_id,
-            'coupon_name' => isset($coupon) && !empty($coupon) ? '满'.$coupon->min_price.'减'.$coupon->price : '',
-            'coupon_price' => isset($coupon) && !empty($coupon) ? $coupon->price : 0,
+            'coupon_id' => $coupon_id,
+            'coupon_name' => isset($coupon_data) && !empty($coupon_data) ? $coupon_data['name'] : '',
+            'coupon_price' => $coupon_price,
             'deliverer_price' => $deliverer_price,
             'order_status' => 'unpaid',
             'postscript' => !empty($order_data['postscript']) ? $order_data['postscript'] : '',
@@ -160,7 +164,7 @@ class TakeOrderController extends BaseController
             'trade_type' => 'CREATE_TAKE_ORDER',
             'payment' => $request->payment,
             'pay_from' => 'TakeOrder',
-            'user_coupon_id' => $user_coupon_id,
+            'user_coupon_id' => $coupon_id,
         ];
         $data = $this->payService->payHandle($data);
 

@@ -94,6 +94,14 @@ class AppServiceProvider extends ServiceProvider
             \App\Repositories\Eloquent\UserCouponRepository::class
         );
         $this->app->bind(
+            'App\Repositories\Eloquent\UserAllCouponRepositoryInterface',
+            \App\Repositories\Eloquent\UserAllCouponRepository::class
+        );
+        $this->app->bind(
+            'App\Repositories\Eloquent\UserBalanceCouponRepositoryInterface',
+            \App\Repositories\Eloquent\UserBalanceCouponRepository::class
+        );
+        $this->app->bind(
             'App\Repositories\Eloquent\BalanceRecordRepositoryInterface',
             \App\Repositories\Eloquent\BalanceRecordRepository::class
         );

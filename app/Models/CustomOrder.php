@@ -14,7 +14,13 @@ class CustomOrder extends BaseModel
 
     protected $config = 'model.custom_order.custom_order';
 
-    protected $appends = ['category_name'];
+    protected $appends = ['category_name','task_order_id'];
+
+    public function getTaskOrderIdAttribute()
+    {
+        $id = $this->attributes['id'];
+        return TaskOrder::where('type','custom_order')->where('objective_id',$id)->value('id');
+    }
 
     public function getBestTimeAttribute($value)
     {
