@@ -82,8 +82,8 @@ $api->version('v1', function ($api) {
     $api->post('/take_order/deliverer/cancel_order','App\Http\Controllers\Api\Deliverer\TakeOrderController@cancelOrder');
     $api->post('/take_order/submit_service_price','App\Http\Controllers\Api\Deliverer\TakeOrderController@submitServicePrice');
     $api->post('/take_order/pay_service_price','App\Http\Controllers\Api\User\TakeOrderController@payServicePrice');
-    $api->get('/take_order/user/order','App\Http\Controllers\Api\User\TakeOrderController@getUserOrders');
-    $api->get('/take_order/deliverer/order','App\Http\Controllers\Api\Deliverer\TakeOrderController@getDelivererOrders');
+    //$api->get('/take_order/user/order','App\Http\Controllers\Api\User\TakeOrderController@getUserOrders');
+    //$api->get('/take_order/deliverer/order','App\Http\Controllers\Api\Deliverer\TakeOrderController@getDelivererOrders');
 
     $api->get('/custom_order/category','App\Http\Controllers\Api\User\CustomOrderController@getCategories');
     $api->post('/custom_order/create_order','App\Http\Controllers\Api\User\CustomOrderController@createOrder');

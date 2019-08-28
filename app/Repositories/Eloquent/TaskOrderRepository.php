@@ -94,10 +94,16 @@ class TaskOrderRepository extends BaseRepository implements TaskOrderRepositoryI
         $orders_data = [];
         foreach ($orders as $key => $order)
         {
-            if($order->type == 'take_order')
+            switch ($order->type)
             {
-                $order_detail = app(TakeOrderRepository::class)->getOrder($order->objective_id);
+                case 'take_order':
+                    $order_detail = app(TakeOrderRepository::class)->getOrder($order->objective_id);
+                    break;
+                case 'custom_order':
+                    $order_detail = app(CustomOrderRepository::class)->getOrder($order->objective_id);
+                    break;
             }
+
             $order_detail->task_order_id = $order->id;
             $order_detail->type = $order->type;
             $orders_data[] = $order_detail;
