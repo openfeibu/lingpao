@@ -19,7 +19,7 @@ use Illuminate\Http\Request;
 
 class CustomOrderController extends BaseController
 {
-    public $takeOrderRepository;
+    public $customOrderRepository;
     public $takeOrderExpressRepository;
     public $userCouponRepository;
     public $userRepository;
@@ -136,7 +136,23 @@ class CustomOrderController extends BaseController
      */
     public function completeOrder(Request $request)
     {
+        $rule = [
+            'id' => 'required|integer',
+        ];
+        validateParameter($rule);
 
+        $user = User::tokenAuth();
+
+        $take_order = $this->customOrderRepository->find($request->id);
+
+        if($take_order->user_id != $user->id)
+        {
+            throw new PermissionDeniedException();
+        }
+
+        $this->customOrderRepository->completeOrder($take_order);
+
+        throw new \App\Exceptions\RequestSuccessException("确认成功！");
     }
 
     public function cancelOrder(Request $request)

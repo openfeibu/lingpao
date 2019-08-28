@@ -161,4 +161,46 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
         ];
         app(RefundService::class)->refundHandle($data,'CustomOrder');
     }
+    public function completeOrder($custom_order)
+    {
+        if ($custom_order->order_status != 'finish') {
+            throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许结算任务');
+        }
+
+        $deliverer = app(UserRepository::class)->where('id',$custom_order->deliverer_id)->first();
+        $new_balance = $deliverer->balance + $custom_order->deliverer_price;
+        $balanceData = array(
+            'user_id' => $deliverer->id,
+            'balance' => $new_balance,
+            'price'	=> $custom_order->deliverer_price,
+            'out_trade_no' => $custom_order->order_sn,
+            'fee' => 0,
+            'type' => 1,
+            'trade_type' => 'ACCEPT_CUSTOM_ORDER',
+            'description' => '接帮帮忙任务',
+        );
+
+        $trade_no = 'BALANCE-'.generate_order_sn();
+        $trade = array(
+            'user_id' => $deliverer->id,
+            'out_trade_no' => $custom_order->order_sn,
+            'trade_no' => $trade_no,
+            'trade_status' => 'income',
+            'type' => 1,
+            'pay_from' => 'CustomOrder',
+            'trade_type' => 'ACCEPT_CUSTOM_ORDER',
+            'price' => $custom_order->deliverer_price,
+            'payment' => $custom_order->payment,
+            'description' => '接帮帮忙任务',
+        );
+
+        $this->updateOrderStatus(['order_status' => 'completed'],$custom_order->id);
+
+        app(UserRepository::class)->update(['balance' => $new_balance],$deliverer->id);
+        app(BalanceRecordRepository::class)->create($balanceData);
+
+        app(TradeRecordRepository::class)->create($trade);
+
+        return "success";
+    }
 }

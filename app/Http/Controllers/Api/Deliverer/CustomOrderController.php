@@ -54,6 +54,24 @@ class CustomOrderController extends BaseController
     public function finishOrder(Request $request)
     {
 
+        $rule = [
+            'id' => 'required|integer',
+        ];
+        validateParameter($rule);
+
+        $custom_order = $this->customOrderRepository->find($request->id);
+
+        $this->checkDelivererPermission($custom_order->deliverer_id);
+
+        if ($custom_order->order_status != 'accepted') {
+            throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许完成任务');
+        }
+
+        $this->customOrderRepository->updateOrderStatus(['order_status' => 'finish'],$custom_order->id);
+
+        //TODO:通知 $custom_order->user_id
+
+        throw new \App\Exceptions\RequestSuccessException("恭喜，已完成任务！等待用户确认！");
     }
     public function cancelOrder(Request $request)
     {
