@@ -107,7 +107,7 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
                 'order_status' => 'accepted',
                 'deliverer_id' => $deliverer->id,
             ],$custom_order->id);
-            app(TaskOrderRepository::class)->where('type','take_order')->where('objective_id',$custom_order->id)->updateData([
+            app(TaskOrderRepository::class)->where('type','custom_order')->where('objective_id',$custom_order->id)->updateData([
                 'deliverer_id' => $deliverer->id
             ]);
             //TODO:消息推送
