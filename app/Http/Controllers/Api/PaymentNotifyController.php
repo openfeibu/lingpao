@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BaseController;
+use App\Repositories\Eloquent\CustomOrderRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderExtraPriceRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\TaskOrderRepositoryInterface;
 use App\Repositories\Eloquent\TradeRecordRepositoryInterface;
+use App\Repositories\Eloquent\UserAllCouponRepositoryInterface;
 use DB,Log;
 use Illuminate\Http\Request;
 use EasyWeChat\Factory;
@@ -17,14 +19,18 @@ class PaymentNotifyController extends BaseController
 
     public function __construct (TakeOrderRepositoryInterface $takeOrderRepository,
                                 TakeOrderExtraPriceRepositoryInterface $takeOrderExtraPriceRepository,
+                                CustomOrderRepositoryInterface $customOrderRepository,
                                 TradeRecordRepositoryInterface $tradeRecordRepository,
-                                TaskOrderRepositoryInterface $taskOrderRepository)
+                                TaskOrderRepositoryInterface $taskOrderRepository,
+                                UserAllCouponRepositoryInterface $userAllCouponRepository)
     {
         parent::__construct();
         $this->takeOrderRepository = $takeOrderRepository;
         $this->takeOrderExtraPriceRepository = $takeOrderExtraPriceRepository;
+        $this->customOrderRepository = $customOrderRepository;
         $this->taskOrderRepository = $taskOrderRepository;
         $this->tradeRecordRepository = $tradeRecordRepository;
+        $this->userAllCouponRepository = $userAllCouponRepository;
 
     }
     public function wechatNotify(Request $request)
@@ -70,7 +76,7 @@ class PaymentNotifyController extends BaseController
                     'description' => '发布代拿',
                 );
                 $this->takeOrderRepository->updateOrderStatus(['order_status' => 'new'],$take_order->id);
-                $take_order->coupon_id ? $this->userCouponRepository->update(['status' => 'used'],$take_order->coupon_id) : '';
+                $take_order->coupon_id ? $this->userAllCouponRepository->usedCoupon($take_order->coupon_id,$take_order->total_price) : '';
                 break;
             case 'TAKEEXTRA':
                 $extra_price = $this->takeOrderExtraPriceRepository->where('order_sn',$out_trade_no)->first();
@@ -88,6 +94,23 @@ class PaymentNotifyController extends BaseController
                     'description' => '代拿增加服务费',
                 );
                 $this->takeOrderExtraPriceRepository->update(['status' => 'paid'],$extra_price->id);
+                break;
+            case 'CUSTOM':
+                $custom_order = $this->customOrderRepository->where('order_sn',$out_trade_no)->first(['id','user_id','total_price','payment','coupon_id']);
+                $trade = array(
+                    'user_id' => $custom_order->user_id,
+                    'out_trade_no' => $out_trade_no,
+                    'trade_no' => $trade_no,
+                    'trade_status' => 'success',
+                    'type' => -1,
+                    'pay_from' => 'CustomOrder',
+                    'trade_type' => 'CREATE_CUSTOM_ORDER',
+                    'price' => $custom_order->total_price,
+                    'payment' => $custom_order->payment,
+                    'description' => '发布帮帮忙',
+                );
+                $this->customOrderRepository->updateOrderStatus(['order_status' => 'new'],$custom_order->id);
+                $custom_order->coupon_id ? $this->userAllCouponRepository->usedCoupon($custom_order->coupon_id,$custom_order->total_price) : '';
                 break;
             default:
                 break;
