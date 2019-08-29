@@ -14,7 +14,7 @@ class CustomOrder extends BaseModel
 
     protected $config = 'model.custom_order.custom_order';
 
-    protected $appends = ['category_name','task_order_id'];
+    protected $appends = ['category_name','task_order_id','status_desc'];
 
     public function getTaskOrderIdAttribute()
     {
@@ -31,5 +31,15 @@ class CustomOrder extends BaseModel
         $category_id = $this->attributes['custom_order_category_id'];
 
         return CustomOrderCategory::where('id',$category_id)->value('name');
+    }
+    public function getStatusDescAttribute()
+    {
+        $order_status = $this->attributes['order_status'];
+        $order_cancel_status = $this->attributes['order_cancel_status'];
+        if($order_status == 'cancel')
+        {
+            return trans('task.take_order.user_status_desc.'.$order_cancel_status);
+        }
+        return trans('task.take_order.user_status_desc.'.$order_status);
     }
 }
