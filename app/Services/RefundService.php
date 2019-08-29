@@ -8,6 +8,7 @@ use App\Repositories\Eloquent\CustomOrderRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderExtraPriceRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\TradeRecordRepositoryInterface;
+use App\Repositories\Eloquent\UserAllCouponRepositoryInterface;
 use App\Repositories\Eloquent\UserCouponRepositoryInterface;
 use App\Repositories\Eloquent\UserRepositoryInterface;
 use App\Repositories\Eloquent\TaskOrderRepositoryInterface;
@@ -29,7 +30,8 @@ class RefundService
                                 TaskOrderRepositoryInterface $taskOrderRepository,
                                 TakeOrderExtraPriceRepositoryInterface $takeOrderExtraPriceRepository,
                                 CustomOrderRepositoryInterface $customOrderRepository,
-                                UserCouponRepositoryInterface $userCouponRepository)
+                                UserCouponRepositoryInterface $userCouponRepository,
+                                UserAllCouponRepositoryInterface $userAllCouponRepository)
     {
         $this->takeOrderRepository = $takeOrderRepository;
         $this->userRepository = $userRepository;
@@ -39,6 +41,7 @@ class RefundService
         $this->takeOrderExtraPriceRepository = $takeOrderExtraPriceRepository;
         $this->customOrderRepository = $customOrderRepository;
         $this->userCouponRepository = $userCouponRepository;
+        $this->userAllCouponRepository = $userAllCouponRepository;
     }
 
     public function refundHandle($data,$pay_from)
@@ -163,7 +166,7 @@ class RefundService
         $this->balanceRecordRepository->create($balanceData);
         $this->userRepository->update(['balance' => $new_balance],$this->user->id);
 
-        $this->refundTrade($data);
+        $this->refundCommonHandle($data);
         return [
             'return_code' => 'SUCCESS',
         ];
@@ -178,9 +181,14 @@ class RefundService
             'refund_desc' => $data['description'],
         ]);
 
-        $this->refundTrade($data);
+        $this->refundCommonHandle($data);
 
         return $result;
+    }
+    public function refundCommonHandle($data)
+    {
+        isset($data['coupon_id']) && $data['coupon_id'] ? $this->userAllCouponRepository->refundCoupon($data['coupon_id'],$data['coupon_price']) : '';
+        $this->refundTrade($data);
     }
     public function refundTrade($data)
     {

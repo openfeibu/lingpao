@@ -67,4 +67,18 @@ class UserAllCouponRepository extends BaseRepository implements UserAllCouponRep
                 break;
         }
     }
+    public function refundCoupon($id,$total_price)
+    {
+        $coupon = $this->find($id);
+        switch ($coupon->objective_model)
+        {
+            case 'UserCoupon':
+                app(UserCouponRepository::class)->update(['status' => 'unused'],$coupon->objective_id);
+                break;
+            case 'UserBalanceCoupon':
+                $user_balance_coupon = app(UserBalanceCouponRepository::class)->find($coupon->objective_id);
+                app(UserBalanceCouponRepository::class)->where(['id' => $coupon->objective_id])->updateData(['balance' => $user_balance_coupon->balance + $total_price]);
+                break;
+        }
+    }
 }

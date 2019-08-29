@@ -210,6 +210,8 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             'total_price' => $take_order->total_price,
             'order_sn' => $take_order->order_sn,
             'payment' => $take_order->payment,
+            'coupon_id' => $take_order->coupon_id,
+            'coupon_price' => $take_order->coupon_price,
             'trade_type' => 'CANCEL_TAKE_ORDER',
             'description' => '取消代拿任务',
         ];
@@ -236,6 +238,8 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             'total_price' => $take_order->total_price,
             'order_sn' =>  $take_order->order_sn,
             'payment' => $take_order->payment,
+            'coupon_id' => $take_order->coupon_id,
+            'coupon_price' => $take_order->coupon_price,
             'trade_type' => 'CANCEL_TAKE_ORDER',
             'description' => '取消代拿任务',
         ];

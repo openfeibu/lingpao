@@ -138,6 +138,8 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
             'total_price' => $custom_order->total_price,
             'order_sn' =>  $custom_order->order_sn,
             'payment' => $custom_order->payment,
+            'coupon_id' => $custom_order->coupon_id,
+            'coupon_price' => $custom_order->coupon_price,
             'trade_type' => 'CANCEL_CUSTOM_ORDER',
             'description' => '取消帮帮忙任务',
         ];
@@ -156,6 +158,8 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
             'total_price' => $custom_order->total_price,
             'order_sn' =>  $custom_order->order_sn,
             'payment' => $custom_order->payment,
+            'coupon_id' => $custom_order->coupon_id,
+            'coupon_price' => $custom_order->coupon_price,
             'trade_type' => 'CANCEL_CUSTOM_ORDER',
             'description' => '取消帮帮忙任务',
         ];
