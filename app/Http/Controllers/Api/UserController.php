@@ -191,7 +191,11 @@ class UserController extends BaseController
         $user = User::tokenAuth();
         return $this->response->success()->data(['balance' => $user->balance])->json();
     }
-
+    public function getMainInfo()
+    {
+        $user = User::tokenAuth();
+        return $this->response->success()->data(['balance' => $user->balance,'role' => $user->role])->json();
+    }
     public function withdrawApply (Request $request)
     {
         $user = User::tokenAuth();
