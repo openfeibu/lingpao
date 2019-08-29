@@ -208,7 +208,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
         $data = [
             'id' => $take_order->id,
             'total_price' => $take_order->total_price,
-            'order_sn' =>  $take_order->order_sn,
+            'order_sn' => $take_order->order_sn,
             'payment' => $take_order->payment,
             'trade_type' => 'CANCEL_TAKE_ORDER',
             'description' => '取消代拿任务',

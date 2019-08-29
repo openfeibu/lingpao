@@ -47,6 +47,19 @@ class RefundService
         switch($pay_from)
         {
             case 'TakeOrder':
+                $extra_price = $this->takeOrderExtraPriceRepository->where('take_order_id',$data['id'])->where('status','paid')->first();
+                if($extra_price)
+                {
+                    $extra_price_data = [
+                        'id' => $extra_price->id,
+                        'total_price' => $extra_price->total_price,
+                        'order_sn' =>  $extra_price->order_sn,
+                        'payment' => $extra_price->payment,
+                        'trade_type' => 'CANCEL_TAKE_ORDER',
+                        'description' => '取消代拿任务',
+                    ];
+                    return $this->takeOrderExtraPriceRefundHandle($extra_price_data);
+                }
                 return $this->takeOrderRefundHandle($data);
                 break;
             case 'CustomOrder':
@@ -59,45 +72,79 @@ class RefundService
     }
     public function takeOrderRefundHandle($data)
     {
-        if($data['payment'] == 'balance')
+        $status = false;
+        switch ($data['payment']){
+            case 'balance':
+                $result = $this->balance($data);
+                if($result['return_code'] == 'SUCCESS')
+                {
+                    $status = true;
+                }
+                break;
+            case 'wechat':
+                $result = $this->wechat($data);
+                $status = true;
+                Log::debug("代拿任务退款result:");
+                Log::debug($result);
+                break;
+        }
+
+        if($status)
         {
-            $result = $this->balance($data);
-            if($result['return_code'] == 'SUCCESS')
-            {
-                $this->takeOrderRepository->updateOrderStatus(['order_status' => 'cancel','order_cancel_status' => 'refunded'],$data['id']);
-                throw new \App\Exceptions\RequestSuccessException("取消任务成功，任务费用已原路退回，请注意查收!");
-            }
-
-        }else{
-            //TODO:在线支付退款
-            exit;
-            $trade = array(
-                'type' => 1,
-                'trade_type' => 'CANCEL_TAKE_ORDER',
-                'trade_status' => 'refunding',
-                'description' => '取消代拿任务',
-            );
-            $this->tradeRecordRepository->where('out_trade_no',$data['order_sn'])->updateData($trade);
-            $this->takeOrderRepository->updateOrderStatus(['order_status' => 'cancel'],$data['id']);
-
-            throw new \App\Exceptions\RequestSuccessException("取消任务成功，任务费用已原路退回，请注意查收");
+            $this->takeOrderRepository->updateOrderStatus(['order_status' => 'cancel','order_cancel_status' => 'refunded'],$data['id']);
+            $this->refundTrade($data);
+            throw new \App\Exceptions\RequestSuccessException("取消任务成功，任务费用已原路退回，请注意查收!");
         }
     }
+    public function takeOrderExtraPriceRefundHandle($data)
+    {
+        $status = false;
+
+        switch ($data['payment']){
+            case 'balance':
+                $result = $this->balance($data);
+                if($result['return_code'] == 'SUCCESS')
+                {
+                    $status = true;
+                }
+                break;
+            case 'wehcat':
+                $result = $this->wechat($data);
+                $status = true;
+                Log::debug("代拿任务服务费退款result:");
+                Log::debug($result);
+                break;
+        }
+        if($status)
+        {
+            $this->takeOrderExtraPriceRepository->update(['status' => 'refunded'], $data['id']);
+        }
+    }
+
     public function customOrderRefundHandle($data)
     {
-        if($data['payment'] == 'balance')
+        $status = false;
+        switch ($data['payment'])
         {
-            $result = $this->balance($data);
-            if($result['return_code'] == 'SUCCESS')
-            {
-                $this->customOrderRepository->updateOrderStatus(['order_status' => 'cancel','order_cancel_status' => 'refunded'],$data['id']);
-                throw new \App\Exceptions\RequestSuccessException("取消任务成功，任务费用已原路退回，请注意查收!");
-            }
+            case 'balance':
+                $result = $this->balance($data);
+                if($result['return_code'] == 'SUCCESS')
+                {
+                    $status = true;
+                }
+                break;
+            case 'wechat':
+                $result = $this->wechat($data);
 
-        }else{
-            //TODO:在线支付退款
-            exit;
-
+                $status = true;
+                Log::debug("帮帮忙任务退款result:");
+                Log::debug($result);
+                break;
+        }
+        if($status)
+        {
+            $this->customOrderRepository->updateOrderStatus(['order_status' => 'cancel','order_cancel_status' => 'refunded'],$data['id']);
+            throw new \App\Exceptions\RequestSuccessException("取消任务成功，任务费用已原路退回，请注意查收!");
         }
     }
     private function balance($data)
@@ -116,15 +163,44 @@ class RefundService
         $this->balanceRecordRepository->create($balanceData);
         $this->userRepository->update(['balance' => $new_balance],$this->user->id);
 
+        $this->refundTrade($data);
+        return [
+            'return_code' => 'SUCCESS',
+        ];
+    }
+    public function wechat($data)
+    {
+        $config = $this->getWechatConfig();
+
+        $app = Factory::payment($config);
+
+        $result = $app->refund->byOutTradeNumber($data['order_sn'], $data['order_sn'], $data['total_price'] * 100, $data['total_price'] * 100, [
+            'refund_desc' => $data['description'],
+        ]);
+
+        $this->refundTrade($data);
+
+        return $result;
+    }
+    public function refundTrade($data)
+    {
         $trade = array(
             'trade_status' => 'refunded',
             'type' => 1,
             'trade_type' => $data['trade_type'],
             'description' => $data['description'],
         );
-        $this->tradeRecordRepository->where('out_trade_no',$data['order_sn'])->updateData($trade);
+        $trade_record = $this->tradeRecordRepository->where('out_trade_no',$data['order_sn'])->orderBy('id','asc')->first();
+        $this->tradeRecordRepository->update($trade,$trade_record->id);
+    }
+    private function getWechatConfig()
+    {
         return [
-            'return_code' => 'SUCCESS',
+            'app_id' => config('wechat.mini_program.default.app_id'),
+            'mch_id' => config('wechat.payment.default.mch_id'),
+            'key' => config('wechat.payment.default.key'),
+            'cert_path' => config('wechat.payment.default.cert_path'),
+            'key_path' => config('wechat.payment.default.key_path') ,
         ];
     }
 }

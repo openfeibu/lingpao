@@ -37,6 +37,7 @@ class UserCouponController extends BaseController
         if($user_balance_coupon)
         {
             $user_balance_coupon_data = $user_balance_coupon->toArray();
+            $user_balance_coupon_data['balance_coupon_rate'] = setting('balance_coupon_rate');
         }
 
         $user_coupons = app(UserCoupon::class)

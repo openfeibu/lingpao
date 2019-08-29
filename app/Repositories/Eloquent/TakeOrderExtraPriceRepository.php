@@ -33,5 +33,4 @@ class TakeOrderExtraPriceRepository extends BaseRepository implements TakeOrderE
         return config('model.take_order.take_order_extra_price.model');
     }
 
-
 }
