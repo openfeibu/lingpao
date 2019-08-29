@@ -98,10 +98,10 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
         {
             throw new OutputServerMessageException('任务已过有效期');
         }
-        if(date('H:i') > $custom_order->best_time)
-        {
-            throw new OutputServerMessageException('任务已过期待时间');
-        }
+//        if(date('H:i') > $custom_order->best_time)
+//        {
+//            throw new OutputServerMessageException('任务已过期待时间');
+//        }
         try {
             $this->updateOrderStatus([
                 'order_status' => 'accepted',
