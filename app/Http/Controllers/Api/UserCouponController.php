@@ -36,7 +36,7 @@ class UserCouponController extends BaseController
             ->first();
         if($user_balance_coupon)
         {
-            $user_balance_coupon_data = $user_balance_coupon->toArray() ;
+            $user_balance_coupon_data = $user_balance_coupon->toArray();
         }
 
         $user_coupons = app(UserCoupon::class)
@@ -51,7 +51,7 @@ class UserCouponController extends BaseController
             ->get();
         $user_coupons_data = $user_coupons->toArray();
 
-        array_unshift($user_coupons_data,$user_balance_coupon_data);
+        $user_balance_coupon_data ? array_unshift($user_coupons_data,$user_balance_coupon_data) : '';
 
         return $this->response->success()->data($user_coupons_data)->json();
     }
