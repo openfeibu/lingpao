@@ -20,4 +20,5 @@ class UserBalanceCouponRepository extends BaseRepository implements UserBalanceC
         return config('model.coupon.user_balance_coupon.model');
     }
 
+    public function
 }

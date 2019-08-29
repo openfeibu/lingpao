@@ -2,21 +2,27 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
+use App\Repositories\Eloquent\UserAllCouponRepositoryInterface;
+use App\Repositories\Eloquent\UserBalanceCouponRepositoryInterface;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\BaseController;
 use App\Models\User;
 use \GuzzleHttp\Client;
-use Log;
+use Log,Event;
 use App\Helpers\Constants as Constants;
 use App\Services\WXBizDataCryptService;
 use App\Repositories\Eloquent\UserRepositoryInterface;
 
 class WeAppUserLoginController extends BaseController
 {
-    public function __construct(UserRepositoryInterface $userRepository)
+    public function __construct(UserRepositoryInterface $userRepository,
+                                UserBalanceCouponRepositoryInterface $userBalanceCouponRepository,
+                                UserAllCouponRepositoryInterface $userAllCouponRepository)
     {
         parent::__construct();
         $this->userRepository = $userRepository;
+        $this->userBalanceCouponRepository = $userBalanceCouponRepository;
+        $this->userAllCouponRepository = $userAllCouponRepository;
     }
     public function code(Request $request)
     {
@@ -31,6 +37,7 @@ class WeAppUserLoginController extends BaseController
         $this->storeUser($user_info, $token, $we_data['session_key']);
         $user = $this->userRepository->getUserByToken($token);
         $user = visible_data($user->toArray(),config('model.user.user.user_visible'));
+
         return $this->response->success()->data($user)->json();
     }
     public function login(Request $request)
@@ -127,13 +134,24 @@ class WeAppUserLoginController extends BaseController
                 'gender' => isset($user_info->gender) && !empty($user_info->gender) ? $user_info->gender : $res->gender,
             ]);
         } else {
-            User::create([
+            $user = User::create([
                 'open_id' => $user_info->openId,
                 'avatar_url' => $user_info->avatarUrl,
                 'nickname' => $user_info->nickName,
                 'session_key' => $session_key,
                 'token' => $token,
                 'gender' => isset($user_info->gender) && !empty($user_info->gender) ? $user_info->gender : 0,
+            ]);
+            $user_balance_coupon = $this->userBalanceCouponRepository->create([
+                'user_id' => $user->id,
+                'price' => setting('register_balance_coupon'),
+                'balance' => setting('register_balance_coupon'),
+            ]);
+            $this->userAllCouponRepository->create([
+                'user_id' => $user->id,
+                'type' => 'balance',
+                'objective_id' => $user_balance_coupon->id,
+                'objective_model' => 'UserBalanceCoupon'
             ]);
         }
     }

@@ -76,7 +76,7 @@ class PaymentNotifyController extends BaseController
                     'description' => '发布代拿',
                 );
                 $this->takeOrderRepository->updateOrderStatus(['order_status' => 'new'],$take_order->id);
-                $take_order->coupon_id ? $this->userAllCouponRepository->usedCoupon($take_order->coupon_id,$take_order->total_price) : '';
+                $take_order->coupon_id ? $this->userAllCouponRepository->usedCoupon($take_order->coupon_id,$take_order->coupon_price) : '';
                 break;
             case 'TAKEEXTRA':
                 $extra_price = $this->takeOrderExtraPriceRepository->where('order_sn',$out_trade_no)->first();
@@ -110,7 +110,7 @@ class PaymentNotifyController extends BaseController
                     'description' => '发布帮帮忙',
                 );
                 $this->customOrderRepository->updateOrderStatus(['order_status' => 'new'],$custom_order->id);
-                $custom_order->coupon_id ? $this->userAllCouponRepository->usedCoupon($custom_order->coupon_id,$custom_order->total_price) : '';
+                $custom_order->coupon_id ? $this->userAllCouponRepository->usedCoupon($custom_order->coupon_id,$custom_order->coupon_price) : '';
                 break;
             default:
                 break;

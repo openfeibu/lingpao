@@ -118,7 +118,8 @@ class CustomOrderController extends BaseController
             'trade_type' => 'CREATE_CUSTOM_ORDER',
             'payment' => $request->payment,
             'pay_from' => 'CustomOrder',
-            'user_coupon_id' => $coupon_id,
+            'coupon_id' => $coupon_id,
+            'coupon_price' => $coupon_price,
         ];
         $data = $this->payService->payHandle($data);
 

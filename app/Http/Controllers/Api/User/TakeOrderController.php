@@ -164,7 +164,8 @@ class TakeOrderController extends BaseController
             'trade_type' => 'CREATE_TAKE_ORDER',
             'payment' => $request->payment,
             'pay_from' => 'TakeOrder',
-            'user_coupon_id' => $coupon_id,
+            'coupon_id' => $coupon_id,
+            'coupon_price' => $coupon_price,
         ];
         $data = $this->payService->payHandle($data);
 

@@ -43,7 +43,8 @@ class UserAllCouponRepository extends BaseRepository implements UserAllCouponRep
                 {
                     throw new OutputServerMessageException('优惠券余额已为0');
                 }
-                $price = min(rid_two($total_price * floatval(setting('balance_coupon_rate')),$user_balance_coupon->balance));
+                $price = min([rid_two($total_price * floatval(setting('balance_coupon_rate'))),$user_balance_coupon->balance]);
+
                 return [
                     'price' => $price,
                     'name' => '储蓄优惠券',

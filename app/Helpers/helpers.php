@@ -1082,5 +1082,5 @@ function checkBalance($user,$price)
 //舍去保留两位
 function rid_two($num)
 {
-    floor($num * 100) / 100;
+    return floor($num * 100) / 100;
 }

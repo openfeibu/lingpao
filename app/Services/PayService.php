@@ -84,7 +84,7 @@ class PayService
                 if($result['return_code'] == 'SUCCESS')
                 {
                     $this->takeOrderRepository->updateOrderStatus(['order_status' => 'new'],$data['take_order_id']);
-                    $data['user_coupon_id'] ? $this->userAllCouponRepository->usedCoupon($data['user_coupon_id'],$data['total_price']) : '';
+                    $data['coupon_id'] ? $this->userAllCouponRepository->usedCoupon($data['coupon_id'],$data['coupon_price']) : '';
                     return [
                         'task_order_id' => $data['task_order_id'],
                         'take_order_id' => $data['take_order_id'],
@@ -138,7 +138,7 @@ class PayService
                 {
                     $this->customOrderRepository->updateOrderStatus(['order_status' => 'new'],$data['custom_order_id']);
                     //$data['user_coupon_id'] ? $this->userCouponRepository->update(['status' => 'used'],$data['user_coupon_id']) : '';
-                    $data['user_coupon_id'] ? $this->userAllCouponRepository->usedCoupon($data['user_coupon_id'],$data['total_price']) : '';
+                    $data['user_coupon_id'] ? $this->userAllCouponRepository->usedCoupon($data['coupon_id'],$data['coupon_price']) : '';
                     return [
                         'task_order_id' => $data['task_order_id'],
                         'custom_order_id' => $data['custom_order_id'],
