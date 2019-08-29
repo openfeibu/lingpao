@@ -9,6 +9,7 @@ use App\Exceptions\OutputServerMessageException;
 use App\Models\CustomOrderCategory;
 use App\Models\User;
 use App\Repositories\Eloquent\CustomOrderRepositoryInterface;
+use App\Repositories\Eloquent\UserAllCouponRepositoryInterface;
 use App\Repositories\Eloquent\UserCouponRepositoryInterface;
 use App\Repositories\Eloquent\UserRepositoryInterface;
 use App\Repositories\Eloquent\TaskOrderRepositoryInterface;
@@ -28,6 +29,7 @@ class CustomOrderController extends BaseController
 
     public function __construct(CustomOrderRepositoryInterface $customOrderRepository,
                                 UserCouponRepositoryInterface $userCouponRepository,
+                                UserAllCouponRepositoryInterface $userAllCouponRepository,
                                 UserRepositoryInterface $userRepository,
                                 TaskOrderRepositoryInterface $taskOrderRepository,
                                 RemarkRepositoryInterface $remarkRepository,
@@ -39,6 +41,7 @@ class CustomOrderController extends BaseController
         $this->userRepository = $userRepository;
         $this->taskOrderRepository = $taskOrderRepository;
         $this->customOrderRepository = $customOrderRepository;
+        $this->userAllCouponRepository = $userAllCouponRepository;
         $this->payService = $payService;
     }
 

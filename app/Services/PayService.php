@@ -138,7 +138,7 @@ class PayService
                 {
                     $this->customOrderRepository->updateOrderStatus(['order_status' => 'new'],$data['custom_order_id']);
                     //$data['user_coupon_id'] ? $this->userCouponRepository->update(['status' => 'used'],$data['user_coupon_id']) : '';
-                    $data['user_coupon_id'] ? $this->userAllCouponRepository->usedCoupon($data['coupon_id'],$data['coupon_price']) : '';
+                    $data['coupon_id'] ? $this->userAllCouponRepository->usedCoupon($data['coupon_id'],$data['coupon_price']) : '';
                     return [
                         'task_order_id' => $data['task_order_id'],
                         'custom_order_id' => $data['custom_order_id'],

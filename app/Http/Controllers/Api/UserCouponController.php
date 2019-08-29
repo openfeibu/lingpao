@@ -29,7 +29,7 @@ class UserCouponController extends BaseController
     {
         $user_balance_coupon_data = [];
         $user_balance_coupon = app(UserBalanceCoupon::class)
-            ->select(DB::raw("uac.id,user_balance_coupons.*,user_balance_coupons.id as user_balance_coupon_id,'balance_coupon' as type"))
+            ->select(DB::raw("uac.id,user_balance_coupons.id as user_balance_coupon_id,user_balance_coupons.user_id, user_balance_coupons.price, user_balance_coupons.balance,'balance_coupon' as type"))
             ->join('user_all_coupons as uac','uac.objective_id','=','user_balance_coupons.id')
             ->where('user_balance_coupons.user_id',$this->user->id)
             ->where('uac.objective_model','UserBalanceCoupon')
@@ -41,7 +41,7 @@ class UserCouponController extends BaseController
         }
 
         $user_coupons = app(UserCoupon::class)
-            ->select(DB::raw("uac.id,user_coupons.*,user_coupons.id as user_coupon_id,'common_coupon' as type"))
+            ->select(DB::raw("uac.id,user_coupons.id as user_coupon_id,user_coupons.user_id, user_coupons.price,user_coupons.min_price,user_coupons.receive,user_coupons.overdue,user_coupons.status,'common_coupon' as type"))
             ->join('user_all_coupons as uac','uac.objective_id','=','user_coupons.id')
             ->where('uac.objective_model','UserCoupon')
             ->where('user_coupons.user_id',$this->user->id)
