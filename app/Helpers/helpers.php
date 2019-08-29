@@ -1062,6 +1062,9 @@ function get_task_objective_model($objective_model)
         case "TakeOrder":
             return app(\App\Models\TakeOrder::class);
             break;
+        case "CustomOrder":
+            return app(\App\Models\CustomOrder::class);
+            break;
     }
 }
 
