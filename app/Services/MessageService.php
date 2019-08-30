@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Repositories\Eloquent\UserRepositoryInterface;
-use App\Repositories\MessageRepositoryInterface;
+use EasyWeChat\Factory;
 
 class MessageService
 {
@@ -14,43 +14,57 @@ class MessageService
 
 	protected $userRepository;
 
-	protected $messageRepository;
-
 	function __construct(Request $request,
-                         UserRepositoryInterface $userRepository,
-                         MessageRepositoryInterface $messageRepository
+                         UserRepositoryInterface $userRepository
 						 )
 	{
 		$this->request = $request;
 		$this->userRepository = $userRepository;
-		$this->messageRepository = $messageRepository;
 	}
-
-	/**
-	 * 获取纸条列表
-	 */
-	public function getMessageList(array $param)
-	{
-		$param['uid'] = $this->userRepository->getUser()->uid;
-		return $this->messageRepository->getMessageList($param);
-	}
-
-
-	/**
-	 * 为指定的用户创建纸条
-	 */
-	public function SystemMessageSingleOne($user_id, $content, $type = '系统通知', $name = '系统')
-	{
-		$this->messageRepository->createMessageSingleOne($user_id, '1', $type, $name, $content);
-		return true;
-	}
-
-	/**y
-	 * 为当前用户创建纸条
-	 */
-	public function SystemMessageCurrentUser($content, $type = '系统通知', $name = '系统')
-	{
-		$this->SystemMessage2SingleOne(User::tokenAuth()->user_id, $content, $push = false, $type, $name);
-		return true;
-	}
+    public function sendMessage($data,$client='weapp')
+    {
+        switch ($client)
+        {
+            case 'weapp':
+                return $this->sendWeAppMessage($data);
+                break;
+        }
+    }
+    public function sendWeAppMessage($data)
+    {
+        $config = [
+            'app_id' => config('wechat.mini_program.default.app_id'),
+            'token' => config('wechat.mini_program.default.token'),
+            'aes_key'=> config('wechat.mini_program.default.aes_key'),
+            'mch_id' => config('wechat.payment.default.mch_id'),
+            'key' => config('wechat.payment.default.key'),
+        ];
+        $app = Factory::payment($config);
+        switch ($data['type'])
+        {
+            case 'accept_order':
+                $template_id = '';
+                $page = '';
+                break;
+            case 'deliverer_cancel_order':
+                $template_id = '';
+                $page = '';
+                break;
+            case 'user_agree_cancel_order':
+                $template_id = '';
+                $page = '';
+                break;
+        }
+        $app->template_message->send([
+            'touser' => $data['open_id'],
+            'template_id' => $template_id,
+            'page' => 'index',
+            'form_id' => $data['form_id'],
+            'data' => [
+                'keyword1' => 'VALUE',
+                'keyword2' => 'VALUE2',
+                // ...
+            ],
+        ]);
+    }
 }
