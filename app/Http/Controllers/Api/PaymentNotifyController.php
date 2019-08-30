@@ -59,63 +59,71 @@ class PaymentNotifyController extends BaseController
     {
         $order_type_arr = explode('-',$out_trade_no);
         $order_type = $order_type_arr[0];
+        $trade = [];
         switch ($order_type)
         {
             case 'TAKE':
-                $take_order = $this->takeOrderRepository->where('order_sn',$out_trade_no)->first(['id','user_id','total_price','payment','coupon_id']);
-                $trade = array(
-                    'user_id' => $take_order->user_id,
-                    'out_trade_no' => $out_trade_no,
-                    'trade_no' => $trade_no,
-                    'trade_status' => 'success',
-                    'type' => -1,
-                    'pay_from' => 'TakeOrder',
-                    'trade_type' => 'CREATE_TAKE_ORDER',
-                    'price' => $take_order->total_price,
-                    'payment' => $take_order->payment,
-                    'description' => '发布代拿',
-                );
-                $this->takeOrderRepository->updateOrderStatus(['order_status' => 'new'],$take_order->id);
-                $take_order->coupon_id ? $this->userAllCouponRepository->usedCoupon($take_order->coupon_id,$take_order->coupon_price) : '';
+                $take_order = $this->takeOrderRepository->where('order_sn',$out_trade_no)->first(['id','user_id','total_price','payment','order_status','coupon_id']);
+                if($take_order->order_status == 'unpaid')
+                {
+                    $trade = array(
+                        'user_id' => $take_order->user_id,
+                        'out_trade_no' => $out_trade_no,
+                        'trade_no' => $trade_no,
+                        'trade_status' => 'success',
+                        'type' => -1,
+                        'pay_from' => 'TakeOrder',
+                        'trade_type' => 'CREATE_TAKE_ORDER',
+                        'price' => $take_order->total_price,
+                        'payment' => $take_order->payment,
+                        'description' => '发布代拿',
+                    );
+                    $this->takeOrderRepository->updateOrderStatus(['order_status' => 'new'],$take_order->id);
+                    $take_order->coupon_id ? $this->userAllCouponRepository->usedCoupon($take_order->coupon_id,$take_order->coupon_price) : '';
+                }
                 break;
             case 'TAKEEXTRA':
                 $extra_price = $this->takeOrderExtraPriceRepository->where('order_sn',$out_trade_no)->first();
-                $take_order = $this->takeOrderRepository->where('id',$extra_price->take_order_id)->first(['id','user_id','total_price','payment','coupon_id']);
-                $trade = array(
-                    'user_id' => $take_order->user_id,
-                    'out_trade_no' => $out_trade_no,
-                    'trade_no' => $trade_no,
-                    'trade_status' => 'success',
-                    'type' => -1,
-                    'pay_from' => 'TakeOrderExtraPrice',
-                    'trade_type' => 'CREATE_TAKE_ORDER',
-                    'price' => $extra_price->total_price,
-                    'payment' => $extra_price->payment,
-                    'description' => '代拿增加服务费',
-                );
-                $this->takeOrderExtraPriceRepository->update(['status' => 'paid'],$extra_price->id);
+                if($extra_price->status == 'unpaid') {
+                    $take_order = $this->takeOrderRepository->where('id', $extra_price->take_order_id)->first(['id', 'user_id', 'total_price', 'payment', 'status', 'coupon_id']);
+                    $trade = array(
+                        'user_id' => $take_order->user_id,
+                        'out_trade_no' => $out_trade_no,
+                        'trade_no' => $trade_no,
+                        'trade_status' => 'success',
+                        'type' => -1,
+                        'pay_from' => 'TakeOrderExtraPrice',
+                        'trade_type' => 'CREATE_TAKE_ORDER',
+                        'price' => $extra_price->total_price,
+                        'payment' => $extra_price->payment,
+                        'description' => '代拿增加服务费',
+                    );
+                    $this->takeOrderExtraPriceRepository->update(['status' => 'paid'], $extra_price->id);
+                }
                 break;
             case 'CUSTOM':
-                $custom_order = $this->customOrderRepository->where('order_sn',$out_trade_no)->first(['id','user_id','total_price','payment','coupon_id']);
-                $trade = array(
-                    'user_id' => $custom_order->user_id,
-                    'out_trade_no' => $out_trade_no,
-                    'trade_no' => $trade_no,
-                    'trade_status' => 'success',
-                    'type' => -1,
-                    'pay_from' => 'CustomOrder',
-                    'trade_type' => 'CREATE_CUSTOM_ORDER',
-                    'price' => $custom_order->total_price,
-                    'payment' => $custom_order->payment,
-                    'description' => '发布帮帮忙',
-                );
-                $this->customOrderRepository->updateOrderStatus(['order_status' => 'new'],$custom_order->id);
-                $custom_order->coupon_id ? $this->userAllCouponRepository->usedCoupon($custom_order->coupon_id,$custom_order->coupon_price) : '';
+                $custom_order = $this->customOrderRepository->where('order_sn',$out_trade_no)->first(['id','user_id','total_price','payment','order_status','coupon_id']);
+                if($custom_order->order_status == 'unpaid') {
+                    $trade = array(
+                        'user_id' => $custom_order->user_id,
+                        'out_trade_no' => $out_trade_no,
+                        'trade_no' => $trade_no,
+                        'trade_status' => 'success',
+                        'type' => -1,
+                        'pay_from' => 'CustomOrder',
+                        'trade_type' => 'CREATE_CUSTOM_ORDER',
+                        'price' => $custom_order->total_price,
+                        'payment' => $custom_order->payment,
+                        'description' => '发布帮帮忙',
+                    );
+                    $this->customOrderRepository->updateOrderStatus(['order_status' => 'new'], $custom_order->id);
+                    $custom_order->coupon_id ? $this->userAllCouponRepository->usedCoupon($custom_order->coupon_id, $custom_order->coupon_price) : '';
+                }
                 break;
             default:
                 break;
         }
-        $this->tradeRecordRepository->create($trade);
+        $trade ? $this->tradeRecordRepository->create($trade) : '';
         return "true";
     }
 }
