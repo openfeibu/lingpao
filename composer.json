@@ -24,7 +24,10 @@
         "prettus/l5-repository": "^2.6",
         "spatie/laravel-activitylog": "^2.5",
         "teepluss/theme": "dev-master",
-        "tymon/jwt-auth": "2.0.x@dev"
+        "tymon/jwt-auth": "2.0.x@dev",
+        "workerman/gateway-worker": "~3.0",
+        "workerman/gatewayclient": "~3.0",
+        "workerman/workerman": "~3.5"
     },
     "require-dev": {
         "filp/whoops": "^2.0",
