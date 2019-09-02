@@ -1,0 +1,509 @@
+2019-08-30 18:27:25 pid:8810 Workerman[gateway-worker:server] start in DEBUG mode
+2019-08-30 18:27:42 pid:8810 Workerman[artisan] stopping ...
+2019-08-30 18:27:42 pid:8810 Workerman[artisan] has been stopped
+2019-08-30 19:13:26 pid:9280 Workerman[gateway-worker:server] start in DEBUG mode
+2019-08-30 19:13:31 pid:9280 Workerman[artisan] stopping ...
+2019-08-30 19:13:31 pid:9280 Workerman[artisan] has been stopped
+2019-08-30 19:15:28 pid:9293 Workerman[gateway-worker:server] start in DEBUG mode
+2019-08-30 19:15:31 pid:9293 Workerman[artisan] stopping ...
+2019-08-30 19:15:31 pid:9293 Workerman[artisan] has been stopped
+2019-09-01 11:26:58 pid:20532 Workerman[gateway-worker:server] start in DEBUG mode
+2019-09-01 11:30:41 pid:20532 Workerman[artisan] stopping ...
+2019-09-01 11:30:41 pid:20532 Workerman[artisan] has been stopped
+2019-09-01 11:36:32 pid:2477 Workerman[gateway-worker:server] start in DEBUG mode
+2019-09-01 22:29:16 pid:2477 Workerman[artisan] stopping ...
+2019-09-01 22:29:16 pid:2477 Workerman[artisan] has been stopped
+2019-09-02 10:15:28 pid:10127 Workerman[gateway-worker:server] start in DEBUG mode
+2019-09-02 10:18:00 pid:10127 Workerman[artisan] stopping ...
+2019-09-02 10:18:00 pid:10127 Workerman[artisan] has been stopped
+2019-09-02 10:20:14 pid:2374 Workerman[gateway-worker:server] start in DEBUG mode
+2019-09-02 10:34:34 pid:2374 Workerman[artisan] stopping ...
+2019-09-02 10:34:34 pid:2374 Workerman[artisan] has been stopped
+2019-09-02 10:43:15 pid:2759 Workerman[gateway-worker:server] start in DAEMON mode
+2019-09-02 11:05:10 pid:2766 ErrorException: Undefined property: stdClass::$token in /home/vagrant/Code/lingpao/app/Events/GatewayWorker/Events.php:40
+Stack trace:
+#0 /home/vagrant/Code/lingpao/app/Events/GatewayWorker/Events.php(40): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError(8, 'Undefined prope...', '/home/vagrant/C...', 40, Array)
+#1 [internal function]: App\Events\GatewayWorker\Events::onMessage('7f00000108fc000...', Object(stdClass))
+#2 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(403): call_user_func('App\\Events\\Gate...', '7f00000108fc000...', '{"mode":"say","...')
+#3 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Connection/TcpConnection.php(658): GatewayWorker\BusinessWorker->onGatewayMessage(Object(Workerman\Connection\AsyncTcpConnection), Array)
+#4 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Events/Select.php(294): Workerman\Connection\TcpConnection->baseRead(Resource id #601)
+#5 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(2367): Workerman\Events\Select->loop()
+#6 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(197): Workerman\Worker->run()
+#7 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1490): GatewayWorker\BusinessWorker->run()
+#8 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1320): Workerman\Worker::forkOneWorkerForLinux(Object(GatewayWorker\BusinessWorker))
+#9 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1294): Workerman\Worker::forkWorkersForLinux()
+#10 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(509): Workerman\Worker::forkWorkers()
+#11 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(61): Workerman\Worker::runAll()
+#12 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(53): App\Console\Commands\GatewayWorkerServer->start()
+#13 [internal function]: App\Console\Commands\GatewayWorkerServer->handle()
+#14 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(29): call_user_func_array(Array, Array)
+#15 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(87): Illuminate\Container\BoundMethod::Illuminate\Container\{closure}()
+#16 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(31): Illuminate\Container\BoundMethod::callBoundMethod(Object(Illuminate\Foundation\Application), Array, Object(Closure))
+#17 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/Container.php(564): Illuminate\Container\BoundMethod::call(Object(Illuminate\Foundation\Application), Array, Array, NULL)
+#18 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(183): Illuminate\Container\Container->call(Array)
+#19 /home/vagrant/Code/lingpao/vendor/symfony/console/Command/Command.php(252): Illuminate\Console\Command->execute(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#20 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(170): Symfony\Component\Console\Command\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#21 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(865): Illuminate\Console\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#22 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(241): Symfony\Component\Console\Application->doRunCommand(Object(App\Console\Commands\GatewayWorkerServer), Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#23 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(143): Symfony\Component\Console\Application->doRun(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#24 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Application.php(89): Symfony\Component\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#25 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(122): Illuminate\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#26 /home/vagrant/Code/lingpao/artisan(37): Illuminate\Foundation\Console\Kernel->handle(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#27 {main}
+2019-09-02 11:05:10 pid:2766 Worker[2766] process terminated
+2019-09-02 11:05:10 pid:2764 worker[BusinessWorker:2766] exit with status 64000
+2019-09-02 11:05:29 pid:2899 Worker[2899] process terminated
+2019-09-02 11:05:55 pid:2901 Worker[2901] process terminated
+2019-09-02 11:07:02 pid:2902 Worker[2902] process terminated
+2019-09-02 11:33:13 pid:2904 PDOException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'to_user_id' in 'where clause' in /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Database/Connection.php:326
+Stack trace:
+#0 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Database/Connection.php(326): PDO->prepare('select `client_...')
+#1 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Database/Connection.php(657): Illuminate\Database\Connection->Illuminate\Database\{closure}('select `client_...', Array)
+#2 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Database/Connection.php(624): Illuminate\Database\Connection->runQueryCallback('select `client_...', Array, Object(Closure))
+#3 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Database/Connection.php(333): Illuminate\Database\Connection->run('select `client_...', Array, Object(Closure))
+#4 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php(1909): Illuminate\Database\Connection->select('select `client_...', Array, true)
+#5 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php(1894): Illuminate\Database\Query\Builder->runSelect()
+#6 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php(483): Illuminate\Database\Query\Builder->get(Array)
+#7 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php(467): Illuminate\Database\Eloquent\Builder->getModels(Array)
+#8 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Database/Concerns/BuildsQueries.php(77): Illuminate\Database\Eloquent\Builder->get(Array)
+#9 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php(449): Illuminate\Database\Eloquent\Builder->first(Array)
+#10 /home/vagrant/Code/lingpao/app/Events/GatewayWorker/Events.php(122): Illuminate\Database\Eloquent\Builder->value('client_id')
+#11 [internal function]: App\Events\GatewayWorker\Events::onMessage('7f00000108fc000...', Object(stdClass))
+#12 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(403): call_user_func('App\\Events\\Gate...', '7f00000108fc000...', '{"content":"123...')
+#13 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Connection/TcpConnection.php(658): GatewayWorker\BusinessWorker->onGatewayMessage(Object(Workerman\Connection\AsyncTcpConnection), Array)
+#14 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Events/Select.php(294): Workerman\Connection\TcpConnection->baseRead(Resource id #602)
+#15 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(2367): Workerman\Events\Select->loop()
+#16 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(197): Workerman\Worker->run()
+#17 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1490): GatewayWorker\BusinessWorker->run()
+#18 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1320): Workerman\Worker::forkOneWorkerForLinux(Object(GatewayWorker\BusinessWorker))
+#19 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1294): Workerman\Worker::forkWorkersForLinux()
+#20 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1624): Workerman\Worker::forkWorkers()
+#21 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1573): Workerman\Worker::monitorWorkersForLinux()
+#22 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(511): Workerman\Worker::monitorWorkers()
+#23 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(61): Workerman\Worker::runAll()
+#24 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(53): App\Console\Commands\GatewayWorkerServer->start()
+#25 [internal function]: App\Console\Commands\GatewayWorkerServer->handle()
+#26 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(29): call_user_func_array(Array, Array)
+#27 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(87): Illuminate\Container\BoundMethod::Illuminate\Container\{closure}()
+#28 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(31): Illuminate\Container\BoundMethod::callBoundMethod(Object(Illuminate\Foundation\Application), Array, Object(Closure))
+#29 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/Container.php(564): Illuminate\Container\BoundMethod::call(Object(Illuminate\Foundation\Application), Array, Array, NULL)
+#30 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(183): Illuminate\Container\Container->call(Array)
+#31 /home/vagrant/Code/lingpao/vendor/symfony/console/Command/Command.php(252): Illuminate\Console\Command->execute(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#32 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(170): Symfony\Component\Console\Command\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#33 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(865): Illuminate\Console\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#34 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(241): Symfony\Component\Console\Application->doRunCommand(Object(App\Console\Commands\GatewayWorkerServer), Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#35 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(143): Symfony\Component\Console\Application->doRun(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#36 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Application.php(89): Symfony\Component\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#37 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(122): Illuminate\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#38 /home/vagrant/Code/lingpao/artisan(37): Illuminate\Foundation\Console\Kernel->handle(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#39 {main}
+
+Next Illuminate\Database\QueryException: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'to_user_id' in 'where clause' (SQL: select `client_id` from `users` where `to_user_id` = 7 limit 1) in /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Database/Connection.php:664
+Stack trace:
+#0 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Database/Connection.php(624): Illuminate\Database\Connection->runQueryCallback('select `client_...', Array, Object(Closure))
+#1 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Database/Connection.php(333): Illuminate\Database\Connection->run('select `client_...', Array, Object(Closure))
+#2 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php(1909): Illuminate\Database\Connection->select('select `client_...', Array, true)
+#3 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Database/Query/Builder.php(1894): Illuminate\Database\Query\Builder->runSelect()
+#4 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php(483): Illuminate\Database\Query\Builder->get(Array)
+#5 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php(467): Illuminate\Database\Eloquent\Builder->getModels(Array)
+#6 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Database/Concerns/BuildsQueries.php(77): Illuminate\Database\Eloquent\Builder->get(Array)
+#7 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Database/Eloquent/Builder.php(449): Illuminate\Database\Eloquent\Builder->first(Array)
+#8 /home/vagrant/Code/lingpao/app/Events/GatewayWorker/Events.php(122): Illuminate\Database\Eloquent\Builder->value('client_id')
+#9 [internal function]: App\Events\GatewayWorker\Events::onMessage('7f00000108fc000...', Object(stdClass))
+#10 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(403): call_user_func('App\\Events\\Gate...', '7f00000108fc000...', '{"content":"123...')
+#11 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Connection/TcpConnection.php(658): GatewayWorker\BusinessWorker->onGatewayMessage(Object(Workerman\Connection\AsyncTcpConnection), Array)
+#12 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Events/Select.php(294): Workerman\Connection\TcpConnection->baseRead(Resource id #602)
+#13 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(2367): Workerman\Events\Select->loop()
+#14 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(197): Workerman\Worker->run()
+#15 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1490): GatewayWorker\BusinessWorker->run()
+#16 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1320): Workerman\Worker::forkOneWorkerForLinux(Object(GatewayWorker\BusinessWorker))
+#17 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1294): Workerman\Worker::forkWorkersForLinux()
+#18 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1624): Workerman\Worker::forkWorkers()
+#19 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1573): Workerman\Worker::monitorWorkersForLinux()
+#20 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(511): Workerman\Worker::monitorWorkers()
+#21 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(61): Workerman\Worker::runAll()
+#22 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(53): App\Console\Commands\GatewayWorkerServer->start()
+#23 [internal function]: App\Console\Commands\GatewayWorkerServer->handle()
+#24 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(29): call_user_func_array(Array, Array)
+#25 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(87): Illuminate\Container\BoundMethod::Illuminate\Container\{closure}()
+#26 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(31): Illuminate\Container\BoundMethod::callBoundMethod(Object(Illuminate\Foundation\Application), Array, Object(Closure))
+#27 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/Container.php(564): Illuminate\Container\BoundMethod::call(Object(Illuminate\Foundation\Application), Array, Array, NULL)
+#28 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(183): Illuminate\Container\Container->call(Array)
+#29 /home/vagrant/Code/lingpao/vendor/symfony/console/Command/Command.php(252): Illuminate\Console\Command->execute(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#30 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(170): Symfony\Component\Console\Command\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#31 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(865): Illuminate\Console\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#32 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(241): Symfony\Component\Console\Application->doRunCommand(Object(App\Console\Commands\GatewayWorkerServer), Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#33 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(143): Symfony\Component\Console\Application->doRun(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#34 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Application.php(89): Symfony\Component\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#35 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(122): Illuminate\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#36 /home/vagrant/Code/lingpao/artisan(37): Illuminate\Foundation\Console\Kernel->handle(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#37 {main}
+2019-09-02 11:33:13 pid:2904 Worker[2904] process terminated
+2019-09-02 11:33:13 pid:2764 worker[BusinessWorker:2904] exit with status 64000
+2019-09-02 13:18:50 pid:3311 process_timeout:
+#1 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Events/Select.php(268): pcntl_signal_dispatch()
+#2 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(2367): Workerman\Events\Select->loop()
+#3 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(197): Workerman\Worker->run()
+#4 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1490): GatewayWorker\BusinessWorker->run()
+#5 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1320): Workerman\Worker::forkOneWorkerForLinux(Object(GatewayWorker\BusinessWorker))
+#6 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1294): Workerman\Worker::forkWorkersForLinux()
+#7 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1624): Workerman\Worker::forkWorkers()
+#8 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1573): Workerman\Worker::monitorWorkersForLinux()
+#9 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(511): Workerman\Worker::monitorWorkers()
+#10 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(61): Workerman\Worker::runAll()
+#11 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(53): App\Console\Commands\GatewayWorkerServer->start()
+#12 [internal function]: App\Console\Commands\GatewayWorkerServer->handle()
+#13 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(29): call_user_func_array(Array, Array)
+#14 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(87): Illuminate\Container\BoundMethod::Illuminate\Container\{closure}()
+#15 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(31): Illuminate\Container\BoundMethod::callBoundMethod(Object(Illuminate\Foundation\Application), Array, Object(Closure))
+#16 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/Container.php(564): Illuminate\Container\BoundMethod::call(Object(Illuminate\Foundation\Application), Array, Array, NULL)
+#17 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(183): Illuminate\Container\Container->call(Array)
+#18 /home/vagrant/Code/lingpao/vendor/symfony/console/Command/Command.php(252): Illuminate\Console\Command->execute(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#19 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(170): Symfony\Component\Console\Command\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#20 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(865): Illuminate\Console\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#21 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(241): Symfony\Component\Console\Application->doRunCommand(Object(App\Console\Commands\GatewayWorkerServer), Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#22 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(143): Symfony\Component\Console\Application->doRun(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#23 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Application.php(89): Symfony\Component\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#24 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(122): Illuminate\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#25 /home/vagrant/Code/lingpao/artisan(37): Illuminate\Foundation\Console\Kernel->handle(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#26 {main}
+
+2019-09-02 14:04:12 pid:4294 process_timeout:
+#1 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Events/Select.php(268): pcntl_signal_dispatch()
+#2 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(2367): Workerman\Events\Select->loop()
+#3 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(197): Workerman\Worker->run()
+#4 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1490): GatewayWorker\BusinessWorker->run()
+#5 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1320): Workerman\Worker::forkOneWorkerForLinux(Object(GatewayWorker\BusinessWorker))
+#6 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1294): Workerman\Worker::forkWorkersForLinux()
+#7 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1624): Workerman\Worker::forkWorkers()
+#8 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1573): Workerman\Worker::monitorWorkersForLinux()
+#9 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(511): Workerman\Worker::monitorWorkers()
+#10 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(61): Workerman\Worker::runAll()
+#11 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(53): App\Console\Commands\GatewayWorkerServer->start()
+#12 [internal function]: App\Console\Commands\GatewayWorkerServer->handle()
+#13 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(29): call_user_func_array(Array, Array)
+#14 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(87): Illuminate\Container\BoundMethod::Illuminate\Container\{closure}()
+#15 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(31): Illuminate\Container\BoundMethod::callBoundMethod(Object(Illuminate\Foundation\Application), Array, Object(Closure))
+#16 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/Container.php(564): Illuminate\Container\BoundMethod::call(Object(Illuminate\Foundation\Application), Array, Array, NULL)
+#17 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(183): Illuminate\Container\Container->call(Array)
+#18 /home/vagrant/Code/lingpao/vendor/symfony/console/Command/Command.php(252): Illuminate\Console\Command->execute(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#19 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(170): Symfony\Component\Console\Command\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#20 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(865): Illuminate\Console\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#21 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(241): Symfony\Component\Console\Application->doRunCommand(Object(App\Console\Commands\GatewayWorkerServer), Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#22 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(143): Symfony\Component\Console\Application->doRun(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#23 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Application.php(89): Symfony\Component\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#24 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(122): Illuminate\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#25 /home/vagrant/Code/lingpao/artisan(37): Illuminate\Foundation\Console\Kernel->handle(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#26 {main}
+
+2019-09-02 16:13:46 pid:4570 process_timeout:
+#1 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Events/Select.php(268): pcntl_signal_dispatch()
+#2 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(2367): Workerman\Events\Select->loop()
+#3 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(197): Workerman\Worker->run()
+#4 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1490): GatewayWorker\BusinessWorker->run()
+#5 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1320): Workerman\Worker::forkOneWorkerForLinux(Object(GatewayWorker\BusinessWorker))
+#6 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1294): Workerman\Worker::forkWorkersForLinux()
+#7 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1624): Workerman\Worker::forkWorkers()
+#8 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1573): Workerman\Worker::monitorWorkersForLinux()
+#9 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(511): Workerman\Worker::monitorWorkers()
+#10 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(61): Workerman\Worker::runAll()
+#11 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(53): App\Console\Commands\GatewayWorkerServer->start()
+#12 [internal function]: App\Console\Commands\GatewayWorkerServer->handle()
+#13 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(29): call_user_func_array(Array, Array)
+#14 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(87): Illuminate\Container\BoundMethod::Illuminate\Container\{closure}()
+#15 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(31): Illuminate\Container\BoundMethod::callBoundMethod(Object(Illuminate\Foundation\Application), Array, Object(Closure))
+#16 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/Container.php(564): Illuminate\Container\BoundMethod::call(Object(Illuminate\Foundation\Application), Array, Array, NULL)
+#17 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(183): Illuminate\Container\Container->call(Array)
+#18 /home/vagrant/Code/lingpao/vendor/symfony/console/Command/Command.php(252): Illuminate\Console\Command->execute(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#19 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(170): Symfony\Component\Console\Command\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#20 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(865): Illuminate\Console\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#21 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(241): Symfony\Component\Console\Application->doRunCommand(Object(App\Console\Commands\GatewayWorkerServer), Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#22 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(143): Symfony\Component\Console\Application->doRun(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#23 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Application.php(89): Symfony\Component\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#24 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(122): Illuminate\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#25 /home/vagrant/Code/lingpao/artisan(37): Illuminate\Foundation\Console\Kernel->handle(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#26 {main}
+
+2019-09-02 17:07:07 pid:6447 Workerman[gateway-worker:server] restart 
+2019-09-02 17:07:07 pid:6447 Workerman[gateway-worker:server] is stopping ...
+2019-09-02 17:07:07 pid:2764 Workerman[artisan] stopping ...
+2019-09-02 17:07:07 pid:2764 Workerman[artisan] has been stopped
+2019-09-02 17:07:07 pid:6447 Workerman[gateway-worker:server] stop success
+2019-09-02 17:49:19 pid:6452 process_timeout:
+#1 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Events/Select.php(268): pcntl_signal_dispatch()
+#2 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(2367): Workerman\Events\Select->loop()
+#3 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(197): Workerman\Worker->run()
+#4 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1490): GatewayWorker\BusinessWorker->run()
+#5 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1320): Workerman\Worker::forkOneWorkerForLinux(Object(GatewayWorker\BusinessWorker))
+#6 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1294): Workerman\Worker::forkWorkersForLinux()
+#7 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(509): Workerman\Worker::forkWorkers()
+#8 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(61): Workerman\Worker::runAll()
+#9 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(53): App\Console\Commands\GatewayWorkerServer->start()
+#10 [internal function]: App\Console\Commands\GatewayWorkerServer->handle()
+#11 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(29): call_user_func_array(Array, Array)
+#12 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(87): Illuminate\Container\BoundMethod::Illuminate\Container\{closure}()
+#13 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(31): Illuminate\Container\BoundMethod::callBoundMethod(Object(Illuminate\Foundation\Application), Array, Object(Closure))
+#14 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/Container.php(564): Illuminate\Container\BoundMethod::call(Object(Illuminate\Foundation\Application), Array, Array, NULL)
+#15 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(183): Illuminate\Container\Container->call(Array)
+#16 /home/vagrant/Code/lingpao/vendor/symfony/console/Command/Command.php(252): Illuminate\Console\Command->execute(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#17 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(170): Symfony\Component\Console\Command\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#18 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(865): Illuminate\Console\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#19 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(241): Symfony\Component\Console\Application->doRunCommand(Object(App\Console\Commands\GatewayWorkerServer), Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#20 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(143): Symfony\Component\Console\Application->doRun(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#21 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Application.php(89): Symfony\Component\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#22 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(122): Illuminate\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#23 /home/vagrant/Code/lingpao/artisan(37): Illuminate\Foundation\Console\Kernel->handle(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#24 {main}
+
+2019-09-02 18:06:09 pid:6848 ErrorException: Undefined property: stdClass::$token in /home/vagrant/Code/lingpao/app/Events/GatewayWorker/Events.php:40
+Stack trace:
+#0 /home/vagrant/Code/lingpao/app/Events/GatewayWorker/Events.php(40): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError(8, 'Undefined prope...', '/home/vagrant/C...', 40, Array)
+#1 [internal function]: App\Events\GatewayWorker\Events::onMessage('7f00000108fc000...', Object(stdClass))
+#2 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(403): call_user_func('App\\Events\\Gate...', '7f00000108fc000...', '{"type":"get-hi...')
+#3 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Connection/TcpConnection.php(658): GatewayWorker\BusinessWorker->onGatewayMessage(Object(Workerman\Connection\AsyncTcpConnection), Array)
+#4 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Events/Select.php(294): Workerman\Connection\TcpConnection->baseRead(Resource id #601)
+#5 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(2367): Workerman\Events\Select->loop()
+#6 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(197): Workerman\Worker->run()
+#7 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1490): GatewayWorker\BusinessWorker->run()
+#8 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1320): Workerman\Worker::forkOneWorkerForLinux(Object(GatewayWorker\BusinessWorker))
+#9 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1294): Workerman\Worker::forkWorkersForLinux()
+#10 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1624): Workerman\Worker::forkWorkers()
+#11 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1573): Workerman\Worker::monitorWorkersForLinux()
+#12 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(511): Workerman\Worker::monitorWorkers()
+#13 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(61): Workerman\Worker::runAll()
+#14 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(53): App\Console\Commands\GatewayWorkerServer->start()
+#15 [internal function]: App\Console\Commands\GatewayWorkerServer->handle()
+#16 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(29): call_user_func_array(Array, Array)
+#17 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(87): Illuminate\Container\BoundMethod::Illuminate\Container\{closure}()
+#18 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(31): Illuminate\Container\BoundMethod::callBoundMethod(Object(Illuminate\Foundation\Application), Array, Object(Closure))
+#19 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/Container.php(564): Illuminate\Container\BoundMethod::call(Object(Illuminate\Foundation\Application), Array, Array, NULL)
+#20 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(183): Illuminate\Container\Container->call(Array)
+#21 /home/vagrant/Code/lingpao/vendor/symfony/console/Command/Command.php(252): Illuminate\Console\Command->execute(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#22 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(170): Symfony\Component\Console\Command\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#23 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(865): Illuminate\Console\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#24 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(241): Symfony\Component\Console\Application->doRunCommand(Object(App\Console\Commands\GatewayWorkerServer), Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#25 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(143): Symfony\Component\Console\Application->doRun(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#26 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Application.php(89): Symfony\Component\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#27 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(122): Illuminate\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#28 /home/vagrant/Code/lingpao/artisan(37): Illuminate\Foundation\Console\Kernel->handle(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#29 {main}
+2019-09-02 18:06:09 pid:6848 Worker[6848] process terminated
+2019-09-02 18:06:09 pid:6447 worker[BusinessWorker:6848] exit with status 64000
+2019-09-02 18:06:14 pid:6907 ErrorException: Undefined property: stdClass::$token in /home/vagrant/Code/lingpao/app/Events/GatewayWorker/Events.php:40
+Stack trace:
+#0 /home/vagrant/Code/lingpao/app/Events/GatewayWorker/Events.php(40): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError(8, 'Undefined prope...', '/home/vagrant/C...', 40, Array)
+#1 [internal function]: App\Events\GatewayWorker\Events::onMessage('7f00000108fc000...', Object(stdClass))
+#2 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(403): call_user_func('App\\Events\\Gate...', '7f00000108fc000...', '{"type":"get-hi...')
+#3 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Connection/TcpConnection.php(658): GatewayWorker\BusinessWorker->onGatewayMessage(Object(Workerman\Connection\AsyncTcpConnection), Array)
+#4 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Events/Select.php(294): Workerman\Connection\TcpConnection->baseRead(Resource id #602)
+#5 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(2367): Workerman\Events\Select->loop()
+#6 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(197): Workerman\Worker->run()
+#7 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1490): GatewayWorker\BusinessWorker->run()
+#8 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1320): Workerman\Worker::forkOneWorkerForLinux(Object(GatewayWorker\BusinessWorker))
+#9 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1294): Workerman\Worker::forkWorkersForLinux()
+#10 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1624): Workerman\Worker::forkWorkers()
+#11 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1573): Workerman\Worker::monitorWorkersForLinux()
+#12 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(511): Workerman\Worker::monitorWorkers()
+#13 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(61): Workerman\Worker::runAll()
+#14 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(53): App\Console\Commands\GatewayWorkerServer->start()
+#15 [internal function]: App\Console\Commands\GatewayWorkerServer->handle()
+#16 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(29): call_user_func_array(Array, Array)
+#17 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(87): Illuminate\Container\BoundMethod::Illuminate\Container\{closure}()
+#18 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(31): Illuminate\Container\BoundMethod::callBoundMethod(Object(Illuminate\Foundation\Application), Array, Object(Closure))
+#19 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/Container.php(564): Illuminate\Container\BoundMethod::call(Object(Illuminate\Foundation\Application), Array, Array, NULL)
+#20 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(183): Illuminate\Container\Container->call(Array)
+#21 /home/vagrant/Code/lingpao/vendor/symfony/console/Command/Command.php(252): Illuminate\Console\Command->execute(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#22 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(170): Symfony\Component\Console\Command\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#23 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(865): Illuminate\Console\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#24 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(241): Symfony\Component\Console\Application->doRunCommand(Object(App\Console\Commands\GatewayWorkerServer), Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#25 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(143): Symfony\Component\Console\Application->doRun(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#26 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Application.php(89): Symfony\Component\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#27 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(122): Illuminate\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#28 /home/vagrant/Code/lingpao/artisan(37): Illuminate\Foundation\Console\Kernel->handle(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#29 {main}
+2019-09-02 18:06:14 pid:6907 Worker[6907] process terminated
+2019-09-02 18:06:14 pid:6447 worker[BusinessWorker:6907] exit with status 64000
+2019-09-02 18:46:46 pid:6908 process_timeout:
+#1 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Events/Select.php(268): pcntl_signal_dispatch()
+#2 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(2367): Workerman\Events\Select->loop()
+#3 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(197): Workerman\Worker->run()
+#4 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1490): GatewayWorker\BusinessWorker->run()
+#5 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1320): Workerman\Worker::forkOneWorkerForLinux(Object(GatewayWorker\BusinessWorker))
+#6 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1294): Workerman\Worker::forkWorkersForLinux()
+#7 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1624): Workerman\Worker::forkWorkers()
+#8 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1573): Workerman\Worker::monitorWorkersForLinux()
+#9 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(511): Workerman\Worker::monitorWorkers()
+#10 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(61): Workerman\Worker::runAll()
+#11 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(53): App\Console\Commands\GatewayWorkerServer->start()
+#12 [internal function]: App\Console\Commands\GatewayWorkerServer->handle()
+#13 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(29): call_user_func_array(Array, Array)
+#14 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(87): Illuminate\Container\BoundMethod::Illuminate\Container\{closure}()
+#15 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(31): Illuminate\Container\BoundMethod::callBoundMethod(Object(Illuminate\Foundation\Application), Array, Object(Closure))
+#16 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/Container.php(564): Illuminate\Container\BoundMethod::call(Object(Illuminate\Foundation\Application), Array, Array, NULL)
+#17 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(183): Illuminate\Container\Container->call(Array)
+#18 /home/vagrant/Code/lingpao/vendor/symfony/console/Command/Command.php(252): Illuminate\Console\Command->execute(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#19 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(170): Symfony\Component\Console\Command\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#20 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(865): Illuminate\Console\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#21 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(241): Symfony\Component\Console\Application->doRunCommand(Object(App\Console\Commands\GatewayWorkerServer), Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#22 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(143): Symfony\Component\Console\Application->doRun(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#23 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Application.php(89): Symfony\Component\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#24 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(122): Illuminate\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#25 /home/vagrant/Code/lingpao/artisan(37): Illuminate\Foundation\Console\Kernel->handle(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#26 {main}
+
+2019-09-02 18:51:12 pid:7310 ErrorException: Undefined property: stdClass::$token in /home/vagrant/Code/lingpao/app/Events/GatewayWorker/Events.php:40
+Stack trace:
+#0 /home/vagrant/Code/lingpao/app/Events/GatewayWorker/Events.php(40): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError(8, 'Undefined prope...', '/home/vagrant/C...', 40, Array)
+#1 [internal function]: App\Events\GatewayWorker\Events::onMessage('7f00000108fc000...', Object(stdClass))
+#2 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(403): call_user_func('App\\Events\\Gate...', '7f00000108fc000...', '{"type":"get-hi...')
+#3 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Connection/TcpConnection.php(658): GatewayWorker\BusinessWorker->onGatewayMessage(Object(Workerman\Connection\AsyncTcpConnection), Array)
+#4 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Events/Select.php(294): Workerman\Connection\TcpConnection->baseRead(Resource id #603)
+#5 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(2367): Workerman\Events\Select->loop()
+#6 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(197): Workerman\Worker->run()
+#7 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1490): GatewayWorker\BusinessWorker->run()
+#8 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1320): Workerman\Worker::forkOneWorkerForLinux(Object(GatewayWorker\BusinessWorker))
+#9 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1294): Workerman\Worker::forkWorkersForLinux()
+#10 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1624): Workerman\Worker::forkWorkers()
+#11 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1573): Workerman\Worker::monitorWorkersForLinux()
+#12 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(511): Workerman\Worker::monitorWorkers()
+#13 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(61): Workerman\Worker::runAll()
+#14 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(53): App\Console\Commands\GatewayWorkerServer->start()
+#15 [internal function]: App\Console\Commands\GatewayWorkerServer->handle()
+#16 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(29): call_user_func_array(Array, Array)
+#17 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(87): Illuminate\Container\BoundMethod::Illuminate\Container\{closure}()
+#18 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(31): Illuminate\Container\BoundMethod::callBoundMethod(Object(Illuminate\Foundation\Application), Array, Object(Closure))
+#19 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/Container.php(564): Illuminate\Container\BoundMethod::call(Object(Illuminate\Foundation\Application), Array, Array, NULL)
+#20 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(183): Illuminate\Container\Container->call(Array)
+#21 /home/vagrant/Code/lingpao/vendor/symfony/console/Command/Command.php(252): Illuminate\Console\Command->execute(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#22 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(170): Symfony\Component\Console\Command\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#23 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(865): Illuminate\Console\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#24 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(241): Symfony\Component\Console\Application->doRunCommand(Object(App\Console\Commands\GatewayWorkerServer), Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#25 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(143): Symfony\Component\Console\Application->doRun(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#26 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Application.php(89): Symfony\Component\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#27 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(122): Illuminate\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#28 /home/vagrant/Code/lingpao/artisan(37): Illuminate\Foundation\Console\Kernel->handle(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#29 {main}
+2019-09-02 18:51:12 pid:7310 Worker[7310] process terminated
+2019-09-02 18:51:12 pid:6447 worker[BusinessWorker:7310] exit with status 64000
+2019-09-02 18:52:44 pid:7326 ErrorException: Undefined property: stdClass::$token in /home/vagrant/Code/lingpao/app/Events/GatewayWorker/Events.php:40
+Stack trace:
+#0 /home/vagrant/Code/lingpao/app/Events/GatewayWorker/Events.php(40): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError(8, 'Undefined prope...', '/home/vagrant/C...', 40, Array)
+#1 [internal function]: App\Events\GatewayWorker\Events::onMessage('7f00000108fc000...', Object(stdClass))
+#2 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(403): call_user_func('App\\Events\\Gate...', '7f00000108fc000...', '{"type":"get-hi...')
+#3 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Connection/TcpConnection.php(658): GatewayWorker\BusinessWorker->onGatewayMessage(Object(Workerman\Connection\AsyncTcpConnection), Array)
+#4 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Events/Select.php(294): Workerman\Connection\TcpConnection->baseRead(Resource id #604)
+#5 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(2367): Workerman\Events\Select->loop()
+#6 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(197): Workerman\Worker->run()
+#7 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1490): GatewayWorker\BusinessWorker->run()
+#8 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1320): Workerman\Worker::forkOneWorkerForLinux(Object(GatewayWorker\BusinessWorker))
+#9 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1294): Workerman\Worker::forkWorkersForLinux()
+#10 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1624): Workerman\Worker::forkWorkers()
+#11 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1573): Workerman\Worker::monitorWorkersForLinux()
+#12 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(511): Workerman\Worker::monitorWorkers()
+#13 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(61): Workerman\Worker::runAll()
+#14 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(53): App\Console\Commands\GatewayWorkerServer->start()
+#15 [internal function]: App\Console\Commands\GatewayWorkerServer->handle()
+#16 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(29): call_user_func_array(Array, Array)
+#17 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(87): Illuminate\Container\BoundMethod::Illuminate\Container\{closure}()
+#18 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(31): Illuminate\Container\BoundMethod::callBoundMethod(Object(Illuminate\Foundation\Application), Array, Object(Closure))
+#19 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/Container.php(564): Illuminate\Container\BoundMethod::call(Object(Illuminate\Foundation\Application), Array, Array, NULL)
+#20 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(183): Illuminate\Container\Container->call(Array)
+#21 /home/vagrant/Code/lingpao/vendor/symfony/console/Command/Command.php(252): Illuminate\Console\Command->execute(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#22 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(170): Symfony\Component\Console\Command\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#23 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(865): Illuminate\Console\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#24 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(241): Symfony\Component\Console\Application->doRunCommand(Object(App\Console\Commands\GatewayWorkerServer), Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#25 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(143): Symfony\Component\Console\Application->doRun(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#26 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Application.php(89): Symfony\Component\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#27 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(122): Illuminate\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#28 /home/vagrant/Code/lingpao/artisan(37): Illuminate\Foundation\Console\Kernel->handle(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#29 {main}
+2019-09-02 18:52:44 pid:7326 Worker[7326] process terminated
+2019-09-02 18:52:44 pid:6447 worker[BusinessWorker:7326] exit with status 64000
+2019-09-02 18:56:35 pid:7328 ErrorException: Undefined property: stdClass::$token in /home/vagrant/Code/lingpao/app/Events/GatewayWorker/Events.php:40
+Stack trace:
+#0 /home/vagrant/Code/lingpao/app/Events/GatewayWorker/Events.php(40): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError(8, 'Undefined prope...', '/home/vagrant/C...', 40, Array)
+#1 [internal function]: App\Events\GatewayWorker\Events::onMessage('7f00000108fc000...', Object(stdClass))
+#2 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(403): call_user_func('App\\Events\\Gate...', '7f00000108fc000...', '{"type":"get-hi...')
+#3 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Connection/TcpConnection.php(658): GatewayWorker\BusinessWorker->onGatewayMessage(Object(Workerman\Connection\AsyncTcpConnection), Array)
+#4 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Events/Select.php(294): Workerman\Connection\TcpConnection->baseRead(Resource id #605)
+#5 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(2367): Workerman\Events\Select->loop()
+#6 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(197): Workerman\Worker->run()
+#7 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1490): GatewayWorker\BusinessWorker->run()
+#8 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1320): Workerman\Worker::forkOneWorkerForLinux(Object(GatewayWorker\BusinessWorker))
+#9 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1294): Workerman\Worker::forkWorkersForLinux()
+#10 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1624): Workerman\Worker::forkWorkers()
+#11 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1573): Workerman\Worker::monitorWorkersForLinux()
+#12 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(511): Workerman\Worker::monitorWorkers()
+#13 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(61): Workerman\Worker::runAll()
+#14 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(53): App\Console\Commands\GatewayWorkerServer->start()
+#15 [internal function]: App\Console\Commands\GatewayWorkerServer->handle()
+#16 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(29): call_user_func_array(Array, Array)
+#17 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(87): Illuminate\Container\BoundMethod::Illuminate\Container\{closure}()
+#18 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(31): Illuminate\Container\BoundMethod::callBoundMethod(Object(Illuminate\Foundation\Application), Array, Object(Closure))
+#19 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/Container.php(564): Illuminate\Container\BoundMethod::call(Object(Illuminate\Foundation\Application), Array, Array, NULL)
+#20 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(183): Illuminate\Container\Container->call(Array)
+#21 /home/vagrant/Code/lingpao/vendor/symfony/console/Command/Command.php(252): Illuminate\Console\Command->execute(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#22 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(170): Symfony\Component\Console\Command\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#23 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(865): Illuminate\Console\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#24 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(241): Symfony\Component\Console\Application->doRunCommand(Object(App\Console\Commands\GatewayWorkerServer), Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#25 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(143): Symfony\Component\Console\Application->doRun(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#26 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Application.php(89): Symfony\Component\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#27 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(122): Illuminate\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#28 /home/vagrant/Code/lingpao/artisan(37): Illuminate\Foundation\Console\Kernel->handle(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#29 {main}
+2019-09-02 18:56:35 pid:7328 Worker[7328] process terminated
+2019-09-02 18:56:35 pid:6447 worker[BusinessWorker:7328] exit with status 64000
+2019-09-02 18:57:30 pid:7346 ErrorException: Undefined property: stdClass::$token in /home/vagrant/Code/lingpao/app/Events/GatewayWorker/Events.php:40
+Stack trace:
+#0 /home/vagrant/Code/lingpao/app/Events/GatewayWorker/Events.php(40): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError(8, 'Undefined prope...', '/home/vagrant/C...', 40, Array)
+#1 [internal function]: App\Events\GatewayWorker\Events::onMessage('7f00000108fc000...', Object(stdClass))
+#2 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(403): call_user_func('App\\Events\\Gate...', '7f00000108fc000...', '{"type":"get-hi...')
+#3 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Connection/TcpConnection.php(658): GatewayWorker\BusinessWorker->onGatewayMessage(Object(Workerman\Connection\AsyncTcpConnection), Array)
+#4 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Events/Select.php(294): Workerman\Connection\TcpConnection->baseRead(Resource id #606)
+#5 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(2367): Workerman\Events\Select->loop()
+#6 /home/vagrant/Code/lingpao/vendor/workerman/gateway-worker/src/BusinessWorker.php(197): Workerman\Worker->run()
+#7 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1490): GatewayWorker\BusinessWorker->run()
+#8 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1320): Workerman\Worker::forkOneWorkerForLinux(Object(GatewayWorker\BusinessWorker))
+#9 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1294): Workerman\Worker::forkWorkersForLinux()
+#10 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1624): Workerman\Worker::forkWorkers()
+#11 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(1573): Workerman\Worker::monitorWorkersForLinux()
+#12 /home/vagrant/Code/lingpao/vendor/workerman/workerman/Worker.php(511): Workerman\Worker::monitorWorkers()
+#13 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(61): Workerman\Worker::runAll()
+#14 /home/vagrant/Code/lingpao/app/Console/Commands/GatewayWorkerServer.php(53): App\Console\Commands\GatewayWorkerServer->start()
+#15 [internal function]: App\Console\Commands\GatewayWorkerServer->handle()
+#16 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(29): call_user_func_array(Array, Array)
+#17 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(87): Illuminate\Container\BoundMethod::Illuminate\Container\{closure}()
+#18 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(31): Illuminate\Container\BoundMethod::callBoundMethod(Object(Illuminate\Foundation\Application), Array, Object(Closure))
+#19 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Container/Container.php(564): Illuminate\Container\BoundMethod::call(Object(Illuminate\Foundation\Application), Array, Array, NULL)
+#20 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(183): Illuminate\Container\Container->call(Array)
+#21 /home/vagrant/Code/lingpao/vendor/symfony/console/Command/Command.php(252): Illuminate\Console\Command->execute(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#22 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Command.php(170): Symfony\Component\Console\Command\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Illuminate\Console\OutputStyle))
+#23 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(865): Illuminate\Console\Command->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#24 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(241): Symfony\Component\Console\Application->doRunCommand(Object(App\Console\Commands\GatewayWorkerServer), Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#25 /home/vagrant/Code/lingpao/vendor/symfony/console/Application.php(143): Symfony\Component\Console\Application->doRun(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#26 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Console/Application.php(89): Symfony\Component\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#27 /home/vagrant/Code/lingpao/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(122): Illuminate\Console\Application->run(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#28 /home/vagrant/Code/lingpao/artisan(37): Illuminate\Foundation\Console\Kernel->handle(Object(Symfony\Component\Console\Input\ArgvInput), Object(Symfony\Component\Console\Output\ConsoleOutput))
+#29 {main}
+2019-09-02 18:57:30 pid:7346 Worker[7346] process terminated
+2019-09-02 18:57:30 pid:6447 worker[BusinessWorker:7346] exit with status 64000
+2019-09-02 21:40:49 pid:6447 Workerman[artisan] stopping ...
+2019-09-02 21:40:49 pid:6447 Workerman[artisan] has been stopped
+2019-09-02 21:40:55 pid:7802 Workerman[gateway-worker:server] restart 
+2019-09-02 21:40:55 pid:7802 Workerman[gateway-worker:server] is stopping ...
+2019-09-02 21:40:55 pid:7802 Workerman[gateway-worker:server] stop success
+2019-09-02 22:59:01 pid:8429 Workerman[gateway-worker:server] restart 
+2019-09-02 22:59:01 pid:8429 Workerman[gateway-worker:server] is stopping ...
+2019-09-02 22:59:01 pid:7807 Workerman[artisan] stopping ...
+2019-09-02 22:59:01 pid:7807 Workerman[artisan] has been stopped
+2019-09-02 22:59:01 pid:8429 Workerman[gateway-worker:server] stop success
+2019-09-02 22:59:08 pid:8429 Workerman[artisan] stopping ...
+2019-09-02 22:59:08 pid:8429 Workerman[artisan] has been stopped
+2019-09-02 22:59:56 pid:8448 Workerman[gateway-worker:server] restart 
+2019-09-02 22:59:56 pid:8448 Workerman[gateway-worker:server] is stopping ...
+2019-09-02 22:59:56 pid:8448 Workerman[gateway-worker:server] stop success
+2019-09-02 22:59:58 pid:8448 Workerman[artisan] stopping ...
+2019-09-02 22:59:58 pid:8448 Workerman[artisan] has been stopped
+2019-09-02 23:00:03 pid:8457 Workerman[gateway-worker:server] restart 
+2019-09-02 23:00:03 pid:8457 Workerman[gateway-worker:server] is stopping ...
+2019-09-02 23:00:03 pid:8457 Workerman[gateway-worker:server] stop success

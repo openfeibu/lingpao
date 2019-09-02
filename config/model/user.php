@@ -73,7 +73,7 @@ return [
         'guarded'       => ['*'],
         //'slugs'         => [],
         'dates'         => ['created_at', 'updated_at'],
-        'fillable'      => ['name','email','nickname','open_id','session_key','phone','avatar_url','city','gender','password','remember_token','pay_password','balance','role','created_at','updated_at','verified','verification_token'],
+        'fillable'      => ['name','email','nickname','open_id','session_key','phone','avatar_url','city','gender','password','remember_token','pay_password','balance','role','client_id','created_at','updated_at','verified','verification_token'],
         'translate'     => [],
         'upload_folder' => 'user/user',
         'uploads'       => [

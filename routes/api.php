@@ -98,4 +98,6 @@ $api->version('v1', function ($api) {
     $api->post('/custom_order/deliverer/cancel_order','App\Http\Controllers\Api\Deliverer\CustomOrderController@cancelOrder');
 
     $api->post('wechat/notify','App\Http\Controllers\Api\PaymentNotifyController@wechatNotify');
+
+    $api->get('/test','App\Http\Controllers\Api\HomeController@test');
 });

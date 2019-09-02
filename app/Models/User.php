@@ -37,6 +37,11 @@ class User extends AuthModel
         }
         return $user;
     }
+    public static function getUserByToken($token,$custom=['*'])
+    {
+        self::$user = $user = self::where('token', $token)->first($custom);
+        return $user;
+    }
     /*
      * $role :common,deliverer,expert_deliverer
      */
