@@ -166,7 +166,7 @@ class Events
                     {
                         if($chat['type'] == 'image')
                         {
-                            $chats[$key]['content'] = config('app.image_url').'/image/original/'.$chat['content'];
+                            $chats[$key]['content'] = config('app.image_url').'image/original'.$chat['content'];
                         }
                         $chats[$key]['timeStr'] = friendly_date($chat['updated_at']);
                         $chats[$key]['timestamp'] = strtotime($chat['updated_at']);
@@ -248,7 +248,7 @@ class Events
                     $content = $content;
                     break;
                 case 'image':
-                    $content = config('app.image_url').'/image/original/'.$chat['content'];
+                    $content = config('app.image_url').'image/original'.$content;
                     break;
             }
             $to_response = [
