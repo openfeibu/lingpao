@@ -120,7 +120,7 @@ class Events
             case 'text':
                 self::chat($message,$user);
                 break;
-            case 'text':
+            case 'image':
                 self::chat($message,$user);
                 break;
             case 'get-history':
@@ -183,8 +183,22 @@ class Events
                 $response['type'] = $message->type;
                 $response['unread'] = $unread;
                 break;
-            case 'image':
-
+            case 'get-conversationId':
+                $to_user_id = $friendId = $message->friendId;
+                $from_user_id = $userId = $user->id;
+                $room = Room::where(function($query) use ($to_user_id,$from_user_id){
+                    $query->where('to_user_id',$to_user_id)->where('from_user_id',$from_user_id);
+                })->orWhere(function($query) use ($to_user_id,$from_user_id){
+                    $query->where('from_user_id',$to_user_id)->where('to_user_id',$from_user_id);
+                })->first();
+                if($room)
+                {
+                    $conversationId = $room->id;
+                }else{
+                    $conversationId = 0;
+                }
+                $response['type'] = $message->type;
+                $response['conversationId'] = $conversationId;
                 break;
             default:
                 $response['code'] = ERROR_CHAT;
