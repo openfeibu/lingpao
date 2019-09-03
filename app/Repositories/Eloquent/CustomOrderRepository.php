@@ -170,15 +170,17 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
         if ($custom_order->order_status != 'finish') {
             throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许结算任务');
         }
-
         $deliverer = app(UserRepository::class)->where('id',$custom_order->deliverer_id)->first();
-        $new_balance = $deliverer->balance + $custom_order->deliverer_price;
+        $fee = get_fee($custom_order->deliverer_price);
+        $income = $custom_order->deliverer_price - $fee;
+        $new_balance = $deliverer->balance + $income;
+
         $balanceData = array(
             'user_id' => $deliverer->id,
             'balance' => $new_balance,
-            'price'	=> $custom_order->deliverer_price,
+            'price'	=> $income,
             'out_trade_no' => $custom_order->order_sn,
-            'fee' => 0,
+            'fee' => $fee,
             'type' => 1,
             'trade_type' => 'ACCEPT_CUSTOM_ORDER',
             'description' => '接帮帮忙任务',
@@ -193,7 +195,8 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
             'type' => 1,
             'pay_from' => 'CustomOrder',
             'trade_type' => 'ACCEPT_CUSTOM_ORDER',
-            'price' => $custom_order->deliverer_price,
+            'price' => $income,
+            'fee' => $fee,
             'payment' => $custom_order->payment,
             'description' => '接帮帮忙任务',
         );

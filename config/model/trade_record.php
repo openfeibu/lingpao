@@ -21,7 +21,7 @@ return [
         'hidden'       => [],
         'visible'      => [],
         'guarded'      => ['*'],
-        'fillable'     => ['out_trade_no','trade_no','user_id','trade_type','type','trade_status','description','pay_from','payment','price','created_at','updated_at'],
+        'fillable'     => ['out_trade_no','trade_no','user_id','trade_type','type','trade_status','description','pay_from','payment','price','fee','created_at','updated_at'],
         'upload_folder' => '/page/',
         'encrypt'      => ['id'],
         'revision'     => ['name'],
