@@ -23,7 +23,7 @@ class GwBusinessWorker {
         // 服务注册地址
         $worker->registerAddress = GW_REGISTER_ADDRESS;
         //设置处理业务的类,此处制定Events的命名空间
-        $worker->eventHandler = GW_BUSINESS_EVENT_HANDLER;
+        $worker->eventHandler = GW_BUSINESS_EVENT_HANDLER_WIN;
 
         // 如果不是在根目录启动，则运行runAll方法
         if(!defined('GLOBAL_START')) {
