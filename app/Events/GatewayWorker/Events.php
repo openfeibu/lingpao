@@ -125,51 +125,56 @@ class Events
                 break;
             case 'get-history':
                 $room_id = $conversationId = $message->conversationId;
-                $room = Room::where('id',$room_id)->first();
-                Chat::where('room_id',$room_id)->where('to_user_id',$user_id)->update(['unread' => 0]);
-
-                if($room->to_user_id == $user_id)
+                if(!$room_id)
                 {
-                    $friendId = $room->from_user_id;
+                    $response['history'] = [];
                 }else{
-                    $friendId = $room->to_user_id;
-                }
-                $page = $message->page;
-                $per_num = 10;
-                $skip=($page-1)<0?0:($page-1)*$per_num;
-                $chats = Chat::where('room_id',$room_id)
-                    ->skip($skip)
-                    ->limit($per_num)
-                    ->orderBy('id','desc')
-                    ->get(['id','from_user_id','to_user_id','type','content','updated_at'])
-                    ->toArray();
+                    $room = Room::where('id',$room_id)->first();
+                    Chat::where('room_id',$room_id)->where('to_user_id',$user_id)->update(['unread' => 0]);
 
-                $friend = User::where('id',$friendId)->first(config('model.user.user.other_visible'));
-                $from_user_data = [
-                    'id' => $user_id,
-                    'avatar_url' => $user->avatar_url,
-                    'nickname' => $user->nickname,
-                    'role' => $user->role
-                ];
-                $to_user_data = [
-                    'id' => $friend->id,
-                    'avatar_url' => $friend->avatar_url,
-                    'nickname' => $friend->nickname,
-                    'role' => $friend->role
-                ];
-
-                foreach ($chats as $key => $chat)
-                {
-                    if($chat['type'] == 'image')
+                    if($room->to_user_id == $user_id)
                     {
-                        $chats[$key]['content'] = url('/image/original/'.$chat['content']);
+                        $friendId = $room->from_user_id;
+                    }else{
+                        $friendId = $room->to_user_id;
                     }
-                    $chats[$key]['timeStr'] = friendly_date($chat['updated_at']);
-                    $chats[$key]['timestamp'] = strtotime($chat['updated_at']);
+                    $page = $message->page;
+                    $per_num = 10;
+                    $skip=($page-1)<0?0:($page-1)*$per_num;
+                    $chats = Chat::where('room_id',$room_id)
+                        ->skip($skip)
+                        ->limit($per_num)
+                        ->orderBy('id','desc')
+                        ->get(['id','from_user_id','to_user_id','type','content','updated_at'])
+                        ->toArray();
+
+                    $friend = User::where('id',$friendId)->first(config('model.user.user.other_visible'));
+                    $from_user_data = [
+                        'id' => $user_id,
+                        'avatar_url' => $user->avatar_url,
+                        'nickname' => $user->nickname,
+                        'role' => $user->role
+                    ];
+                    $to_user_data = [
+                        'id' => $friend->id,
+                        'avatar_url' => $friend->avatar_url,
+                        'nickname' => $friend->nickname,
+                        'role' => $friend->role
+                    ];
+
+                    foreach ($chats as $key => $chat)
+                    {
+                        if($chat['type'] == 'image')
+                        {
+                            $chats[$key]['content'] = url('/image/original/'.$chat['content']);
+                        }
+                        $chats[$key]['timeStr'] = friendly_date($chat['updated_at']);
+                        $chats[$key]['timestamp'] = strtotime($chat['updated_at']);
+                    }
+                    $response['from_user'] = $from_user_data;
+                    $response['to_user'] = $to_user_data;
+
                 }
-                $response['from_user'] = $from_user_data;
-                $response['to_user'] = $to_user_data;
-                $response['history'] = $chats;
                 $response['type'] = $message->type;
                 break;
             case 'unread':

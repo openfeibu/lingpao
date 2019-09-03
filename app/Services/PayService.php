@@ -110,6 +110,7 @@ class PayService
                 if($result['return_code'] == 'SUCCESS')
                 {
                     $this->takeOrderExtraPriceRepository->update(['status' => 'paid'],$data['extra_price_id']);
+                    $this->takeOrderRepository->update(['deliverer_price' => $data['take_order']->deliverer_price+$data['total_price'] ],$data['take_order']->id);
                     throw new RequestSuccessException("支付成功");
                 }
                 break;

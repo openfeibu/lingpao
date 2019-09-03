@@ -85,7 +85,7 @@ class PaymentNotifyController extends BaseController
             case 'TAKEEXTRA':
                 $extra_price = $this->takeOrderExtraPriceRepository->where('order_sn',$out_trade_no)->first();
                 if($extra_price->status == 'unpaid') {
-                    $take_order = $this->takeOrderRepository->where('id', $extra_price->take_order_id)->first(['id', 'user_id', 'total_price', 'payment', 'status', 'coupon_id']);
+                    $take_order = $this->takeOrderRepository->where('id', $extra_price->take_order_id)->first(['id', 'user_id', 'total_price', 'payment', 'status', 'coupon_id','deliverer_price']);
                     $trade = array(
                         'user_id' => $take_order->user_id,
                         'out_trade_no' => $out_trade_no,
@@ -99,6 +99,7 @@ class PaymentNotifyController extends BaseController
                         'description' => '代拿增加服务费',
                     );
                     $this->takeOrderExtraPriceRepository->update(['status' => 'paid'], $extra_price->id);
+                    $this->takeOrderRepository->update(['deliverer_price' => $take_order->deliverer_price+$extra_price->total_price],$take_order->id);
                 }
                 break;
             case 'CUSTOM':

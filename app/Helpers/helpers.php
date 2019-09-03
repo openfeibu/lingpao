@@ -1055,35 +1055,45 @@ if(!function_exists('friendly_date')){
         }
     }
 }
-function get_task_objective_model($objective_model)
-{
-    switch ($objective_model)
+if(!function_exists('get_task_objective_model')) {
+    function get_task_objective_model($objective_model)
     {
-        case "TakeOrder":
-            return app(\App\Models\TakeOrder::class);
-            break;
-        case "CustomOrder":
-            return app(\App\Models\CustomOrder::class);
-            break;
+        switch ($objective_model) {
+            case "TakeOrder":
+                return app(\App\Models\TakeOrder::class);
+                break;
+            case "CustomOrder":
+                return app(\App\Models\CustomOrder::class);
+                break;
+        }
     }
 }
 
-function checkBalance($user,$price)
-{
-    if(!$user->is_pay_password)
+if(!function_exists('checkBalance')) {
+    function checkBalance($user, $price)
     {
-        throw new NotFoundPayPasswordException();
-    }
-    $pay_password  = Request::get('pay_password');
-    if (!password_verify($pay_password, $user->pay_password)) {
-        throw new \App\Exceptions\OutputServerMessageException('支付密码错误');
-    }
-    if($price > $user->balance){
-        throw new \App\Exceptions\OutputServerMessageException('余额不足,请选择其他支付方式');
+        if (!$user->is_pay_password) {
+            throw new NotFoundPayPasswordException();
+        }
+        $pay_password = Request::get('pay_password');
+        if (!password_verify($pay_password, $user->pay_password)) {
+            throw new \App\Exceptions\OutputServerMessageException('支付密码错误');
+        }
+        if ($price > $user->balance) {
+            throw new \App\Exceptions\OutputServerMessageException('余额不足,请选择其他支付方式');
+        }
     }
 }
+if(!function_exists('rid_two')) {
 //舍去保留两位
-function rid_two($num)
-{
-    return floor($num * 100) / 100;
+    function rid_two($num)
+    {
+        return floor($num * 100) / 100;
+    }
+}
+if(!function_exists('get_fee')) {
+    function get_fee($price)
+    {
+        return rid_two($price * setting('deliverer_fee'));
+    }
 }

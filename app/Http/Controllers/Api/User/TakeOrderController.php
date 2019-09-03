@@ -307,6 +307,7 @@ class TakeOrderController extends BaseController
         }
         $this->takeOrderExtraPriceRepository->update(['payment' => $request->payment],$take_order_extra_price->id);
         $data = [
+            'take_order' => $take_order,
             'extra_price_id' => $take_order_extra_price->id,
             'order_sn' => $take_order_extra_price->order_sn,
             'total_price' => $total_price,

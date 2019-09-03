@@ -162,13 +162,15 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
         }
 
         $deliverer = app(UserRepository::class)->where('id',$take_order->deliverer_id)->first();
-        $new_balance = $deliverer->balance + $take_order->deliverer_price;
+        $fee = get_fee($take_order->deliverer_price);
+        $income = $take_order->deliverer_price - $fee;
+        $new_balance = $deliverer->balance + $income;
         $balanceData = array(
             'user_id' => $deliverer->id,
             'balance' => $new_balance,
-            'price'	=> $take_order->deliverer_price,
+            'price'	=> $income,
             'out_trade_no' => $take_order->order_sn,
-            'fee' => 0,
+            'fee' => $fee,
             'type' => 1,
             'trade_type' => 'ACCEPT_TAKE_ORDER',
             'description' => '接代拿任务',
@@ -183,7 +185,8 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             'type' => 1,
             'pay_from' => 'TakeOrder',
             'trade_type' => 'ACCEPT_TAKE_ORDER',
-            'price' => $take_order->deliverer_price,
+            'price' => $income,
+            'fee' => $fee,
             'payment' => $take_order->payment,
             'description' => '接代拿任务',
         );
