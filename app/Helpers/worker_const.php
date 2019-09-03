@@ -30,6 +30,6 @@ define('GW_GATEWAY_COUNT',2);
 define('GW_BUSINESS_WORKER_COUNT',2);
 
 // Business业务处理类，可以带命名空间
-define('GW_BUSINESS_EVENT_HANDLER','App\Events\GatewayWorker\Events');
+define('GW_BUSINESS_EVENT_HANDLER',\App\Events\GatewayWorker\Events::class);
 
 define('GW_BUSINESS_EVENT_HANDLER_WIN','App\Events\GatewayWorker\WinEvents');

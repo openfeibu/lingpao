@@ -51,6 +51,7 @@ class HomeController extends BaseController
             'friendId' => 4,
         ];
         */
+		/*
         $message = [
             'token' => '67ea6c250717247ad5fad199c25f91271a8b41c7',
             'type' => 'get-history',
@@ -58,12 +59,12 @@ class HomeController extends BaseController
             'page' => 1
         ];
 
+*/
 
-
-//        $message = [
-//            'token' => '67ea6c250717247ad5fad199c25f91271a8b41c7',
-//            'type' => 'get-conversations',
-//        ];
+       $message = [
+           'token' => '67ea6c250717247ad5fad199c25f91271a8b41c7',
+           'type' => 'get-conversations',
+       ];
 
         $message = json_encode($message);
         return Events::onMessage(1,$message);

@@ -56,7 +56,7 @@ return [
 
     'api_url' => env('API_DOMAIN', 'http://localhost'),
 
-    'image_url' => 'https://lingpao.com',
+    'image_url' => 'https://www.lingpaoxy.com',
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

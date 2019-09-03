@@ -3,7 +3,8 @@
 namespace App\Events\GatewayWorker;
 
 use GatewayWorker\Lib\Gateway;
-use Log;
+use Workerman\Autoloader;
+use Log,DB;
 use App\Models\Chat;
 use App\Models\Room;
 use App\Models\User;
@@ -38,6 +39,7 @@ class Events
             return false;
         }
         $user = User::getUserByToken($message->token);
+		//$user = DB::name('users')->where('token',$message->token)->first();
         if(!$user)
         {
             $response['message'] = 'Authentication failure';
