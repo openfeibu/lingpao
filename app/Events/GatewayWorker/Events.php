@@ -127,7 +127,7 @@ class Events
                 $room_id = $conversationId = $message->conversationId;
                 if(!$room_id)
                 {
-                    $response['history'] = [];
+                    $chats = [];
                 }else{
                     $room = Room::where('id',$room_id)->first();
                     Chat::where('room_id',$room_id)->where('to_user_id',$user_id)->update(['unread' => 0]);
@@ -175,6 +175,7 @@ class Events
                     $response['to_user'] = $to_user_data;
 
                 }
+                $response['history'] = $chats;
                 $response['type'] = $message->type;
                 break;
             case 'unread':
