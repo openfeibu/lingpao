@@ -66,8 +66,10 @@ class Handler extends ExceptionHandler
             return app(ResourceResponse::class)->code($responseJson['code'])->status($responseJson['status'])->message($responseJson['message'])->json();
             //return app(ApiResponse::class)->json($responseJson);
         }else{
-            return response()->view('message.error',$responseJson);
+            if($responseJson)
+            {
+                return response()->view('message.error',$responseJson);
+            }
         }
-
     }
 }
