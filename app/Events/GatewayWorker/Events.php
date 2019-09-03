@@ -235,8 +235,8 @@ class Events
                 'type' => $message->type,
                 'content' => $content,
                 'msgUserId' => $from_user_id,
-                'userId' => $to_user_id,
-                'friendId' => $from_user_id,
+                'to_user_id' => $to_user_id,
+                'from_user_id' => $from_user_id,
                 'timestamp' => strtotime($chat->updated_at),
                 'timeStr' => friendly_date($chat->updated_at)
             ];
