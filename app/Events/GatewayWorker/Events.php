@@ -233,6 +233,7 @@ class Events
             }
             $to_response = [
                 'code' => 0,
+                'conversationId' => $room->id,
                 'message' => 'ok',
                 'type' => $message->type,
                 'content' => $content,
