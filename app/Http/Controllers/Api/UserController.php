@@ -311,5 +311,12 @@ class UserController extends BaseController
         ]);
         throw new RequestSuccessException("提交成功，请等待审核");
     }
+    public function uploadChatImage(Request $request)
+    {
+        $user = User::tokenAuth();
+        $images_url = app('image_service')->uploadImages(Input::all(),'chat/'.$user->id);
 
+        return $this->response->success()->data($images_url)->json();
+
+    }
 }

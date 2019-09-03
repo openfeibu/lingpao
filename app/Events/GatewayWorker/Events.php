@@ -92,7 +92,7 @@ class Events
                         $query->where('to_user_id',$room['to_user_id'])->where('from_user_id',$room['from_user_id']);
                     })->orWhere(function($query) use ($room){
                         $query->where('from_user_id',$room['to_user_id'])->where('to_user_id',$room['from_user_id']);
-                    })->orderBy('id','desc')->first();
+                    })->where('type','text')->orderBy('id','desc')->first();
                     $latestMsg = $latestMsg ? [
                         'type' => $latestMsg->type,
                         'content' => $latestMsg->content,
@@ -116,51 +116,10 @@ class Events
                 $response['conversations'] = $conversations;
                 break;
             case 'text':
-                $room_id = $conversationId = $message->conversationId;
-                $to_user_id = $friendId = $message->friendId;
-                $from_user_id = $userId = $user->id;
-                $content = $message->content;
-                $room = Room::where(function($query) use ($to_user_id,$from_user_id){
-                    $query->where('to_user_id',$to_user_id)->where('from_user_id',$from_user_id);
-                })->orWhere(function($query) use ($to_user_id,$from_user_id){
-                    $query->where('from_user_id',$to_user_id)->where('to_user_id',$from_user_id);
-                })->first();
-
-                if(!$room)
-                {
-                    $room = Room::create([
-                        'from_user_id' => $from_user_id,
-                        'to_user_id' => $to_user_id,
-                    ]);
-                }else{
-                    Room::where('id',$room->id)->update(['updated_at' => date('Y-m-d H:i:s')]);
-                }
-
-                $chat = Chat::create([
-                    'from_user_id' => $from_user_id,
-                    'to_user_id' => $to_user_id,
-                    'type' => 'text',
-                    'content' => $content,
-                    'unread' => 1,
-                    'room_id' => $room->id,
-                ]);
-                $to_client_id = User::where('id',$to_user_id)->value('client_id');
-                if($to_client_id)
-                {
-                    $to_response = [
-                        'code' => 0,
-                        'message' => 'ok',
-                        'type' => 'text',
-                        'content' => $content,
-                        'msgUserId' => $from_user_id,
-                        'userId' => $to_user_id,
-                        'friendId' => $from_user_id,
-                        'timestamp' => strtotime($chat->updated_at),
-                        'timeStr' => friendly_date($chat->updated_at)
-                    ];
-                    Gateway::sendToClient($to_client_id, json_encode($to_response));
-                }
-
+                self::chat($message,$user);
+                break;
+            case 'text':
+                self::chat($message,$user);
                 break;
             case 'get-history':
                 $room_id = $conversationId = $message->conversationId;
@@ -228,6 +187,62 @@ class Events
 
     }
 
+    public static function chat($message,$user)
+    {
+        $room_id = $conversationId = $message->conversationId;
+        $to_user_id = $friendId = $message->friendId;
+        $from_user_id = $userId = $user->id;
+        $content = $message->content;
+        $room = Room::where(function($query) use ($to_user_id,$from_user_id){
+            $query->where('to_user_id',$to_user_id)->where('from_user_id',$from_user_id);
+        })->orWhere(function($query) use ($to_user_id,$from_user_id){
+            $query->where('from_user_id',$to_user_id)->where('to_user_id',$from_user_id);
+        })->first();
+
+        if(!$room)
+        {
+            $room = Room::create([
+                'from_user_id' => $from_user_id,
+                'to_user_id' => $to_user_id,
+            ]);
+        }else{
+            Room::where('id',$room->id)->update(['updated_at' => date('Y-m-d H:i:s')]);
+        }
+
+        $chat = Chat::create([
+            'from_user_id' => $from_user_id,
+            'to_user_id' => $to_user_id,
+            'type' => $message->type,
+            'content' => $content,
+            'unread' => 1,
+            'room_id' => $room->id,
+        ]);
+        $to_client_id = User::where('id',$to_user_id)->value('client_id');
+        if($to_client_id)
+        {
+            switch ($message->type)
+            {
+                case 'text':
+                    $content = $content;
+                    break;
+                case 'image':
+                    $content = url('/image/original/'.$chat['content']);
+                    break;
+            }
+            $to_response = [
+                'code' => 0,
+                'message' => 'ok',
+                'type' => $message->type,
+                'content' => $content,
+                'msgUserId' => $from_user_id,
+                'userId' => $to_user_id,
+                'friendId' => $from_user_id,
+                'timestamp' => strtotime($chat->updated_at),
+                'timeStr' => friendly_date($chat->updated_at)
+            ];
+            Gateway::sendToClient($to_client_id, json_encode($to_response));
+        }
+    }
     public static function onClose($client_id)
     {
         Log::info('close connection' . $client_id);
