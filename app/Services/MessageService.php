@@ -87,7 +87,7 @@ class MessageService
         }
         $page = $page ? $page : '/pages/index/index';
         $result = $app->template_message->send([
-            'touser' => $user->open_id,
+            'touser' => $open_id,
             'template_id' => $template_id,
             'page' => $page,
             'form_id' => $form_id,
