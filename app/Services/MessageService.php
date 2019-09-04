@@ -47,19 +47,19 @@ class MessageService
         {
             case 'accept_order':
                 $template_id = config('wechat.mini_program.default.template_id.accept_order');
-                $page = '';
+                $page = 'index';
                 break;
             case 'finish_order':
                 $template_id = config('wechat.mini_program.default.template_id.status_change');
-                $page = '';
+                $page = 'index';
                 break;
             case 'deliverer_cancel_order':
                 $template_id = config('wechat.mini_program.default.template_id.status_change');
-                $page = '';
+                $page = 'index';
                 break;
             case 'user_agree_cancel_order':
                 $template_id = config('wechat.mini_program.default.template_id.user_agree_cancel_order');
-                $page = '';
+                $page = 'index';
                 break;
         }
         $result = $app->template_message->send([

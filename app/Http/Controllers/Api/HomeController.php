@@ -75,10 +75,10 @@ class HomeController extends BaseController
         */
         $message_data = [
             'user_id' => 7,
-            'type' => 'finish_order',
+            'type' => 'accept_order',
             'data' => [
-                'keyword1' => trans('task.take_order.order_status.finish'),
-                'keyword2' => trans('task.take_order.be_finished')
+                'keyword1' => trans('task.take_order.order_status.accepted'),
+                'keyword2' => trans('task.take_order.be_accepted')
             ],
         ];
         app(MessageService::class)->sendMessage($message_data);
