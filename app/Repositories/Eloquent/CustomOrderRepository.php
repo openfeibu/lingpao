@@ -201,7 +201,7 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
             'description' => '接帮帮忙任务',
         );
 
-        $this->updateOrderStatus(['order_status' => 'completed'],$custom_order->id);
+        $this->updateOrderStatus(['order_status' => 'completed','fee' => $fee],$custom_order->id);
 
         app(UserRepository::class)->update(['balance' => $new_balance],$deliverer->id);
         app(BalanceRecordRepository::class)->create($balanceData);

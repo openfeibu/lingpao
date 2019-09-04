@@ -191,7 +191,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             'description' => '接代拿任务',
         );
 
-        $this->updateOrderStatus(['order_status' => 'completed'],$take_order->id);
+        $this->updateOrderStatus(['order_status' => 'completed','fee' => $fee],$take_order->id);
 
         app(UserRepository::class)->update(['balance' => $new_balance],$deliverer->id);
         app(BalanceRecordRepository::class)->create($balanceData);
