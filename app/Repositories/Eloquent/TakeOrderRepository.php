@@ -143,6 +143,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             ]);
             //消息推送 发单人
             $message_data = [
+                'task_type'=> 'take_order',
                 'user_id' => $take_order->user_id,
                 'nickname' => $deliverer->nickname,
                 'type' => 'accept_order',
@@ -171,6 +172,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
 
         //通知 发单人
         $message_data = [
+            'task_type'=> 'take_order',
             'user_id' => $take_order->user_id,
             'type' => 'finish_order',
         ];
@@ -222,6 +224,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
 
         //通知 接单人
         $message_data = [
+            'task_type'=> 'take_order',
             'user_id' => $take_order->deliverer_id,
             'type' => 'complete_order',
         ];
@@ -258,6 +261,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
 
         //通知 发单人
         $message_data = [
+            'task_type'=> 'take_order',
             'user_id' => $take_order->user_id,
             'type' => 'deliverer_cancel_order',
         ];
@@ -283,59 +287,15 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             'description' => '取消代拿任务',
         ];
         app(RefundService::class)->refundHandle($data,'TakeOrder');
-        //通知 发单人
+        //通知 接单人
         $message_data = [
-            'user_id' => $take_order->user_id,
-            'type' => 'deliverer_cancel_order',
-            'data' => [
-                'keyword1' => trans('task.take_order.order_cancel_status.deliverer_apply_cancel'),
-                'keyword2' => sprintf(trans('task.be_canceled'),trans('task.take_order.name')),
-            ],
+            'task_type'=> 'take_order',
+            'user_id' => $take_order->deliverer_id,
+            'type' => 'user_agree_cancel_order',
         ];
         app(MessageService::class)->sendMessage($message_data);
-        //$this->refund($take_order,$user);
+        throw new \App\Exceptions\RequestSuccessException(trans("task.refund_success"));
     }
-    public function refund($take_order,$user)
-    {
-        if($take_order->payment == 'balance')
-        {
-            $new_balance = $user->balance + $take_order->total_price;
-            $balanceData = array(
-                'user_id' => $user->id,
-                'balance' => $new_balance,
-                'price'	=> $take_order->total_price,
-                'out_trade_no' => $take_order->order_sn,
-                'fee' => 0,
-                'type' => 1,
-                'trade_type' => 'CANCEL_TAKE_ORDER',
-                'description' => '取消代拿任务',
-            );
-            app(BalanceRecordRepository::class)->create($balanceData);
-            app(UserRepository::class)->update(['balance' => $new_balance],$user->id);
 
-            $trade = array(
-                'trade_status' => 'refunded',
-                'type' => 1,
-                'trade_type' => 'CANCEL_TAKE_ORDER',
-                'description' => '取消代拿任务',
-            );
-            app(TradeRecordRepository::class)->where('out_trade_no',$take_order->order_sn)->updateData($trade);
-            $this->updateOrderStatus(['order_status' => 'cancel','order_cancel_status' => 'refunded'],$take_order->id);
-            throw new \App\Exceptions\RequestSuccessException("取消任务成功，任务费用已原路退回，请注意查收!");
-        }else{
-            //TODO:在线支付退款
-            exit;
-            $trade = array(
-                'type' => 1,
-                'trade_type' => 'CANCEL_TAKE_ORDER',
-                'trade_status' => 'refunding',
-                'description' => '取消代拿任务',
-            );
-            app(TradeRecordRepository::class)->where('out_trade_no',$take_order->order_sn)->updateData($trade);
-            $this->updateOrderStatus(['order_status' => 'cancel'],$take_order->id);
-
-            throw new \App\Exceptions\RequestSuccessException("取消任务成功，任务费用已原路退回，请注意查收");
-        }
-    }
 
 }

@@ -96,7 +96,6 @@ class RefundService
         {
             $this->takeOrderRepository->updateOrderStatus(['order_status' => 'cancel','order_cancel_status' => 'refunded'],$data['id']);
             $this->refundTrade($data);
-            throw new \App\Exceptions\RequestSuccessException("取消任务成功，任务费用已原路退回，请注意查收!");
         }
     }
     public function takeOrderExtraPriceRefundHandle($data)
@@ -147,7 +146,6 @@ class RefundService
         if($status)
         {
             $this->customOrderRepository->updateOrderStatus(['order_status' => 'cancel','order_cancel_status' => 'refunded'],$data['id']);
-            throw new \App\Exceptions\RequestSuccessException("取消任务成功，任务费用已原路退回，请注意查收!");
         }
     }
     private function balance($data)

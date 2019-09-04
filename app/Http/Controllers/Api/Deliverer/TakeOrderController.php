@@ -9,6 +9,7 @@ use App\Repositories\Eloquent\UserRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderExpressRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderExtraPriceRepositoryInterface;
+use App\Services\MessageService;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Controllers\Api\BaseController;
@@ -124,7 +125,15 @@ class TakeOrderController extends BaseController
                 'total_price' => $total_price,
                 'status' => 'unpaid'
             ]);
+            //通知 发单人
+            $message_data = [
+                'task_type'=> 'take_order',
+                'type' => 'extra_price',
+                'total_price' => $total_price
+            ];
+            app(MessageService::class)->sendMessage($message_data);
         }
+
         throw new RequestSuccessException();
     }
     private function checkDelivererPermission($deliverer_id,$message="")

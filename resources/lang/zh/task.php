@@ -6,6 +6,7 @@ return [
     'be_completed' => '您好，发单人已结算您的%s任务接单。',
     'be_canceled' => '您好，骑手取消了您的%s任务。',
     'be_agree_cancel' => '您好，发单人同意取消了您的%s任务接单。',
+    'refund_success' => "取消任务成功，任务费用已原路退回，请注意查收!",
     'take_order' => [
         'name' => '代拿',
         'order_status' => [
