@@ -17,6 +17,6 @@ class FormId extends BaseModel
 
     public static function getFormId($user_id)
     {
-        return self::where('status','unused')->where('created_at','>=',date('Y-m-d H:i:s',strtotime("-7 day")))->where('user_id',$user_id)->value('form_id');
+        return self::where('status','unused')->where('created_at','>=',date('Y-m-d H:i:s',strtotime("-7 day")))->where('user_id',$user_id)->orderBy('id','asc')->value('form_id');
     }
 }
