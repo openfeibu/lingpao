@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Repositories\Eloquent\UserRepositoryInterface;
 use EasyWeChat\Factory;
 use App\Models\FormId;
 
@@ -15,12 +14,9 @@ class MessageService
 
 	protected $userRepository;
 
-	function __construct(Request $request,
-                         UserRepositoryInterface $userRepository
-						 )
+	function __construct(Request $request)
 	{
 		$this->request = $request;
-		$this->userRepository = $userRepository;
 	}
     public function sendMessage($data,$client='weapp')
     {
@@ -33,8 +29,13 @@ class MessageService
     }
     public function sendWeAppMessage($data)
     {
-        $user = User::tokenAuth();
-        $form_id = FormId::getFormId($user->id);
+        $user = User::getUserById($data['user_id'],['id','open_id']);
+        $form_id = FormId::getFormId($data['user_id']);
+
+        if(!$form_id)
+        {
+            return ;
+        }
         $config = [
             'app_id' => config('wechat.mini_program.default.app_id'),
             'token' => config('wechat.mini_program.default.token'),
@@ -46,28 +47,28 @@ class MessageService
         switch ($data['type'])
         {
             case 'accept_order':
-                $template_id = '';
+                $template_id = config('wechat.payment.default.template_id.accept_order');
+                $page = '';
+                break;
+            case 'finish_order':
+                $template_id = config('wechat.payment.default.template_id.status_change');
                 $page = '';
                 break;
             case 'deliverer_cancel_order':
-                $template_id = '';
+                $template_id = config('wechat.payment.default.template_id.status_change');
                 $page = '';
                 break;
             case 'user_agree_cancel_order':
-                $template_id = '';
+                $template_id = config('wechat.payment.default.template_id.user_agree_cancel_order');
                 $page = '';
                 break;
         }
         $app->template_message->send([
-            'touser' => $data['open_id'],
+            'touser' => $user->open_id,
             'template_id' => $template_id,
-            'page' => 'index',
+            'page' => $page,
             'form_id' => $form_id,
-            'data' => [
-                'keyword1' => 'VALUE',
-                'keyword2' => 'VALUE2',
-                // ...
-            ],
+            'data' => $data['data'],
         ]);
     }
 }

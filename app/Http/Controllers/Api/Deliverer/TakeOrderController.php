@@ -69,13 +69,7 @@ class TakeOrderController extends BaseController
 
         $this->checkDelivererPermission($take_order->deliverer_id);
 
-        if ($take_order->order_status != 'accepted') {
-            throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许完成任务');
-        }
-
-        $this->takeOrderRepository->updateOrderStatus(['order_status' => 'finish'],$take_order->id);
-
-        //TODO:通知 $take_order->user_id
+        $this->takeOrderRepository->finishOrder($take_order);
 
         throw new \App\Exceptions\RequestSuccessException("恭喜，已完成任务！等待用户确认！");
     }

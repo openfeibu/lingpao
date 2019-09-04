@@ -130,6 +130,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind('image_service', function ($app) {
             return new \App\Services\ImageService($app->request);
         });
+        $this->app->bind('message_service', function ($app) {
+            return new \App\Services\MessageService($app->request);
+        });
     }
 
     public function provides()

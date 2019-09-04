@@ -6,6 +6,7 @@ use App\Exceptions\OutputServerMessageException;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\BaseRepository;
 use App\Models\User;
+use App\Services\MessageService;
 use App\Services\RefundService;
 use Request,DB;
 
@@ -140,8 +141,17 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             app(TaskOrderRepository::class)->where('type','take_order')->where('objective_id',$take_order->id)->updateData([
                 'deliverer_id' => $deliverer->id
             ]);
-            //TODO:消息推送
-
+            //消息推送 发单人
+            $message_data = [
+                'user_id' => $take_order->user_id,
+                'type' => 'accept_order',
+                'data' => [
+                    'keyword1' => $deliverer->nickname,
+                    'keyword2' => date('Y-m-d H:i:s'),
+                    'keyword3' => trans('task.take_order.be_accepted'),
+                ],
+            ];
+            app(MessageService::class)->sendMessage($message_data);
         } catch (Exception $e) {
             throw new \App\Exceptions\RequestFailedException('无法接受任务');
         }
@@ -154,6 +164,26 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
         app(TaskOrderRepository::class)->where('type','take_order')->where('objective_id',$id)->updateData([
             'order_status' => $data['order_status']
         ]);
+    }
+    public function finishOrder($take_order)
+    {
+        $deliverer = User::tokenAuthCache();
+        if ($take_order->order_status != 'accepted') {
+            throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许完成任务');
+        }
+        $this->updateOrderStatus(['order_status' => 'finish'],$take_order->id);
+
+        //通知 发单人
+        $message_data = [
+            'user_id' => $take_order->user_id,
+            'type' => 'finish_order',
+            'data' => [
+                'keyword1' => trans('task.take_order.order_status.finish'),
+                'keyword2' => trans('task.take_order.be_finished')
+            ],
+        ];
+        app(MessageService::class)->sendMessage($message_data);
+        return "success";
     }
     public function completeOrder($take_order)
     {

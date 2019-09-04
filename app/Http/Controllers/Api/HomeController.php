@@ -86,6 +86,7 @@ class HomeController extends BaseController
         FormId::create([
             'user_id' => $user->id,
             'form_id' => $form_id,
+            'open_id' => $user->open_id,
         ]);
 
         throw new RequestSuccessException();

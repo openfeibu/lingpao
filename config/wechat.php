@@ -98,6 +98,11 @@ return [
             'secret'  => env('WECHAT_MINI_PROGRAM_SECRET', '7108d0cd353e20426be758ad456c38a8'),
             'token'   => env('WECHAT_MINI_PROGRAM_TOKEN', 'lingpaoxiaoyuan'),
             'aes_key' => env('WECHAT_MINI_PROGRAM_AES_KEY', 'RVD07oK0rhfzNIB0govh0faaeI2AnNRI7IawvmA1JKI'),
+            'template_id' => [
+                'accept_order' => 'krSNfQd5xJgEMJqONavnC-PG6v4K5jJuWJJKrV0hjo0', //接单
+                'status_change' => 'trVH8wAl_rx4xN2l5vUi2pT7ci3-silpi3zHVd7dkhA', //状态改变
+                'wait_pay' => 'BoWlF96ukQ7XRoT7Uh6QmVuB6dz8P4RcnI_dJdYWqjs', //待支付
+            ],
         ],
     ],
 

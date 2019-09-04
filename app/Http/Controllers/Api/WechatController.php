@@ -30,6 +30,7 @@ class WechatController extends BaseController
 
        $app = Factory::officialAccount($config);
        $response = $app->server->serve();
-       $response->send(); // Laravel 里请使用：return $response;
+       return $response;
+       //$response->send(); // Laravel 里请使用：return $response;
    }
 }
