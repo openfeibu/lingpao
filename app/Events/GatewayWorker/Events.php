@@ -271,6 +271,14 @@ class Events
                 'timeStr' => friendly_date($chat->updated_at)
             ];
             Gateway::sendToClient($to_client_id, json_encode($to_response));
+
+            $unread = Chat::where('to_user_id',$to_user_id)->where('unread',1)->count();
+
+            $unread_response = [
+                'type' => 'unread',
+                'unread' => $unread,
+            ];
+            Gateway::sendToClient($to_client_id, json_encode($unread_response));
         }
     }
     public static function onClose($client_id)
