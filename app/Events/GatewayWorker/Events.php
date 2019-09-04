@@ -191,6 +191,13 @@ class Events
                 })->orWhere(function($query) use ($to_user_id,$from_user_id){
                     $query->where('from_user_id',$to_user_id)->where('to_user_id',$from_user_id);
                 })->first();
+                if(!$room)
+                {
+                    $room = Room::create([
+                        'from_user_id' => $from_user_id,
+                        'to_user_id' => $to_user_id,
+                    ]);
+                }
                 if($room)
                 {
                     $conversationId = $room->id;
