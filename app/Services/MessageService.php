@@ -43,7 +43,7 @@ class MessageService
             'mch_id' => config('wechat.payment.default.mch_id'),
             'key' => config('wechat.payment.default.key'),
         ];
-        $app = Factory::payment($config);
+        $app = Factory::miniProgram($config);
         switch ($data['type'])
         {
             case 'accept_order':
