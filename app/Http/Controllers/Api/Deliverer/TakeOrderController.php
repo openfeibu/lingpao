@@ -128,7 +128,7 @@ class TakeOrderController extends BaseController
             //通知 发单人
             $message_data = [
                 'task_type'=> 'take_order',
-                'type' => 'extra_price',
+                'type' => 'extra_price_pay',
                 'total_price' => $total_price
             ];
             app(MessageService::class)->sendMessage($message_data);

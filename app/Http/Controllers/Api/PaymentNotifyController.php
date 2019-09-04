@@ -9,6 +9,7 @@ use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\TaskOrderRepositoryInterface;
 use App\Repositories\Eloquent\TradeRecordRepositoryInterface;
 use App\Repositories\Eloquent\UserAllCouponRepositoryInterface;
+use App\Services\MessageService;
 use DB,Log;
 use Illuminate\Http\Request;
 use EasyWeChat\Factory;
@@ -100,6 +101,13 @@ class PaymentNotifyController extends BaseController
                     );
                     $this->takeOrderExtraPriceRepository->update(['status' => 'paid'], $extra_price->id);
                     $this->takeOrderRepository->update(['deliverer_price' => $take_order->deliverer_price+$extra_price->total_price],$take_order->id);
+                    //通知 发单人
+                    $message_data = [
+                        'task_type'=> 'take_order',
+                        'type' => 'extra_price_paid',
+                        'total_price' => $extra_price->total_price
+                    ];
+                    app(MessageService::class)->sendMessage($message_data);
                 }
                 break;
             case 'CUSTOM':

@@ -12,6 +12,7 @@ use App\Repositories\Eloquent\UserAllCouponRepositoryInterface;
 use App\Repositories\Eloquent\UserCouponRepositoryInterface;
 use App\Repositories\Eloquent\UserRepositoryInterface;
 use App\Repositories\Eloquent\TaskOrderRepositoryInterface;
+use App\Services\MessageService;
 use Validator,Request,DB,Log;
 use App\Models\Setting;
 use App\Models\User;
@@ -111,6 +112,13 @@ class PayService
                 {
                     $this->takeOrderExtraPriceRepository->update(['status' => 'paid'],$data['extra_price_id']);
                     $this->takeOrderRepository->update(['deliverer_price' => $data['take_order']->deliverer_price+$data['total_price'] ],$data['take_order']->id);
+                    //通知 发单人
+                    $message_data = [
+                        'task_type'=> 'take_order',
+                        'type' => 'extra_price_paid',
+                        'total_price' => $data['total_price']
+                    ];
+                    app(MessageService::class)->sendMessage($message_data);
                     throw new RequestSuccessException("支付成功");
                 }
                 break;

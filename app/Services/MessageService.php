@@ -109,10 +109,18 @@ class MessageService
                 ];
                 $page = '';
                 break;
-            case 'extra_price':
+            case 'extra_price_pay':
                 $template_id = config('wechat.mini_program.default.template_id.wait_pay');
                 $data = [
                     'keyword1' => '骑手增加代拿服务费',
+                    'keyword2' => $data['total_price'],
+                ];
+                $page = '';
+                break;
+            case 'extra_price_paid':
+                $template_id = config('wechat.mini_program.default.template_id.wait_pay');
+                $data = [
+                    'keyword1' => ' 已支付代拿服务费',
                     'keyword2' => $data['total_price'],
                 ];
                 $page = '';
