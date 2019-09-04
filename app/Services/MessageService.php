@@ -69,7 +69,7 @@ class MessageService
             'form_id' => $form_id,
             'data' => $data['data'],
         ]);
-        FormId::where('id',$form_id)->update(['status' => 'used','use_type' => $data['type']]);
+        FormId::where('form_id',$form_id)->update(['status' => 'used','use_type' => $data['type']]);
         var_dump($result);exit;
     }
 }
