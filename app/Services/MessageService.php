@@ -63,12 +63,14 @@ class MessageService
                 $page = '';
                 break;
         }
-        $app->template_message->send([
+        $result = $app->template_message->send([
             'touser' => $user->open_id,
             'template_id' => $template_id,
             'page' => $page,
             'form_id' => $form_id,
             'data' => $data['data'],
         ]);
+        FormId::where('id',$form_id)->update(['status' => 'used','use_type' => $data['type']]);
+        var_dump($result);exit;
     }
 }
