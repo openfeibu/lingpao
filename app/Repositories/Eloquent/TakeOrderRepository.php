@@ -250,7 +250,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             'trade_type' => 'CANCEL_TAKE_ORDER',
             'description' => '取消代拿任务',
         ];
-        app(RefundService::class)->refundHandle($data,'TakeOrder');
+        app(RefundService::class)->refundHandle($data,'TakeOrder',User::tokenAuth());
     }
     public function delivererCancelOrder($take_order)
     {
@@ -286,7 +286,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             'trade_type' => 'CANCEL_TAKE_ORDER',
             'description' => '取消代拿任务',
         ];
-        app(RefundService::class)->refundHandle($data,'TakeOrder');
+        app(RefundService::class)->refundHandle($data,'TakeOrder',User::tokenAuth());
         //通知 接单人
         $message_data = [
             'task_type'=> 'take_order',

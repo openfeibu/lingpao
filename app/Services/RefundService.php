@@ -44,9 +44,9 @@ class RefundService
         $this->userAllCouponRepository = $userAllCouponRepository;
     }
 
-    public function refundHandle($data,$pay_from)
+    public function refundHandle($data,$pay_from,$user)
     {
-        $this->user = User::tokenAuth();
+        $this->user = $user;
         switch($pay_from)
         {
             case 'TakeOrder':

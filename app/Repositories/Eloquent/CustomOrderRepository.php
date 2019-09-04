@@ -143,7 +143,7 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
             'trade_type' => 'CANCEL_CUSTOM_ORDER',
             'description' => '取消帮帮忙任务',
         ];
-        app(RefundService::class)->refundHandle($data,'CustomOrder');
+        app(RefundService::class)->refundHandle($data,'CustomOrder',User::tokenAuth());
     }
     public function finishOrder($custom_order)
     {
@@ -243,7 +243,8 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
             'trade_type' => 'CANCEL_CUSTOM_ORDER',
             'description' => '取消帮帮忙任务',
         ];
-        app(RefundService::class)->refundHandle($data,'CustomOrder');
+        app(RefundService::class)->refundHandle($data,'CustomOrder',User::tokenAuth());
+
         //通知 接单人
         $message_data = [
             'task_type'=> 'custom_order',
