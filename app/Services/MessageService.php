@@ -70,18 +70,43 @@ class MessageService
         {
             case 'accept_order':
                 $template_id = config('wechat.mini_program.default.template_id.accept_order');
+                $data = [
+                    'keyword1' => $data['nickname'],
+                    'keyword2' => date('Y-m-d H:i:s'),
+                    'keyword3' => sprintf(trans('task.be_accepted'),trans('task.take_order.name')),
+                ];
                 $page = '';
                 break;
             case 'finish_order':
                 $template_id = config('wechat.mini_program.default.template_id.status_change');
+                $data = [
+                    'keyword1' => trans('task.take_order.order_status.finish'),
+                    'keyword2' => sprintf(trans('task.be_finished'),trans('task.take_order.name')),
+                ];
+                $page = '';
+                break;
+            case 'complete_order':
+                $template_id = config('wechat.mini_program.default.template_id.status_change');
+                $data = [
+                    'keyword1' => trans('task.take_order.order_status.completed'),
+                    'keyword2' => sprintf(trans('task.be_completed'),trans('task.take_order.name')),
+                ];
                 $page = '';
                 break;
             case 'deliverer_cancel_order':
                 $template_id = config('wechat.mini_program.default.template_id.status_change');
+                $data = [
+                    'keyword1' => trans('task.take_order.order_cancel_status.deliverer_apply_cancel'),
+                    'keyword2' => sprintf(trans('task.be_canceled'),trans('task.take_order.name')),
+                ];
                 $page = '';
                 break;
             case 'user_agree_cancel_order':
-                $template_id = config('wechat.mini_program.default.template_id.user_agree_cancel_order');
+                $template_id = config('wechat.mini_program.default.template_id.status_change');
+                $data = [
+                    'keyword1' => trans('task.take_order.order_cancel_status.user_agree_cancel'),
+                    'keyword2' => sprintf(trans('task.be_agree_cancel'),trans('task.take_order.name')),
+                ];
                 $page = '';
                 break;
         }
@@ -91,7 +116,7 @@ class MessageService
             'template_id' => $template_id,
             'page' => $page,
             'form_id' => $form_id,
-            'data' => $data['data'],
+            'data' => $data,
         ]);
 
         return $result;

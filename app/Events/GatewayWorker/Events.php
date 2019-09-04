@@ -94,10 +94,10 @@ class Events
                         $query->where('to_user_id',$room['to_user_id'])->where('from_user_id',$room['from_user_id']);
                     })->orWhere(function($query) use ($room){
                         $query->where('from_user_id',$room['to_user_id'])->where('to_user_id',$room['from_user_id']);
-                    })->where('type','text')->orderBy('id','desc')->first();
+                    })->orderBy('id','desc')->first();
                     $latestMsg = $latestMsg ? [
                         'type' => $latestMsg->type,
-                        'content' => $latestMsg->content,
+                        'content' => $latestMsg->type == 'image' ? "[图片]" : $latestMsg->content,
                         'timestamp' => strtotime($latestMsg->updated_at),
                         'timeStr' => friendly_date($latestMsg->updated_at),
                     ] : [];

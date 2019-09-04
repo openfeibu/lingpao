@@ -144,12 +144,8 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             //消息推送 发单人
             $message_data = [
                 'user_id' => $take_order->user_id,
+                'nickname' => $deliverer->nickname,
                 'type' => 'accept_order',
-                'data' => [
-                    'keyword1' => $deliverer->nickname,
-                    'keyword2' => date('Y-m-d H:i:s'),
-                    'keyword3' => trans('task.take_order.be_accepted'),
-                ],
             ];
             app(MessageService::class)->sendMessage($message_data);
         } catch (Exception $e) {
@@ -177,10 +173,6 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
         $message_data = [
             'user_id' => $take_order->user_id,
             'type' => 'finish_order',
-            'data' => [
-                'keyword1' => trans('task.take_order.order_status.finish'),
-                'keyword2' => trans('task.take_order.be_finished')
-            ],
         ];
         app(MessageService::class)->sendMessage($message_data);
         return "success";
@@ -228,6 +220,13 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
 
         app(TradeRecordRepository::class)->create($trade);
 
+        //通知 接单人
+        $message_data = [
+            'user_id' => $take_order->deliverer_id,
+            'type' => 'complete_order',
+        ];
+        app(MessageService::class)->sendMessage($message_data);
+
         return "success";
     }
     public function userCancelOrder($take_order)
@@ -257,6 +256,13 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
         }
         $this->updateOrderStatus(['order_status' => 'cancel','order_cancel_status' => 'deliverer_apply_cancel'],$take_order->id);
 
+        //通知 发单人
+        $message_data = [
+            'user_id' => $take_order->user_id,
+            'type' => 'deliverer_cancel_order',
+        ];
+        app(MessageService::class)->sendMessage($message_data);
+
         throw new \App\Exceptions\RequestSuccessException("操作成功，请等待或联系用户确认！");
     }
     public function agreeCancelOrder($take_order)
@@ -277,6 +283,16 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             'description' => '取消代拿任务',
         ];
         app(RefundService::class)->refundHandle($data,'TakeOrder');
+        //通知 发单人
+        $message_data = [
+            'user_id' => $take_order->user_id,
+            'type' => 'deliverer_cancel_order',
+            'data' => [
+                'keyword1' => trans('task.take_order.order_cancel_status.deliverer_apply_cancel'),
+                'keyword2' => sprintf(trans('task.be_canceled'),trans('task.take_order.name')),
+            ],
+        ];
+        app(MessageService::class)->sendMessage($message_data);
         //$this->refund($take_order,$user);
     }
     public function refund($take_order,$user)
