@@ -47,19 +47,19 @@ class MessageService
         switch ($data['type'])
         {
             case 'accept_order':
-                $template_id = config('wechat.payment.default.template_id.accept_order');
+                $template_id = config('wechat.mini_program.default.template_id.accept_order');
                 $page = '';
                 break;
             case 'finish_order':
-                $template_id = config('wechat.payment.default.template_id.status_change');
+                $template_id = config('wechat.mini_program.default.template_id.status_change');
                 $page = '';
                 break;
             case 'deliverer_cancel_order':
-                $template_id = config('wechat.payment.default.template_id.status_change');
+                $template_id = config('wechat.mini_program.default.template_id.status_change');
                 $page = '';
                 break;
             case 'user_agree_cancel_order':
-                $template_id = config('wechat.payment.default.template_id.user_agree_cancel_order');
+                $template_id = config('wechat.mini_program.default.template_id.user_agree_cancel_order');
                 $page = '';
                 break;
         }
