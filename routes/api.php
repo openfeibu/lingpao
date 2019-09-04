@@ -66,6 +66,7 @@ $api->version('v1', function ($api) {
     $api->post('/extract_express_info','App\Http\Controllers\Api\User\TakeOrderController@extractExpressInfo');
 
     $api->get('/setting','App\Http\Controllers\Api\HomeController@setting');
+    $api->post('/collect_form_id','App\Http\Controllers\Api\HomeController@collectFormId');
 
     $api->get('/task_order','App\Http\Controllers\Api\TaskOrderController@getOrders');
     $api->get('/task_order/{id}','App\Http\Controllers\Api\TaskOrderController@getOrder');
@@ -99,6 +100,8 @@ $api->version('v1', function ($api) {
     $api->post('/custom_order/deliverer/cancel_order','App\Http\Controllers\Api\Deliverer\CustomOrderController@cancelOrder');
 
     $api->post('wechat/notify','App\Http\Controllers\Api\PaymentNotifyController@wechatNotify');
+
+    $api->get('wechat/index','App\Http\Controllers\Api\WechatController@index');
 
     $api->get('/test','App\Http\Controllers\Api\HomeController@test');
 });

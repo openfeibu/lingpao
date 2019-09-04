@@ -96,8 +96,8 @@ return [
         'default' => [
             'app_id'  => env('WECHAT_MINI_PROGRAM_APPID', 'wx06d5cea896e10366'),
             'secret'  => env('WECHAT_MINI_PROGRAM_SECRET', '7108d0cd353e20426be758ad456c38a8'),
-            'token'   => env('WECHAT_MINI_PROGRAM_TOKEN', ''),
-            'aes_key' => env('WECHAT_MINI_PROGRAM_AES_KEY', ''),
+            'token'   => env('WECHAT_MINI_PROGRAM_TOKEN', 'lingpaoxiaoyuan'),
+            'aes_key' => env('WECHAT_MINI_PROGRAM_AES_KEY', 'RVD07oK0rhfzNIB0govh0faaeI2AnNRI7IawvmA1JKI'),
         ],
     ],
 

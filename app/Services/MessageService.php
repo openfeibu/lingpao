@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Repositories\Eloquent\UserRepositoryInterface;
 use EasyWeChat\Factory;
+use App\Models\FormId;
 
 class MessageService
 {
@@ -32,6 +33,8 @@ class MessageService
     }
     public function sendWeAppMessage($data)
     {
+        $user = User::tokenAuth();
+        $form_id = FormId::getFormId($user->id);
         $config = [
             'app_id' => config('wechat.mini_program.default.app_id'),
             'token' => config('wechat.mini_program.default.token'),
@@ -59,7 +62,7 @@ class MessageService
             'touser' => $data['open_id'],
             'template_id' => $template_id,
             'page' => 'index',
-            'form_id' => $data['form_id'],
+            'form_id' => $form_id,
             'data' => [
                 'keyword1' => 'VALUE',
                 'keyword2' => 'VALUE2',

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Events\GatewayWorker\Events;
+use App\Exceptions\RequestSuccessException;
 use App\Http\Controllers\Api\BaseController;
+use App\Models\FormId;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Banner;
 use App\Models\Setting;
@@ -68,5 +71,23 @@ class HomeController extends BaseController
 
         $message = json_encode($message);
         return Events::onMessage(1,$message);
+    }
+    public function collectFormId(Request $request)
+    {
+        $rule = [
+            'form_id' => 'required',
+        ];
+
+        validateParameter($rule);
+
+        $user = User::tokenAuth();
+        $form_id = $request->form_id;
+
+        FormId::create([
+            'user_id' => $user->id,
+            'form_id' => $form_id,
+        ]);
+
+        throw new RequestSuccessException();
     }
 }
