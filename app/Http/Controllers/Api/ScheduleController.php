@@ -12,8 +12,6 @@ use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Services\MessageService;
 use App\Services\RefundService;
 use Illuminate\Http\Request;
-use App\Models\Banner;
-use App\Models\Setting;
 use Log;
 
 class ScheduleController extends BaseController
@@ -32,6 +30,13 @@ class ScheduleController extends BaseController
         $this->refundTakeOrder();
         $this->refundCustomOrder();
     }
+
+    public function complete()
+    {
+        $this->completeTakeOrder();
+        $this->completeCustomOrder();
+    }
+
     private function refundTakeOrder()
     {
         $take_orders = $this->takeOrderRepository
@@ -78,5 +83,13 @@ class ScheduleController extends BaseController
             $user = User::getUserById($custom_order->user_id);
             $this->refundService->refundHandle($data,'CustomOrder',$user);
         }
+    }
+    private function completeTakeOrder()
+    {
+
+    }
+    private function completeCustomOrder()
+    {
+
     }
 }

@@ -34,7 +34,7 @@ class CustomOrderController extends BaseController
             validateParameter($rule);
 
             //检验是否骑手
-            User::isRole('deliverer');
+            User::IsDeliverer();
 
             $custom_order = $this->customOrderRepository->find($request->id);
             //接受任务

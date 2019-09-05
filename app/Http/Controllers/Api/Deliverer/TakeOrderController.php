@@ -41,7 +41,7 @@ class TakeOrderController extends BaseController
             validateParameter($rule);
 
             //检验是否骑手
-            User::isRole('deliverer');
+            User::IsDeliverer();
 
             $take_order = $this->takeOrderRepository->find($request->id);
             //接受任务
