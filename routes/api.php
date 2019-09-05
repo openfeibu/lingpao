@@ -99,8 +99,10 @@ $api->version('v1', function ($api) {
     $api->post('/custom_order/finish_order','App\Http\Controllers\Api\Deliverer\CustomOrderController@finishOrder');
     $api->post('/custom_order/deliverer/cancel_order','App\Http\Controllers\Api\Deliverer\CustomOrderController@cancelOrder');
 
-    $api->post('wechat/notify','App\Http\Controllers\Api\PaymentNotifyController@wechatNotify');
+    $api->get('/coupon','App\Http\Controllers\Api\CouponController@coupon');
+    $api->post('/coupon/receive','App\Http\Controllers\Api\CouponController@receiveCoupon');
 
+    $api->post('wechat/notify','App\Http\Controllers\Api\PaymentNotifyController@wechatNotify');
     $api->get('wechat/index','App\Http\Controllers\Api\WechatController@index');
 
     $api->get('/test','App\Http\Controllers\Api\HomeController@test');
