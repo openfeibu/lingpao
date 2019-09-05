@@ -44,5 +44,7 @@ return [
             'paid' => '已支付'
         ],
     ],
-
+    'custom_order' => [
+        'name' => '帮帮忙'
+    ],
 ];
