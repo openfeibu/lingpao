@@ -22,7 +22,7 @@ return [
         'visible'      => [],
         'guarded'      => ['*'],
         //'slugs'        => ['slug' => 'name'],
-        'fillable'     => ['title','image', 'url','order'],
+        'fillable'     => ['title','image', 'url','order','type'],
         'translate'    => ['title','image', 'url'],
         'upload_folder' => '/banner',
         'encrypt'      => ['id'],
