@@ -61,7 +61,7 @@ class RefundService
                         'trade_type' => 'CANCEL_TAKE_ORDER',
                         'description' => '取消代拿任务',
                     ];
-                    return $this->takeOrderExtraPriceRefundHandle($extra_price_data);
+                    $this->takeOrderExtraPriceRefundHandle($extra_price_data);
                 }
                 return $this->takeOrderRefundHandle($data);
                 break;
