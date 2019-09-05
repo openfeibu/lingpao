@@ -24,14 +24,14 @@ class CouponController extends BaseController
     {
         $coupons = Coupon::where('is_open',1)
             ->where('stock','>',0)
-            ->select('id','name','price','min_price','stock','num','end_day')
+            ->select('id','name','price','min_price','stock','num','receive_num','end_day')
             ->orderBy('id','asc')
             ->get()
             ->toArray();
         foreach ($coupons as $key => $coupon)
         {
             $user_coupon = UserCoupon::where('coupon_id',$coupon['id'])->first(['id']);
-            $coupons[$key]['stock_rate'] = (round($coupon['stock'] / $coupon['num'],2) * 100).'%';
+            $coupons[$key]['receive_rate'] = (round($coupon['receive_num'] / $coupon['num'],2) * 100).'%';
             if($user_coupon)
             {
                 unset($coupons[$key]);
