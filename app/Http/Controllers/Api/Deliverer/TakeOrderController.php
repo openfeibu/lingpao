@@ -129,6 +129,7 @@ class TakeOrderController extends BaseController
             $message_data = [
                 'task_type'=> 'take_order',
                 'type' => 'extra_price_pay',
+                'user_id' => $take_order->user_id,
                 'total_price' => $total_price
             ];
             app(MessageService::class)->sendMessage($message_data);

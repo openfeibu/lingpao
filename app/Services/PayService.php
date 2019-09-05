@@ -114,6 +114,7 @@ class PayService
                     $this->takeOrderRepository->update(['deliverer_price' => $data['take_order']->deliverer_price+$data['total_price'] ],$data['take_order']->id);
                     //通知 发单人
                     $message_data = [
+                        'user_id' => $data['take_order']->deliverer_id,
                         'task_type'=> 'take_order',
                         'type' => 'extra_price_paid',
                         'total_price' => $data['total_price']
