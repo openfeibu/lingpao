@@ -163,7 +163,7 @@ class RefundService
         );
         $this->balanceRecordRepository->create($balanceData);
         $this->userRepository->update(['balance' => $new_balance],$this->user->id);
-
+        $this->user->balance = $new_balance;
         $this->refundCommonHandle($data);
         return [
             'return_code' => 'SUCCESS',
