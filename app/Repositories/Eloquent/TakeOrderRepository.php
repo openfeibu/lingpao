@@ -144,6 +144,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             //消息推送 发单人
             $message_data = [
                 'task_type'=> 'take_order',
+                'order_sn' => $take_order->order_sn,
                 'user_id' => $take_order->user_id,
                 'nickname' => $deliverer->nickname,
                 'type' => 'accept_order',
@@ -173,6 +174,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
         //通知 发单人
         $message_data = [
             'task_type'=> 'take_order',
+            'order_sn' => $take_order->order_sn,
             'user_id' => $take_order->user_id,
             'type' => 'finish_order',
         ];
@@ -225,6 +227,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
         //通知 接单人
         $message_data = [
             'task_type'=> 'take_order',
+            'order_sn' => $take_order->order_sn,
             'user_id' => $take_order->deliverer_id,
             'type' => 'complete_order',
         ];
@@ -262,6 +265,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
         //通知 发单人
         $message_data = [
             'task_type'=> 'take_order',
+            'order_sn' => $take_order->order_sn,
             'user_id' => $take_order->user_id,
             'type' => 'deliverer_cancel_order',
         ];
@@ -290,6 +294,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
         //通知 接单人
         $message_data = [
             'task_type'=> 'take_order',
+            'order_sn' => $take_order->order_sn,
             'user_id' => $take_order->deliverer_id,
             'type' => 'user_agree_cancel_order',
         ];

@@ -114,6 +114,7 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
             //消息推送 发单人
             $message_data = [
                 'task_type'=> 'custom_order',
+                'order_sn' => $custom_order->order_sn,
                 'user_id' => $custom_order->user_id,
                 'nickname' => $deliverer->nickname,
                 'type' => 'accept_order',
@@ -154,6 +155,7 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
         //通知 发单人
         $message_data = [
             'task_type'=> 'custom_order',
+            'order_sn' => $custom_order->order_sn,
             'user_id' => $custom_order->user_id,
             'type' => 'finish_order',
         ];
@@ -204,6 +206,7 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
         //通知 接单人
         $message_data = [
             'task_type'=> 'custom_order',
+            'order_sn' => $custom_order->order_sn,
             'user_id' => $custom_order->deliverer_id,
             'type' => 'complete_order',
         ];
@@ -220,6 +223,7 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
         //通知 发单人
         $message_data = [
             'task_type'=> 'custom_order',
+            'order_sn' => $custom_order->order_sn,
             'user_id' => $custom_order->user_id,
             'type' => 'deliverer_cancel_order',
         ];
@@ -248,6 +252,7 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
         //通知 接单人
         $message_data = [
             'task_type'=> 'custom_order',
+            'order_sn' => $custom_order->order_sn,
             'user_id' => $custom_order->deliverer_id,
             'type' => 'user_agree_cancel_order',
         ];
