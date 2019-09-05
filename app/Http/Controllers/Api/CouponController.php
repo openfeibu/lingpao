@@ -31,11 +31,11 @@ class CouponController extends BaseController
         foreach ($coupons as $key => $coupon)
         {
             $user_coupon = UserCoupon::where('coupon_id',$coupon['id'])->first(['id']);
+            $coupons[$key]['stock_rate'] = (round($coupon['stock'] / $coupon['num'],2) * 100).'%';
             if($user_coupon)
             {
                 unset($coupons[$key]);
             }
-            $coupons[$key]['stock_rate'] = (round($coupon['stock'] / $coupon['num'],2) * 100).'%';
         }
         return $this->response->success()->data($coupons)->json();
     }
