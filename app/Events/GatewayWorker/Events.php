@@ -34,7 +34,7 @@ class Events
 
         if (!isset($message->type)) {
             $response['message'] = 'missing parameter mode';
-            $response['code'] = ERROR_CHAT;
+            $response['code'] = 400;
             Gateway::sendToClient($client_id, json_encode($response));
             return false;
         }
@@ -43,7 +43,7 @@ class Events
         if(!$user)
         {
             $response['message'] = 'Authentication failure';
-            $response['code'] = ERROR_CHAT;
+            $response['code'] = 403;
             Gateway::sendToClient($client_id, json_encode($response));
             return false;
         }
@@ -61,7 +61,7 @@ class Events
                     OrderChat::store($message->order_id, $message->type, $message->content, $message->user_id);
                 } else {
                     $response['msg'] = 'Authentication failure';
-                    $response['errcode'] = ERROR_CHAT;
+                    $response['errcode'] = 403;
                 }
                 */
                 break;
@@ -208,7 +208,7 @@ class Events
                 $response['conversationId'] = $conversationId;
                 break;
             default:
-                $response['code'] = ERROR_CHAT;
+                $response['code'] = 400;
                 $response['message'] = 'Undefined';
         }
 
