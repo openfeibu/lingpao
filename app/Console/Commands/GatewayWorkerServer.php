@@ -73,7 +73,14 @@ class GatewayWorkerServer extends Command
 
     private function startGateWay()
     {
-        $gateway = new Gateway(sprintf('websocket://%s',GW_GATEWAY_ADDRESS));
+        $context = [
+            'ssl' => [
+                'local_cert' => 'D:\phpstudy\PHPTutorial\Apache\conf\cert\2692675_api\2692675_api.lingpaoxy.com.pem',
+                'local_pk' => 'D:\phpstudy\PHPTutorial\Apache\conf\cert\2692675_api\2692675_api.lingpaoxy.com.key',
+                'verify_peer' => false
+            ]
+        ];
+        $gateway = new Gateway(sprintf('websocket://%s',GW_GATEWAY_ADDRESS),$context);
         $gateway->name                 = GW_GATEWAY_NAME;                         #设置Gateway进程的名称，方便status命令中查看统计
         $gateway->count                = GW_GATEWAY_COUNT;                                 #进程的数量
         $gateway->lanIp                = GW_LOCAL_HOST_IP;                       #内网ip,多服务器分布式部署的时候需要填写真实的内网ip
