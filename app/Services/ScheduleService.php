@@ -88,13 +88,12 @@ class ScheduleService
     {
         $take_orders = $this->takeOrderRepository
             ->join('task_order_status_changes as change','change.objective_id','=','take_orders.id')
-            ->where('change.objective_type','take_order')
+            ->where('change.type','take_order')
             ->where('take_orders.order_status','finish')
             ->where('change.order_status','finish')
-            ->where('change.created_at','<=',DB::raw('(select date_sub(now(), interval '.setting('task_auto_complete_hours'). 'HOUR))'))
+            ->where('change.created_at','<=',DB::raw('(select date_sub(now(), interval '.setting('task_auto_complete_hours'). ' HOUR))'))
             ->orderBy('take_orders.id','asc')
-            ->select('take_orders.*')
-            ->get();
+            ->get(['take_orders.*']);
         foreach ($take_orders as $key => $take_order)
         {
             $this->takeOrderRepository->completeOrder($take_order);
@@ -104,14 +103,13 @@ class ScheduleService
     public function completeCustomOrder()
     {
         $custom_orders = $this->customOrderRepository
-            ->join('custom_order_status_changes as change','change.objective_id','=','custom_orders.id')
-            ->where('change.objective_type','custom_order')
+            ->join('task_order_status_changes as change','change.objective_id','=','custom_orders.id')
+            ->where('change.type','custom_order')
             ->where('custom_orders.order_status','finish')
             ->where('change.order_status','finish')
-            ->where('change.created_at','<=',DB::raw('(select date_sub(now(), interval '.setting('task_auto_complete_hours'). 'HOUR))'))
+            ->where('change.created_at','<=',DB::raw('(select date_sub(now(), interval '.setting('task_auto_complete_hours'). ' HOUR))'))
             ->orderBy('custom_orders.id','asc')
-            ->select('custom_orders.*')
-            ->get();
+            ->get(['custom_orders.*']);
         foreach ($custom_orders as $key => $custom_order)
         {
             $this->customOrderRepository->completeOrder($custom_order);

@@ -85,7 +85,7 @@ class HomeController extends BaseController
         ];
         app(MessageService::class)->sendMessage($message_data);
         */
-        app(ScheduleService::class)->refund();
+        app(ScheduleService::class)->complete();
 
     }
     public function collectFormId(Request $request)

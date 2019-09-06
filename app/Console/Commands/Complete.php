@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\ScheduleService;
 use Illuminate\Console\Command;
 
 class Complete extends Command
@@ -37,6 +38,6 @@ class Complete extends Command
      */
     public function handle()
     {
-        //
+        app(ScheduleService::class)->complete();
     }
 }
