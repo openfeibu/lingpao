@@ -38,9 +38,9 @@ return array(
             'theme'  => 'pc',
             'view'   => 'pc',
         ],
-        'h5'    => [
-            'theme'  => 'h5',
-            'view'   => 'h5',
+        'wap'    => [
+            'theme'  => 'wap',
+            'view'   => 'wap',
         ],
     ],
 

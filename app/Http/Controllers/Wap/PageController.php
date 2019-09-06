@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Wap;
 
-use App\Http\Controllers\Api\BaseController;
+use App\Http\Controllers\Wap\Controller as BaseController;
 use App\Repositories\Eloquent\PageCategoryRepositoryInterface;
 use App\Repositories\Eloquent\PageRepositoryInterface;
 use App\Repositories\Eloquent\SettingRepositoryInterface;
@@ -23,40 +23,22 @@ class PageController extends BaseController
             ->pushCriteria(\App\Repositories\Criteria\PageResourceCriteria::class);
     }
 
-    public function getPage(Request $request, $id)
+    public function getPageSlug(Request $request,$slug)
     {
         $data = $this->repository
-            ->setPresenter(\App\Repositories\Presenter\Api\PageShowPresenter::class)
-            ->where(['status' => 'show'])
-            ->find($id);
+            ->where(['status' => 'show','slug' => $slug])
+            ->first(['title','content']);
         if(!$data)
         {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('数据不存在');
         }
-        $page = $data['data'];
-        return response()->json([
-            'code' => '200',
-            'meta_title' => $page['meta_title'],
-            'meta_keyword' => $page['meta_keyword'],
-            'meta_description' => $page['meta_description'],
-            'data' => $page,
-        ]);
-    }
-    public function getPageSlug(Request $request,$slug)
-    {
-        $page = $this->repository
-            ->where(['status' => 'show','slug' => $slug])
-            ->first(['title','content']);
-        if(!$page)
-        {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('数据不存在');
-        }
-        $page = $page->toArray();
-        $data = [
-            'url' => config('app.url').'/page/slug/'.$slug,
-            'title' => $page['title']
-        ];
-        return $this->response->success()->data($data)->json();
+        $page = $data->toArray();
+
+        return $this->response->title(trans('app.name'))
+            ->view('page')
+            ->data(compact('page'))
+            ->output();
+
     }
 
 }

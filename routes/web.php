@@ -77,18 +77,10 @@ Route::group([
     Route::get('logout', 'Auth\LoginController@logout');
 });
 Route::group([
-    'namespace' => 'Pc',
-    'as' => 'pc.',
+    'namespace' => 'Wap',
+    'as' => 'wap.',
 ], function () {
-    Auth::routes();
-    Route::get('/user/login','Auth\LoginController@showLoginForm');
-    Route::get('/','HomeController@home')->name('home');
-
-
-    Route::get('email-verification/index','Auth\EmailVerificationController@getVerificationIndex')->name('email-verification.index');
-    Route::get('email-verification/error','Auth\EmailVerificationController@getVerificationError')->name('email-verification.error');
-    Route::get('email-verification/check/{token}', 'Auth\EmailVerificationController@getVerification')->name('email-verification.check');
-    Route::get('email-verification-required', 'Auth\EmailVerificationController@required')->name('email-verification.required');
+    Route::get('/page/slug/{slug}','PageController@getPageSlug');
 
 
 });
