@@ -53,7 +53,7 @@ class PageController extends BaseController
         }
         $page = $page->toArray();
         $data = [
-            'url' => config('app.url').'/page/slug/'.$slug,
+            'content' => config('app.url').'/page/slug/'.$slug,
             'title' => $page['title']
         ];
         return $this->response->success()->data($data)->json();
