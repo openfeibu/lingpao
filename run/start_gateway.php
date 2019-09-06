@@ -18,7 +18,14 @@ class GwGateway {
     }
 
     public function index() {
-        $gateway = new Gateway($this->gatewayAddress);
+        $context = [
+            'ssl' => [
+                'local_cert' => 'D:\phpstudy\PHPTutorial\Apache\conf\cert\2692675_api\2692675_api.lingpaoxy.com.pem',
+                'local_pk' => 'D:\phpstudy\PHPTutorial\Apache\conf\cert\2692675_api\2692675_api.lingpaoxy.com.key',
+                'verify_peer' => false
+            ]
+        ];
+        $gateway = new Gateway($this->gatewayAddress,$context);
         // 设置名称，方便status时查看
         $gateway->name = GW_GATEWAY_NAME;
         // 设置进程数，gateway进程数建议与cpu核数相同
