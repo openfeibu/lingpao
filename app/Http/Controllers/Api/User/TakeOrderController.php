@@ -259,7 +259,7 @@ class TakeOrderController extends BaseController
             throw new PermissionDeniedException('没有取消该任务的权限');
         }
         $this->takeOrderRepository->userCancelOrder($take_order);
-
+        throw new \App\Exceptions\RequestSuccessException(trans("task.refund_success"));
     }
 
     public function agreeCancelOrder(Request $request)

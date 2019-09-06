@@ -39,7 +39,7 @@ return [
         'visible'      => [],
         'guarded'      => ['*'],
         'slugs'        => [],
-        'fillable'     => ['type','objective_model','objective_id','order_status','created_at','updated_at'],
+        'fillable'     => ['type','objective_model','objective_id','order_status','order_cancel_status','created_at','updated_at'],
         'translate'    => [],
         'upload_folder' => '/',
         'encrypt'      => ['id'],

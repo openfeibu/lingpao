@@ -176,6 +176,7 @@ class Events
 
                 }
                 $response['history'] = $chats;
+                $response['conversationId'] = $conversationId;
                 $response['type'] = $message->type;
                 break;
             case 'unread':

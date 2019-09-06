@@ -179,7 +179,7 @@ class CustomOrderController extends BaseController
             throw new PermissionDeniedException('没有取消该任务的权限');
         }
         $this->customOrderRepository->userCancelOrder($custom_order);
-
+        throw new \App\Exceptions\RequestSuccessException(trans("task.refund_success"));
     }
 
     public function agreeCancelOrder(Request $request)

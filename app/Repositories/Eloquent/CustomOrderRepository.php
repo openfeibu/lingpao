@@ -56,7 +56,8 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
             'type' => 'custom_order',
             'objective_model' => 'CustomOrder',
             'objective_id' => $id,
-            'order_status' => $data['order_status']
+            'order_status' => $data['order_status'],
+            'order_cancel_status' => isset($data['order_cancel_status']) ? $data['order_cancel_status'] : NULL,
         ]);
     }
     public function getOrderDetail($id)

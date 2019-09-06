@@ -167,7 +167,8 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             'type' => 'take_order',
             'objective_model' => 'TakeOrder',
             'objective_id' => $id,
-            'order_status' => $data['order_status']
+            'order_status' => $data['order_status'],
+            'order_cancel_status' => isset($data['order_cancel_status']) ? $data['order_cancel_status'] : NULL,
         ]);
     }
     public function finishOrder($take_order)
