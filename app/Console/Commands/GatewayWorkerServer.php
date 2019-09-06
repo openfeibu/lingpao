@@ -79,6 +79,7 @@ class GatewayWorkerServer extends Command
         $gateway->lanIp                = GW_LOCAL_HOST_IP;                       #内网ip,多服务器分布式部署的时候需要填写真实的内网ip
         $gateway->startPort            = GW_GATEWAY_START_PORT;                              #监听本机端口的起始端口
         $gateway->pingInterval         = GW_GATEWAY_PING_INTERVAL;
+        $gateway->transport            = GW_TRANSPORT; #SSl
         $gateway->pingNotResponseLimit = 0;                                 #服务端主动发送心跳
         $gateway->pingData             = '{"type":"heart"}';
         $gateway->registerAddress      = GW_REGISTER_ADDRESS;                  #注册服务地址

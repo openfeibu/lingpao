@@ -8,6 +8,7 @@ use App\Repositories\Eloquent\BaseRepository;
 use App\Services\RefundService;
 use App\Services\MessageService;
 use App\Models\User;
+use App\Models\TaskOrderStatusChange;
 use Request,DB;
 
 class CustomOrderRepository extends BaseRepository implements CustomOrderRepositoryInterface
@@ -49,6 +50,12 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
     {
         $this->update($data,$id);
         app(TaskOrderRepository::class)->where('type','custom_order')->where('objective_id',$id)->updateData([
+            'order_status' => $data['order_status']
+        ]);
+        TaskOrderStatusChange::create([
+            'type' => 'custom_order',
+            'objective_model' => 'CustomOrder',
+            'objective_id' => $id,
             'order_status' => $data['order_status']
         ]);
     }
@@ -151,7 +158,7 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
         if ($custom_order->order_status != 'accepted') {
             throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许完成任务');
         }
-        $this->customOrderRepository->updateOrderStatus(['order_status' => 'finish'],$custom_order->id);
+        $this->updateOrderStatus(['order_status' => 'finish'],$custom_order->id);
         //通知 发单人
         $message_data = [
             'task_type'=> 'custom_order',

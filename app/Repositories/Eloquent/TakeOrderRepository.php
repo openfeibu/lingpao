@@ -5,6 +5,7 @@ namespace App\Repositories\Eloquent;
 use App\Exceptions\OutputServerMessageException;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\BaseRepository;
+use App\Models\TaskOrderStatusChange;
 use App\Models\User;
 use App\Services\MessageService;
 use App\Services\RefundService;
@@ -160,6 +161,12 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
     {
         $this->update($data,$id);
         app(TaskOrderRepository::class)->where('type','take_order')->where('objective_id',$id)->updateData([
+            'order_status' => $data['order_status']
+        ]);
+        TaskOrderStatusChange::create([
+            'type' => 'take_order',
+            'objective_model' => 'TakeOrder',
+            'objective_id' => $id,
             'order_status' => $data['order_status']
         ]);
     }

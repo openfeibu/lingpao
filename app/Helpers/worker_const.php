@@ -11,6 +11,8 @@ define('GW_GATEWAY_ADDRESS','0.0.0.0:23460');
 // 网关起始端口
 define('GW_GATEWAY_START_PORT','2300');
 
+define('GW_TRANSPORT','ssl');
+
 // 心跳检测间隔，单位：秒，0 表示不发送心跳检测
 define('GW_GATEWAY_PING_INTERVAL',30);
 

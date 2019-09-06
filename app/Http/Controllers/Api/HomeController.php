@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\BaseController;
 use App\Models\FormId;
 use App\Models\User;
 use App\Services\MessageService;
+use App\Services\ScheduleService;
 use Illuminate\Http\Request;
 use App\Models\Banner;
 use App\Models\Setting;
@@ -84,6 +85,7 @@ class HomeController extends BaseController
         ];
         app(MessageService::class)->sendMessage($message_data);
         */
+        app(ScheduleService::class)->refund();
 
     }
     public function collectFormId(Request $request)

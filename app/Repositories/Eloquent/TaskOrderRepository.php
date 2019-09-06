@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Eloquent;
 
+use App\Models\TaskOrderStatusChange;
 use App\Repositories\Eloquent\TaskOrderRepositoryInterface;
 use App\Repositories\Eloquent\BaseRepository;
 use App\Models\User;
@@ -122,5 +123,11 @@ class TaskOrderRepository extends BaseRepository implements TaskOrderRepositoryI
         $this->update($data,$task_order->id);
         $task_order = $this->find($task_order->id);
         get_task_objective_model($task_order->objective_model)->where('id',$task_order->objective_id)->update(['order_status' => $data['order_status']],$task_order->objective_id);
+        TaskOrderStatusChange::create([
+            'type' => $task_order->type,
+            'objective_model' => $task_order->objective_model,
+            'objective_id' => $task_order->objective_id,
+            'order_status' => $data['order_status']
+        ]);
     }
 }

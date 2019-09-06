@@ -30,7 +30,8 @@ class GwGateway {
         $gateway->startPort = GW_GATEWAY_START_PORT;
         // 服务注册地址
         $gateway->registerAddress = GW_REGISTER_ADDRESS;
-
+        //SSl
+        $gateway->transport = GW_TRANSPORT;
         // 心跳间隔，单位：秒，0 表示不发送心跳检测
         $gateway->pingInterval = GW_GATEWAY_PING_INTERVAL;
         // 心跳数据
