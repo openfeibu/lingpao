@@ -2,6 +2,7 @@
 namespace App\Traits;
 
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 trait ExceptionCustomHandler
 {
@@ -49,6 +50,20 @@ trait ExceptionCustomHandler
                     'code' => 403,
                     'status' => 'error',
                     'message' => $exception->getMessage() ? $exception->getMessage() : '没有访问权限',
+                ];
+                break;
+            case ($exception instanceof \App\Exceptions\DataNotFoundException):
+                $responseJson = [
+                    'code' => 404,
+                    'status' => 'error',
+                    'message' => $exception->getMessage() ? $exception->getMessage() : trans('error.404'),
+                ];
+                break;
+            case ($exception instanceof NotFoundHttpException):
+                $responseJson = [
+                    'code' => 404,
+                    'status' => 'error',
+                    'message' => $exception->getMessage() ? $exception->getMessage() : trans('error.404'),
                 ];
                 break;
             case ($exception instanceof \App\Exceptions\DataNotFoundException):
