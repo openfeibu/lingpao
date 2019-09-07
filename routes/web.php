@@ -27,6 +27,8 @@ Route::group([
     Route::resource('banner', 'BannerResourceController');
     Route::post('/banner/destroyAll', 'BannerResourceController@destroyAll');
 
+    Route::get('/balance_record', 'BalanceRecordResourceController@index')->name('balance_record.index');
+
     Route::resource('news', 'NewsResourceController');
     Route::post('/news/destroyAll', 'NewsResourceController@destroyAll')->name('news.destroy_all');
     Route::post('/news/updateRecommend', 'NewsResourceController@updateRecommend')->name('news.update_recommend');
@@ -40,6 +42,9 @@ Route::group([
     Route::post('/setting/updateStation', 'SettingResourceController@updateStation');
     Route::get('/setting/arguments', 'SettingResourceController@arguments')->name('setting.arguments.index');
     Route::post('/setting/updateArguments', 'SettingResourceController@updateArguments');
+
+    Route::resource('user', 'UserResourceController');
+    Route::post('/user/destroyAll', 'UserResourceController@destroyAll')->name('admin_user.destroy_all');
 
     Route::resource('permission', 'PermissionResourceController');
     Route::resource('role', 'RoleResourceController');

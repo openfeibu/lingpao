@@ -253,6 +253,12 @@ abstract class BaseRepository extends PrettusRepository implements RepositoryInt
         $this->model = $this->model->whereIn($field, $values);
         return $this;
     }
+    public function whereNotIn($field,$values)
+    {
+        $this->model = $this->model->whereNotIn($field, $values);
+        return $this;
+    }
+
     public function limit($count=10)
     {
         $this->model = $this->model->limit($count);

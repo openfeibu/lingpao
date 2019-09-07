@@ -299,6 +299,7 @@ class UserController extends BaseController
             $this->delivererIdentificationRepository->update([
                 'name' => $request->name,
                 'student_id_card_image' => $request->student_id_card_image,
+                'status' => 'checking',
             ],$identification->id);
             throw new RequestSuccessException();
         }

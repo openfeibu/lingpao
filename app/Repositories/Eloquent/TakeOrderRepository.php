@@ -84,7 +84,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
 
         if(in_array($take_order->order_status,['unpaid']))
         {
-            throw OutputServerMessageException("该订单无效");
+            throw new OutputServerMessageException("该订单无效");
         }
 
         $take_order_user = app(UserRepository::class)->find($take_order->user_id);

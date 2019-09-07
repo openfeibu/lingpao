@@ -88,6 +88,7 @@ class TaskOrderRepository extends BaseRepository implements TaskOrderRepositoryI
             $orders = $orders->where($where);
         }
         $orders = $orders
+            ->whereNotIn('order_status', ['unpaid'])
             ->orderBy('status_num','asc')
             ->orderBy('id','desc')
             ->paginate($limit);

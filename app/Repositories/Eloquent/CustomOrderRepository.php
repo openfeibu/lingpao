@@ -69,7 +69,7 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
 
         if(in_array($order->order_status,['unpaid']))
         {
-            throw OutputServerMessageException("该订单无效");
+            throw new OutputServerMessageException("该订单无效");
         }
 
         $order_user = app(UserRepository::class)->find($order->user_id);

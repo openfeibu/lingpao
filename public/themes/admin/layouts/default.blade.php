@@ -8,7 +8,7 @@
     <meta name="screen-orientation" content="portrait">
     <meta name="x5-orientation" content="portrait">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{!! Theme::getTitle() !!} :: {{trans('app.name')}}</title>
+    <title>{{trans('app.name')}}</title>
     {!! Theme::asset()->styles() !!}
     {{--<script src='{{ asset('js/jquery-1.7.2.min.js') }}'></script>--}}
     {!! Theme::asset()->scripts() !!}

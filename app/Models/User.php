@@ -16,7 +16,7 @@ class User extends AuthModel
 
     protected $config = 'model.user.user';
 
-    protected $appends = ['is_pay_password'];
+    protected $appends = ['is_pay_password','role_name'];
 
     protected static $user;
 
@@ -73,5 +73,10 @@ class User extends AuthModel
     {
         $pay_password = $this->attributes['pay_password'];
         return $pay_password ? true : false;
+    }
+    public function getRoleNameAttribute()
+    {
+        $role_name = isset($this->attributes['role']) ? trans('user.roles.'.$this->attributes['role']) : '' ;
+        return $role_name;
     }
 }

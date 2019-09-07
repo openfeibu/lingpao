@@ -12,4 +12,11 @@ return [
     'default_avatar' => '/system/avatar.jpeg',
     'auth_file' => '/system/auth_file.jpeg',
     'wechat_notify_url' => config("app.api_url").'/wechat/notify',
+    'user' => [
+        'roles' => [
+            'common' => '普通',
+            'deliverer' => '骑手',
+            'expert_deliverer' => '骑士',
+        ],
+    ] ,
 ];
