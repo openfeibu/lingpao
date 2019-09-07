@@ -62,8 +62,8 @@ class MessageService
         $config = [
             'app_id' => config('wechat.mini_program.default.app_id'),
             'secret' =>  config('wechat.mini_program.default.secret'),
-            'token' => config('wechat.mini_program.default.token'),
-            'aes_key'=> config('wechat.mini_program.default.aes_key'),
+//            'token' => config('wechat.mini_program.default.token'),
+//            'aes_key'=> config('wechat.mini_program.default.aes_key'),
         ];
         $app = Factory::miniProgram($config);
         switch ($data['type'])
