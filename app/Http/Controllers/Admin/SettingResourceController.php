@@ -96,38 +96,41 @@ class SettingResourceController extends BaseController
                 ->redirect();
         }
     }
-    public function publicityVideo(Request $request)
+
+    public function arguments(Request $request)
     {
-        $video_params = $this->repository->where(['category' => 'publicity_video'])->all()->toArray();
-        foreach ($video_params as $key => $param)
+        $arguments = $this->repository->whereIn('category',['arguments','constant'])->all()->toArray();
+        foreach ($arguments as $key => $argument)
         {
-            $video[$param['slug']] = $param['value'];
+            //$arguments[$argument['slug']] = $argument['value'];
         }
-        $video_poster = $this->repository->where(['slug' => 'video_poster'])->first();
-        return $this->response->title('宣传视频管理')
-            ->view('setting.video')
-            ->data(compact('video','video_poster'))
+        return $this->response->title('参数配置')
+            ->view('setting.arguments')
+            ->data(compact('arguments'))
             ->output();
     }
-    public function updatePublicityVideo(Request $request)
+    public function updateArguments(Request $request)
     {
         try {
-            $attributes = $request->all();
-            foreach ($attributes as $key => $attribute)
-            {
-                Setting::where('slug',$key)->update(['value' => $attribute]);
-            }
+            $this->updateSetting($request);
             return $this->response->message(trans('messages.success.created'))
                 ->success()
-                ->url(guard_url('setting/publicityVideo'))
+                ->url(guard_url('setting/arguments'))
                 ->redirect();
         } catch (Exception $e) {
             return $this->response->message($e->getMessage())
                 ->code(400)
                 ->status('error')
-                ->url(guard_url('setting/publicityVideo'))
+                ->url(guard_url('setting/arguments'))
                 ->redirect();
         }
     }
-
+    public function updateSetting(Request $request)
+    {
+        $attributes = $request->all();
+        foreach ($attributes as $key => $attribute)
+        {
+            Setting::where('slug',$key)->update(['value' => $attribute]);
+        }
+    }
 }
