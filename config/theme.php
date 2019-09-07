@@ -42,6 +42,10 @@ return array(
             'theme'  => 'wap',
             'view'   => 'wap',
         ],
+        'api'    => [
+            'theme'  => 'api',
+            'view'   => 'api',
+        ],
     ],
 
 	'assetUrl' => env('APP_ASSET_URL', '/'),

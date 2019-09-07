@@ -23,6 +23,7 @@ $api->version('v1', function ($api) {
     $api->get('/page','App\Http\Controllers\Api\PageController@getPages');
     $api->get('/page/{id}','App\Http\Controllers\Api\PageController@getPage');
     $api->get('/page/slug/{slug}','App\Http\Controllers\Api\PageController@getPageSlug');
+    $api->get('/page_html/slug/{slug}','App\Http\Controllers\Api\PageController@getPageHtmlSlug');
     $api->get('/page-category','App\Http\Controllers\Api\PageCategoryController@index');
     $api->get('/page-recruit','App\Http\Controllers\Api\PageController@getRecruits');
     $api->get('/page-contact','App\Http\Controllers\Api\PageController@getContacts');

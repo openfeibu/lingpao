@@ -34,7 +34,7 @@ class PageController extends BaseController
         }
         $page = $data->toArray();
 
-        return $this->response->title(trans('app.name'))
+        return $this->response->title($page['title'])
             ->view('page')
             ->data(compact('page'))
             ->output();

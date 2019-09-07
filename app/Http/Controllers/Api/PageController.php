@@ -53,10 +53,27 @@ class PageController extends BaseController
         }
         $page = $page->toArray();
         $data = [
-            'content' => config('app.url').'/page/slug/'.$slug,
+            'content' => url('/page_html/slug/'.$slug),
             'title' => $page['title']
         ];
         return $this->response->success()->data($data)->json();
+    }
+    public function getPageHtmlSlug(Request $request,$slug)
+    {
+        $data = $this->repository
+            ->where(['status' => 'show','slug' => $slug])
+            ->first(['title','content']);
+        if(!$data)
+        {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('数据不存在');
+        }
+        $page = $data->toArray();
+
+        return $this->response->title($page['title'])
+            ->view('page')
+            ->data(compact('page'))
+            ->output();
+
     }
 
 }
