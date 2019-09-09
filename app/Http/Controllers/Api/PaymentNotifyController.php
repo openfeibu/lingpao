@@ -104,6 +104,7 @@ class PaymentNotifyController extends BaseController
                     //通知 接单人
                     $message_data = [
                         'user_id' => $take_order->deliverer_id,
+                        'order_sn' => $out_trade_no,
                         'task_type'=> 'take_order',
                         'type' => 'extra_price_paid',
                         'total_price' => $extra_price->total_price

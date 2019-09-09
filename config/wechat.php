@@ -102,6 +102,8 @@ return [
                 'accept_order' => 'krSNfQd5xJgEMJqONavnC-PG6v4K5jJuWJJKrV0hjo0', //接单
                 'status_change' => 'trVH8wAl_rx4xN2l5vUi2pT7ci3-silpi3zHVd7dkhA', //状态改变
                 'wait_pay' => 'BoWlF96ukQ7XRoT7Uh6QmVuB6dz8P4RcnI_dJdYWqjs', //待支付
+                'check' => 'GNdZaZP0AQNTrGOyUfPFcVBlMeyfMdyURd-g9ZA9S7g', //审核结果通知
+                'chat' => 'My-3nlk1jucBVKLzBA5EGSoH2l4A7lswUQUy_AsJsFI'
             ],
         ],
     ],

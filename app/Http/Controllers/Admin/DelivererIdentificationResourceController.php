@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Admin\ResourceController as BaseController;
 use App\Models\DelivererIdentification;
+use App\Services\MessageService;
 use Auth;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
@@ -88,6 +89,13 @@ class DelivererIdentificationResourceController extends BaseController
             {
                 User::where('id','user_id')->update(['role' => 'deliverer']);
             }
+
+            //消息推送 发单人
+            $message_data = [
+                'type' => 'check',
+                'content' => trans('deliverer_identification.message.'.$data['status']),
+            ];
+            app(MessageService::class)->sendMessage($message_data);
 
             return $this->response->message('审核成功')
                 ->status("success")

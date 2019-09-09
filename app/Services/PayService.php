@@ -115,6 +115,7 @@ class PayService
                     //通知 发单人
                     $message_data = [
                         'user_id' => $data['take_order']->deliverer_id,
+                        'order_sn' => $data['order_sn'],
                         'task_type'=> 'take_order',
                         'type' => 'extra_price_paid',
                         'total_price' => $data['total_price']

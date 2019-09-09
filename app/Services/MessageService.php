@@ -126,10 +126,20 @@ class MessageService
                 $page = '';
                 break;
             case 'extra_price_paid':
-                $template_id = config('wechat.mini_program.default.template_id.wait_pay');
+                $template_id = config('wechat.mini_program.default.template_id.status_change');
                 $data = [
-                    'keyword1' => ' 已支付代拿服务费',
-                    'keyword2' => $data['total_price'],
+                    'keyword1' => trans('task.'.$data['task_type'].'.name'),
+                    'keyword2' => $data['order_sn'],
+                    'keyword3' => '用户已支付代拿服务费',
+                    'keyword4' => '请及时完成任务',
+                ];
+                $page = '';
+                break;
+            case 'check':
+                $template_id = config('wechat.mini_program.default.template_id.check');
+                $data = [
+                    'keyword1' => $data['content'],
+                    'keyword2' => date('Y-m-d'),
                 ];
                 $page = '';
                 break;
