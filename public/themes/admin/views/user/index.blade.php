@@ -57,6 +57,7 @@
                 ,{field:'avatar_url',title:'{!! trans('user.label.avatar_url')!!}',toolbar:'#imageTEM'}
                 ,{field:'phone',title:'{!! trans('user.label.phone')!!}'}
                 ,{field:'role_name',title:'{!! trans('user.label.roles')!!}'}
+                ,{field:'created_at',title:'{!! trans('app.created_at')!!}'}
                 ,{field:'score',title:'操作', width:200, align: 'right',toolbar:'#barDemo'}
             ]]
             ,id: 'fb-table'

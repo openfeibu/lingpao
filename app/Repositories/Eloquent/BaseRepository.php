@@ -279,4 +279,14 @@ abstract class BaseRepository extends PrettusRepository implements RepositoryInt
         $this->model = $this->model->leftJoin($table, $first, $operator, $second, $type, $where = false);
         return $this;
     }
+    public function select($columns = ['*'])
+    {
+        $this->model = $this->model->select($columns);
+        return $this;
+    }
+    public function selectRaw($expression, array $bindings = [])
+    {
+        $this->model = $this->model->selectRaw($expression,$bindings);
+        return $this;
+    }
 }

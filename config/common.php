@@ -18,5 +18,12 @@ return [
             'deliverer' => '骑手',
             'expert_deliverer' => '骑士',
         ],
-    ] ,
+    ],
+    'deliverer_identification' => [
+        'status' => [
+            'checking' => '审核中',
+            'passed' => '审核通过',
+            'invalid' => '审核不通过',
+        ],
+    ],
 ];

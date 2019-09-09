@@ -28,6 +28,8 @@ Route::group([
     Route::post('/banner/destroyAll', 'BannerResourceController@destroyAll');
 
     Route::get('/balance_record', 'BalanceRecordResourceController@index')->name('balance_record.index');
+    Route::resource('deliverer_identification', 'DelivererIdentificationResourceController');
+    Route::post('/deliverer_identification/changeStatus', 'DelivererIdentificationResourceController@changeStatus');
 
     Route::resource('news', 'NewsResourceController');
     Route::post('/news/destroyAll', 'NewsResourceController@destroyAll')->name('news.destroy_all');

@@ -17,7 +17,7 @@ class BalanceRecordResourceController extends BaseController
     /**
      * Initialize user resource controller.
      *
-     * @param type BalanceRecordRepositoryInterface $balance_record
+     * @param type BalanceRecordRepositoryInterface $balanceRecordRepository
      */
 
     public function __construct(
