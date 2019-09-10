@@ -248,6 +248,7 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
         app(TaskOrderRepository::class)->where('type','custom_order')->where('objective_id',$custom_order->id)->updateData([
             'deliverer_id' => NULL
         ]);
+        $this->updateOrderStatus(['order_status' => 'new','order_cancel_status' => ''],$custom_order->id);
         /*
         $data = [
             'id' => $custom_order->id,
