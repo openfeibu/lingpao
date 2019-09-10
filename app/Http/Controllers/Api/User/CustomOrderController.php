@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\BaseController;
 use App\Exceptions\NotFoundPayPasswordException;
 use App\Exceptions\OutputServerMessageException;
 use App\Models\CustomOrderCategory;
+use App\Models\TaskOrder;
 use App\Models\User;
 use App\Repositories\Eloquent\CustomOrderRepositoryInterface;
 use App\Repositories\Eloquent\UserAllCouponRepositoryInterface;
