@@ -8,6 +8,7 @@ use Log,DB;
 use App\Models\Chat;
 use App\Models\Room;
 use App\Models\User;
+use App\Services\MessageService;
 
 class Events
 {

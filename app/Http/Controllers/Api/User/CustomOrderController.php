@@ -217,6 +217,6 @@ class CustomOrderController extends BaseController
         }
 
         $this->customOrderRepository->disagreeCancelOrder($custom_order);
-        throw new \App\Exceptions\RequestSuccessException();
+        throw new \App\Exceptions\RequestSuccessException("驳回成功");
     }
 }

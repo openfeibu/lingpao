@@ -296,7 +296,7 @@ class TakeOrderController extends BaseController
         }
 
         $this->takeOrderRepository->disagreeCancelOrder($take_order);
-        throw new \App\Exceptions\RequestSuccessException();
+        throw new \App\Exceptions\RequestSuccessException("驳回成功");
     }
     //额外费用支付（服务费等）
     public function payServicePrice(Request $request)
