@@ -68,8 +68,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             ->where('take_orders.id',$id)
             ->first();
         $take_order->friendly_date = friendly_date($take_order->created_at);
-        $take_order->expresses = app(TakeOrderExpressRepository::class)->where('take_order_id',$take_order->id)
-            ->orderBy('id','asc')->get(['take_place','address']);
+        $take_order->expresses = app(TakeOrderExpressRepository::class)->getExpresses($take_order->id);
         return $take_order;
     }
     public function getAdminOrder($id)
@@ -80,7 +79,8 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             ->where('take_orders.id',$id)
             ->first();
         $take_order->friendly_date = friendly_date($take_order->created_at);
-        $take_order->expresses = app(TakeOrderExpressRepository::class)->getExpresses($take_order->id);;
+        $take_order->expresses = app(TakeOrderExpressRepository::class)->where('take_order_id',$take_order->id)
+            ->orderBy('id','asc')->get(['take_place','address']);
         return $take_order;
     }
     public function getOrderDetail($id)
