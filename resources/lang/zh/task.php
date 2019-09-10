@@ -94,5 +94,6 @@ return [
     'be_canceled' => '您好，骑手取消了您的%s任务。',
     'be_agree_cancel' => '您好，发单人同意取消了您的%s任务接单。',
     'be_disagree_cancel' => '您好，发单人不同意取消您的%s任务接单，请及时沟通。',
+    'agree_cancel' => '操作成功，请等待骑手接单',
     'refund_success' => "取消任务成功，任务费用已原路退回，请注意查收!",
 ];

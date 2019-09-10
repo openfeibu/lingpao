@@ -199,7 +199,7 @@ class CustomOrderController extends BaseController
         }
 
         $this->customOrderRepository->agreeCancelOrder($custom_order);
-        throw new \App\Exceptions\RequestSuccessException(trans("task.refund_success"));
+        throw new \App\Exceptions\RequestSuccessException(trans("task.agree_cancel"));
     }
     public function disagreeCancelOrder(Request $request)
     {
