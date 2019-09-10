@@ -245,6 +245,10 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
             throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许同意取消');
         }
         $this->updateOrderStatus(['order_status' => 'cancel','order_cancel_status' => 'user_agree_cancel'],$custom_order->id);
+        app(TaskOrderRepository::class)->where('type','custom_order')->where('objective_id',$custom_order->id)->updateData([
+            'deliverer_id' => NULL
+        ]);
+        /*
         $data = [
             'id' => $custom_order->id,
             'total_price' => $custom_order->total_price,
@@ -256,7 +260,7 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
             'description' => '取消帮帮忙任务',
         ];
         app(RefundService::class)->refundHandle($data,'CustomOrder',User::tokenAuth());
-
+        */
         //通知 接单人
         $message_data = [
             'task_type'=> 'custom_order',

@@ -285,6 +285,11 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许同意取消');
         }
         $this->updateOrderStatus(['order_status' => 'cancel','order_cancel_status' => 'user_agree_cancel'],$take_order->id);
+        $this->updateOrderStatus(['deliverer_id' => NULL,'order_status' => 'new','order_cancel_status' => NUll],$take_order->id);
+        app(TaskOrderRepository::class)->where('type','take_order')->where('objective_id',$take_order->id)->updateData([
+            'deliverer_id' => NULL
+        ]);
+        /*
         $data = [
             'id' => $take_order->id,
             'total_price' => $take_order->total_price,
@@ -296,6 +301,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             'description' => '取消代拿任务',
         ];
         app(RefundService::class)->refundHandle($data,'TakeOrder',User::tokenAuth());
+         */
         //通知 接单人
         $message_data = [
             'task_type'=> 'take_order',
@@ -304,6 +310,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             'type' => 'user_agree_cancel_order',
         ];
         app(MessageService::class)->sendMessage($message_data);
+
     }
     public function disagreeCancelOrder($take_order)
     {
