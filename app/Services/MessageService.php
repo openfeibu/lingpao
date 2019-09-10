@@ -117,6 +117,16 @@ class MessageService
                 ];
                 $page = '';
                 break;
+            case 'user_disagree_cancel_order':
+                $template_id = config('wechat.mini_program.default.template_id.status_change');
+                $data = [
+                    'keyword1' => trans('task.'.$data['task_type'].'.name'),
+                    'keyword2' => $data['order_sn'],
+                    'keyword3' => trans('task.take_order.order_cancel_status.user_disagree_cancel'),
+                    'keyword4' => sprintf(trans('task.be_disagree_cancel'),trans('task.'.$data['task_type'].'.name')),
+                ];
+                $page = '';
+                break;
             case 'extra_price_pay':
                 $template_id = config('wechat.mini_program.default.template_id.wait_pay');
                 $data = [

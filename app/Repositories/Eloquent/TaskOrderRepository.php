@@ -119,17 +119,27 @@ class TaskOrderRepository extends BaseRepository implements TaskOrderRepositoryI
     {
         return $this->where('type',$type)->where('objective_id',$objective_id)->first();
     }
-    public function updateOrderStatus($data,$task_order)
+    public function updateOrderStatus($data,$id)
     {
-        $this->update($data,$task_order->id);
-        $task_order = $this->find($task_order->id);
-        get_task_objective_model($task_order->objective_model)->where('id',$task_order->objective_id)->update(['order_status' => $data['order_status']],$task_order->objective_id);
-        TaskOrderStatusChange::create([
+        $this->update($data,$id);
+        $task_order = $this->find($id);
+        $objective_data = [
+            'order_status' => $data['order_status'],
+        ];
+        $change_data =  [
             'type' => $task_order->type,
+            'user_id' => $task_order->user_id,
+            'deliverer_id' => $task_order->deliverer_id,
             'objective_model' => $task_order->objective_model,
             'objective_id' => $task_order->objective_id,
             'order_status' => $data['order_status']
-        ]);
+        ];
+        if(isset($data['order_cancel_status']))
+        {
+            $objective_data['order_cancel_status'] = $change_data['order_cancel_status'] = $data['order_cancel_status'];
+        }
+        get_task_objective_model($task_order->objective_model)->where('id',$task_order->objective_id)->update($objective_data,$task_order->objective_id);
+        TaskOrderStatusChange::create($change_data);
     }
 
     public function getAdminTaskOrders($type)

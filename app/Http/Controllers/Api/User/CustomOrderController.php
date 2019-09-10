@@ -151,14 +151,14 @@ class CustomOrderController extends BaseController
 
         $user = User::tokenAuth();
 
-        $take_order = $this->customOrderRepository->find($request->id);
+        $custom_order = $this->customOrderRepository->find($request->id);
 
-        if($take_order->user_id != $user->id)
+        if($custom_order->user_id != $user->id)
         {
             throw new PermissionDeniedException();
         }
 
-        $this->customOrderRepository->completeOrder($take_order);
+        $this->customOrderRepository->completeOrder($custom_order);
 
         throw new \App\Exceptions\RequestSuccessException("确认成功！");
     }
@@ -198,10 +198,24 @@ class CustomOrderController extends BaseController
         }
 
         $this->customOrderRepository->agreeCancelOrder($custom_order);
+        throw new \App\Exceptions\RequestSuccessException(trans("task.refund_success"));
     }
-    //额外费用支付（服务费等）
-    public function payServicePrice(Request $request)
+    public function disagreeCancelOrder(Request $request)
     {
+        $rule = [
+            'id' => 'required|integer',
+        ];
+        validateParameter($rule);
 
+        $user = User::tokenAuth();
+
+        $custom_order = $this->customOrderRepository->find($request->id);
+
+        if($custom_order->user_id != $user->id){
+            throw new PermissionDeniedException();
+        }
+
+        $this->customOrderRepository->disagreeCancelOrder($custom_order);
+        throw new \App\Exceptions\RequestSuccessException();
     }
 }

@@ -111,7 +111,7 @@ class TaskOrderController extends BaseController
             'comment' => isset($request->comment) && !empty($request->comment) ? $request->comment : '' ,
             'task_order_id' => $task_order->id,
         ]);
-        $this->taskOrderRepository->updateOrderStatus(['order_status' => 'remarked'],$task_order);
+        $this->taskOrderRepository->updateOrderStatus(['order_status' => 'remarked'],$task_order->id);
         return $this->response->success("评价成功")->data(['remark_id' => $remark->id])->json();
     }
 }

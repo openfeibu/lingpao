@@ -87,7 +87,7 @@ class TakeOrderController extends BaseController
 
         $this->takeOrderRepository->delivererCancelOrder($take_order);
 
-        throw new \App\Exceptions\RequestSuccessException();
+        throw new \App\Exceptions\RequestSuccessException("操作成功，请等待或联系用户操作！");
     }
     public function submitServicePrice(Request $request)
     {

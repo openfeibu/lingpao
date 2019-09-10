@@ -3,6 +3,7 @@
 namespace App\Repositories\Eloquent;
 
 use App\Exceptions\OutputServerMessageException;
+use App\Models\TaskOrder;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\BaseRepository;
 use App\Models\TaskOrderStatusChange;
@@ -160,20 +161,18 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
     public function updateOrderStatus($data,$id)
     {
         $this->update($data,$id);
-        app(TaskOrderRepository::class)->where('type','take_order')->where('objective_id',$id)->updateData([
-            'order_status' => $data['order_status']
-        ]);
-        TaskOrderStatusChange::create([
-            'type' => 'take_order',
-            'objective_model' => 'TakeOrder',
-            'objective_id' => $id,
+        $task_order_id = TaskOrder::where('type','take_order')->where('objective_id',$id)->value('id');
+        $task_data = [
             'order_status' => $data['order_status'],
-            'order_cancel_status' => isset($data['order_cancel_status']) ? $data['order_cancel_status'] : NULL,
-        ]);
+        ];
+        if(isset($data['order_cancel_status']))
+        {
+            $task_data['order_cancel_status'] = $data['order_cancel_status'];
+        }
+        app(TaskOrderRepository::class)->updateOrderStatus($task_data,$task_order_id);
     }
     public function finishOrder($take_order)
     {
-        $deliverer = User::tokenAuthCache();
         if ($take_order->order_status != 'accepted') {
             throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许完成任务');
         }
@@ -279,11 +278,9 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
         ];
         app(MessageService::class)->sendMessage($message_data);
 
-        throw new \App\Exceptions\RequestSuccessException("操作成功，请等待或联系用户确认！");
     }
     public function agreeCancelOrder($take_order)
     {
-        $user = User::tokenAuth();
         if ($take_order->order_cancel_status != 'deliverer_apply_cancel') {
             throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许同意取消');
         }
@@ -307,8 +304,21 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             'type' => 'user_agree_cancel_order',
         ];
         app(MessageService::class)->sendMessage($message_data);
-        throw new \App\Exceptions\RequestSuccessException(trans("task.refund_success"));
     }
-
+    public function disagreeCancelOrder($take_order)
+    {
+        if ($take_order->order_cancel_status != 'deliverer_apply_cancel') {
+            throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许该操作');
+        }
+        $this->updateOrderStatus(['order_status' => 'accepted','order_cancel_status' => 'user_disagree_cancel'],$take_order->id);
+        //通知 接单人
+        $message_data = [
+            'task_type'=> 'take_order',
+            'order_sn' => $take_order->order_sn,
+            'user_id' => $take_order->deliverer_id,
+            'type' => 'user_disagree_cancel_order',
+        ];
+        app(MessageService::class)->sendMessage($message_data);
+    }
 
 }

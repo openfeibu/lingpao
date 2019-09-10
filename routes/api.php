@@ -81,6 +81,7 @@ $api->version('v1', function ($api) {
     $api->post('/take_order/complete_order','App\Http\Controllers\Api\User\TakeOrderController@completeOrder');
     $api->post('/take_order/user/cancel_order','App\Http\Controllers\Api\User\TakeOrderController@cancelOrder');
     $api->post('/take_order/agree_cancel_order','App\Http\Controllers\Api\User\TakeOrderController@agreeCancelOrder');
+    $api->post('/take_order/disagree_cancel_order','App\Http\Controllers\Api\User\TakeOrderController@disagreeCancelOrder');
     $api->post('/take_order/accept_order','App\Http\Controllers\Api\Deliverer\TakeOrderController@acceptOrder');
     $api->post('/take_order/finish_order','App\Http\Controllers\Api\Deliverer\TakeOrderController@finishOrder');
     $api->post('/take_order/deliverer/cancel_order','App\Http\Controllers\Api\Deliverer\TakeOrderController@cancelOrder');
@@ -96,6 +97,7 @@ $api->version('v1', function ($api) {
     $api->post('/custom_order/complete_order','App\Http\Controllers\Api\User\CustomOrderController@completeOrder');
     $api->post('/custom_order/user/cancel_order','App\Http\Controllers\Api\User\CustomOrderController@cancelOrder');
     $api->post('/custom_order/agree_cancel_order','App\Http\Controllers\Api\User\CustomOrderController@agreeCancelOrder');
+    $api->post('/custom_order/disagree_cancel_order','App\Http\Controllers\Api\User\CustomOrderController@disagreeCancelOrder');
     $api->post('/custom_order/accept_order','App\Http\Controllers\Api\Deliverer\CustomOrderController@acceptOrder');
     $api->post('/custom_order/finish_order','App\Http\Controllers\Api\Deliverer\CustomOrderController@finishOrder');
     $api->post('/custom_order/deliverer/cancel_order','App\Http\Controllers\Api\Deliverer\CustomOrderController@cancelOrder');

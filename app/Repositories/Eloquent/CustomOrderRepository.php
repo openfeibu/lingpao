@@ -50,16 +50,15 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
     public function updateOrderStatus($data,$id)
     {
         $this->update($data,$id);
-        app(TaskOrderRepository::class)->where('type','custom_order')->where('objective_id',$id)->updateData([
-            'order_status' => $data['order_status']
-        ]);
-        TaskOrderStatusChange::create([
-            'type' => 'custom_order',
-            'objective_model' => 'CustomOrder',
-            'objective_id' => $id,
+        $task_order_id = TaskOrder::where('type','custom_order')->where('objective_id',$id)->value('id');
+        $task_data = [
             'order_status' => $data['order_status'],
-            'order_cancel_status' => isset($data['order_cancel_status']) ? $data['order_cancel_status'] : NULL,
-        ]);
+        ];
+        if(isset($data['order_cancel_status']))
+        {
+            $task_data['order_cancel_status'] = $data['order_cancel_status'];
+        }
+        app(TaskOrderRepository::class)->updateOrderStatus($data,$task_order_id);
     }
     public function getOrderDetail($id)
     {
@@ -160,6 +159,7 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
         if ($custom_order->order_status != 'accepted') {
             throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许完成任务');
         }
+
         $this->updateOrderStatus(['order_status' => 'finish'],$custom_order->id);
         //通知 发单人
         $message_data = [
@@ -237,8 +237,6 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
             'type' => 'deliverer_cancel_order',
         ];
         app(MessageService::class)->sendMessage($message_data);
-
-        throw new \App\Exceptions\RequestSuccessException("操作成功，请等待或联系用户确认！");
     }
     public function agreeCancelOrder($custom_order)
     {
@@ -266,6 +264,20 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
             'type' => 'user_agree_cancel_order',
         ];
         app(MessageService::class)->sendMessage($message_data);
-        throw new \App\Exceptions\RequestSuccessException(trans("task.refund_success"));
+    }
+    public function disagreeCancelOrder($custom_order)
+    {
+        if ($custom_order->order_cancel_status != 'deliverer_apply_cancel') {
+            throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许该操作');
+        }
+        $this->updateOrderStatus(['order_status' => 'accepted','order_cancel_status' => 'user_disagree_cancel'],$custom_order->id);
+        //通知 接单人
+        $message_data = [
+            'task_type'=> 'custom_order',
+            'order_sn' => $custom_order->order_sn,
+            'user_id' => $custom_order->deliverer_id,
+            'type' => 'user_disagree_cancel_order',
+        ];
+        app(MessageService::class)->sendMessage($message_data);
     }
 }
