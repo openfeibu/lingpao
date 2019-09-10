@@ -67,17 +67,19 @@ class DelivererIdentificationResourceController extends BaseController
     }
     public function changeStatus(Request $request)
     {
+
         try {
             $data = $request->all();
             $id = $data['id'];
 
             $identification = $this->repository->find($id);
+
             if($identification->status != 'checking')
             {
                 return $this->response->message("请勿重复提交审核")
                     ->status("error")
                     ->code(400)
-                    ->url()
+                        ->url()
                     ->redirect();
             }
 
@@ -85,6 +87,7 @@ class DelivererIdentificationResourceController extends BaseController
                 'status' => $data['status'],
                 'content' => $data['content'],
             ]);
+
             if($data['status'] == 'passed')
             {
                 User::where('id','user_id')->update(['role' => 'deliverer']);
@@ -92,6 +95,7 @@ class DelivererIdentificationResourceController extends BaseController
 
             //消息推送 发单人
             $message_data = [
+                'user_id' => $identification->user_id,
                 'type' => 'check',
                 'content' => trans('deliverer_identification.message.'.$data['status']),
             ];
@@ -107,7 +111,6 @@ class DelivererIdentificationResourceController extends BaseController
             return $this->response->message($e->getMessage())
                 ->status("error")
                 ->code(400)
-                ->url(guard_url('deliverer_identification'))
                 ->redirect();
         }
 

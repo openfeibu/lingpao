@@ -142,7 +142,7 @@ return [
         //'slugs'         => [],
         'dates'         => ['created_at', 'updated_at'],
         'appends'       => [],
-        'fillable'      => ['user_id','name','student_id_card_image','status','created_at','updated_at'],
+        'fillable'      => ['user_id','name','student_id_card_image','content','status','created_at','updated_at'],
         'translate'     => [],
         'upload_folder' => 'user/user',
         'casts'         => [

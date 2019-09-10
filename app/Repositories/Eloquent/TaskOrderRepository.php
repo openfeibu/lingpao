@@ -131,4 +131,42 @@ class TaskOrderRepository extends BaseRepository implements TaskOrderRepositoryI
             'order_status' => $data['order_status']
         ]);
     }
+
+    public function getAdminTaskOrders($type)
+    {
+        $limit = Request::get('limit',config('app.limit'));
+        $order_status = Request::get('order_status','');
+        $orders = $this->model->select(DB::raw('*'))
+            ->whereNotIn('order_status', ['unpaid'])
+            ->when($type, function ($query) use ($type) {
+                return $query->where('type','>=', $type);
+            })
+            ->when($order_status, function ($query) use ($order_status) {
+                return $query->where('order_status', $order_status);
+            });
+
+        $orders = $orders->orderBy('id','desc')->paginate($limit);
+
+        $orders_data = [];
+        foreach ($orders as $key => $order)
+        {
+            switch ($order->type)
+            {
+                case 'take_order':
+                    $order_detail = app(TakeOrderRepository::class)->getAdminOrder($order->objective_id);
+                    break;
+                case 'custom_order':
+                    $order_detail = app(CustomOrderRepository::class)->getAdminOrder($order->objective_id);
+                    break;
+            }
+
+            $order_detail->task_order_id = $order->id;
+            $order_detail->type = $order->type;
+            $orders_data[] = $order_detail->toArray();
+        }
+        return [
+            'data' => $orders_data,
+            'count' => $orders->total()
+        ];
+    }
 }

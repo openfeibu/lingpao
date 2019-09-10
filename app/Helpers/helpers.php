@@ -1097,3 +1097,11 @@ if(!function_exists('get_fee')) {
         return rid_two($price * setting('deliverer_fee'));
     }
 }
+//处理敏感字段
+if(!function_exists('sensitive_address')) {
+    function sensitive_address($str)
+    {
+        $str = preg_replace('#\d{3,}#', '***', $str);
+        return $str;
+    }
+}

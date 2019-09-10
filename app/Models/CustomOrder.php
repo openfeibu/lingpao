@@ -14,7 +14,7 @@ class CustomOrder extends BaseModel
 
     protected $config = 'model.custom_order.custom_order';
 
-    protected $appends = ['category_name','task_order_id','status_desc'];
+    protected $appends = ['category_name','task_order_id','status_desc','payment_desc'];
 
     public function getTaskOrderIdAttribute()
     {
@@ -41,5 +41,9 @@ class CustomOrder extends BaseModel
             return trans('task.take_order.user_status_desc.'.$order_cancel_status);
         }
         return trans('task.take_order.user_status_desc.'.$order_status);
+    }
+    public function getPaymentDescAttribute()
+    {
+        return isset($this->attributes['payment']) ? trans('app.payment.payments.'.$this->attributes['payment']) : '';
     }
 }

@@ -42,7 +42,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
     {
         $limit = Request::get('limit',config('app.limit'));
         $take_orders = $this->model->join('users','users.id','=','take_orders.user_id')
-            ->select(DB::raw('take_orders.id,take_orders.order_sn,take_orders.user_id,take_orders.deliverer_id,take_orders.urgent,take_orders.total_price,take_orders.deliverer_price,take_orders.express_count,take_orders.order_status,take_orders.order_cancel_status,take_orders.postscript,take_orders.created_at,CASE take_orders.order_status WHEN "new" THEN 1 ELSE 2 END as status_num,users.nickname,users.avatar_url'))
+            ->select(DB::raw('take_orders.id,take_orders.order_sn,take_orders.user_id,take_orders.deliverer_id,take_orders.urgent,take_orders.total_price,take_orders.deliverer_price,take_orders.express_count,take_orders.order_status,take_orders.order_cancel_status,take_orders.postscript,take_orders.payment,take_orders.created_at,CASE take_orders.order_status WHEN "new" THEN 1 ELSE 2 END as status_num,users.nickname,users.avatar_url'))
             ->whereIn('take_orders.order_status', ['new','accepted']);
         if($where)
         {
@@ -64,12 +64,23 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
     public function getOrder($id)
     {
         $take_order = $this->model->join('users','users.id','=','take_orders.user_id')
-            ->select(DB::raw('take_orders.id,take_orders.order_sn,take_orders.user_id,take_orders.deliverer_id,take_orders.urgent,take_orders.total_price,take_orders.deliverer_price,express_count,take_orders.order_status,take_orders.order_cancel_status,take_orders.postscript,take_orders.created_at,users.nickname,users.avatar_url'))
+            ->select(DB::raw('take_orders.id,take_orders.order_sn,take_orders.user_id,take_orders.deliverer_id,take_orders.urgent,take_orders.total_price,take_orders.deliverer_price,express_count,take_orders.order_status,take_orders.order_cancel_status,take_orders.postscript,take_orders.payment,take_orders.created_at,users.nickname,users.avatar_url'))
             ->where('take_orders.id',$id)
             ->first();
         $take_order->friendly_date = friendly_date($take_order->created_at);
         $take_order->expresses = app(TakeOrderExpressRepository::class)->where('take_order_id',$take_order->id)
             ->orderBy('id','asc')->get(['take_place','address']);
+        return $take_order;
+    }
+    public function getAdminOrder($id)
+    {
+        $take_order = $this->model->join('users','users.id','=','take_orders.user_id')
+            ->leftJoin('users as deliverers' ,'deliverers.id','take_orders.deliverer_id')
+            ->select(DB::raw('take_orders.id,take_orders.order_sn,take_orders.user_id,take_orders.deliverer_id,take_orders.urgent,take_orders.coupon_name,take_orders.coupon_price,take_orders.total_price,take_orders.deliverer_price,express_count,take_orders.order_status,take_orders.order_cancel_status,take_orders.postscript,take_orders.payment,take_orders.created_at,users.nickname,users.avatar_url,users.phone,deliverers.nickname as deliverer_nickname,deliverers.avatar_url as deliverer_avatar_url,deliverers.phone as deliverer_phone'))
+            ->where('take_orders.id',$id)
+            ->first();
+        $take_order->friendly_date = friendly_date($take_order->created_at);
+        $take_order->expresses = app(TakeOrderExpressRepository::class)->getExpresses($take_order->id);;
         return $take_order;
     }
     public function getOrderDetail($id)
@@ -78,9 +89,8 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
         $take_order = $this->find($id,['id','order_sn','user_id','deliverer_id','urgent','urgent_price','tip','coupon_id','coupon_name','coupon_price','original_price','total_price','order_status','order_cancel_status','express_count','express_price','deliverer_price','postscript','created_at']);
         $take_order->friendly_date = friendly_date($take_order->created_at);
         $take_order_data = $take_order->toArray();
-        $take_order_expresses = app(TakeOrderExpressRepository::class)->where('take_order_id',$take_order->id)
-            ->orderBy('id','asc')
-            ->get();
+        $take_order_expresses = app(TakeOrderExpressRepository::class)->getExpresses($take_order->id);
+        $take_order_data['expresses'] = $take_order_expresses->toArray();
 
         if(in_array($take_order->order_status,['unpaid']))
         {
@@ -91,23 +101,13 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
         $take_order_deliverer = app(UserRepository::class)->where('id',$take_order->deliverer_id)->first();
 
         $user_field = ['id','avatar_url','nickname'];
-        $take_order_expresses_field = ['take_place','address'];
+
         if($take_order->deliverer_id == $user->id || $take_order->user_id == $user->id)
         {
             $user_field = array_merge($user_field,['phone']);
-            $take_order_expresses_field = ['take_place','consignee','mobile','address','description','take_code','express_company','express_arrive_date'];
+
         }
-        if($take_order->order_status == 'new')
-        {
-            foreach ($take_order_expresses as $key => $take_order_express)
-            {
-                $take_order_expresses_data[] = visible_data($take_order_express->toArray(),$take_order_expresses_field);
-            }
-            $take_order_data['expresses'] = $take_order_expresses_data;
-        }
-        else{
-            $take_order_data['expresses'] = $take_order_expresses->toArray();
-        }
+
 
         $take_order_user_data = visible_data($take_order_user->toArray(),$user_field);
         $take_order_deliverer_data = $take_order_deliverer ? visible_data($take_order_deliverer->toArray(),$user_field) : [];

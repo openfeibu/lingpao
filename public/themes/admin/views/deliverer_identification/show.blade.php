@@ -8,7 +8,7 @@
     <div class="main_full">
         <div class="layui-col-md12">
             <div class="fb-main-table">
-                <form class="layui-form" action="{{guard_url('deliverer_identification/'.$deliverer_identification->id)}}" method="post" lay-filter="fb-form">
+                <form class="layui-form" action="{{guard_url('deliverer_identification/changeStatus?id='.$deliverer_identification->id)}}" method="post" lay-filter="fb-form">
                     <div class="layui-form-item">
                         <label class="layui-form-label">{!! trans('deliverer_identification.label.name')!!}：</label>
                         <div class="layui-input-inline">
@@ -16,7 +16,7 @@
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">{!! trans('deliverer_identification.label.student_id_card_image')!!}</label>
+                        <label class="layui-form-label">{!! trans('deliverer_identification.label.student_id_card_image')!!}：</label>
                         <div class="layui-input-block">
                             <p class="input-p"> <img src="{{ url('image/original'.$deliverer_identification->student_id_card_image) }}"></p>
                         </div>
@@ -25,6 +25,12 @@
                         <label class="layui-form-label">{!! trans('deliverer_identification.label.status')!!}：</label>
                         <div class="layui-input-inline">
                             <p class="input-p">{{ config('common.deliverer_identification.status.'.$deliverer_identification->status) }}</p>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{!! trans('deliverer_identification.label.content')!!}：</label>
+                            <div class="layui-input-inline">
+                                <p class="input-p">{{ $deliverer_identification->content }}</p>
+                            </div>
                         </div>
                     @else
                     <div class="layui-form-item">
@@ -39,22 +45,20 @@
                             </select>
                         </div>
                     </div>
-                    @endif
                     <div class="layui-form-item">
                         <label class="layui-form-label">{!! trans('deliverer_identification.label.content')!!}：</label>
                         <div class="layui-input-inline">
                             <textarea name="content" placeholder="审核不通过理由" class="layui-textarea" value="{{ $deliverer_identification->content }}"></textarea>
                         </div>
                     </div>
-                    @if($deliverer_identification->status == 'checking')
                     <div class="layui-form-item">
                         <div class="layui-input-block">
                             <button class="layui-btn " lay-submit="" lay-filter="demo1">立即提交</button>
                         </div>
                     </div>
                     @endif
+
                     {!!Form::token()!!}
-                    <input type="hidden" name="_method" value="PUT">
                 </form>
             </div>
 
@@ -81,12 +85,16 @@
             data['_token'] = "{!! csrf_token() !!}";
             var load = layer.load();
             $.ajax({
-                url : "{{guard_url('deliverer_identification/changeStatus')}}",
+                url : "{{guard_url('deliverer_identification/changeStatus?id='.$deliverer_identification->id)}}",
                 data :  data,
                 type : 'POST',
                 success : function (data) {
                     layer.close(load);
                     layer.msg(data.message);
+                    if(data.url)
+                    {
+                        window.location.href = data.url;
+                    }
                 },
                 error : function (jqXHR, textStatus, errorThrown) {
                     layer.close(load);

@@ -14,7 +14,7 @@ class TakeOrder extends BaseModel
 
     protected $config = 'model.take_order.take_order';
 
-    protected $appends = ['task_order_id','status_desc','service_price_data'];
+    protected $appends = ['task_order_id','status_desc','service_price_data','service_price','all_total_price','payment_desc'];
 
     public function getTaskOrderIdAttribute()
     {
@@ -32,6 +32,7 @@ class TakeOrder extends BaseModel
         }
         return trans('task.take_order.user_status_desc.'.$order_status);
     }
+
     public function getServicePriceDataAttribute()
     {
         $id = $this->attributes['id'];
@@ -69,5 +70,16 @@ class TakeOrder extends BaseModel
         $id = $this->attributes['id'];
         $status = TakeOrderExtraPrice::where('take_order_id',$id)->value('status');
         return $status ? trans('task.take_order.service_price_pay_status.'.$status) : '';
+    }
+    public function getAllTotalPriceAttribute()
+    {
+        $id = $this->attributes['id'];
+        $service_price = TakeOrderExtraPrice::where('take_order_id',$id)->value('service_price');
+        $all_total_price = $service_price ? $this->attributes['total_price'] +  $service_price : $this->attributes['total_price'];
+        return $all_total_price;
+    }
+    public function getPaymentDescAttribute()
+    {
+        return isset($this->attributes['payment']) ? trans('app.payment.payments.'.$this->attributes['payment']) : '';
     }
 }

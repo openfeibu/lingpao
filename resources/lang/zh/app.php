@@ -109,5 +109,11 @@ return [
     ],
 
     'fee' => '抽佣',
-
+    'payment' => [
+        'name' => '支付方式',
+        'payments' => [
+            'wechat' => '微信支付',
+            'balance' => '钱包支付',
+        ],
+    ],
 ];

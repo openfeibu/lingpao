@@ -37,6 +37,20 @@ class User extends AuthModel
         }
         return $user;
     }
+    public static function isLogin()
+    {
+        $token = Request::input('token','');
+        if(!$token)
+        {
+            return false;
+        }
+        $user_id = self::where('token', $token)->value('id');
+        if(!$user_id)
+        {
+            return false;
+        }
+        return $user_id;
+    }
     public static function getUserByToken($token,$custom=['*'])
     {
         return self::where('token', $token)->first($custom);

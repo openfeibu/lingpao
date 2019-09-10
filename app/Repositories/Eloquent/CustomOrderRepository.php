@@ -38,7 +38,8 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
     public function getOrder($id)
     {
         $custom_order = $this->model->join('users','users.id','=','custom_orders.user_id')
-            ->select(DB::raw('custom_orders.id,custom_orders.custom_order_category_id,custom_orders.order_sn,custom_orders.user_id,custom_orders.deliverer_id,custom_orders.total_price,custom_orders.best_time,custom_orders.deliverer_price,custom_orders.order_status,custom_orders.order_cancel_status,custom_orders.postscript,custom_orders.created_at,users.nickname,users.avatar_url'))
+            ->leftJoin('users as deliverers' ,'deliverers.id','custom_orders.deliverer_id')
+            ->select(DB::raw('custom_orders.id,custom_orders.custom_order_category_id,custom_orders.order_sn,custom_orders.user_id,custom_orders.deliverer_id,custom_orders.coupon_name,custom_orders.coupon_price,custom_orders.total_price,custom_orders.best_time,custom_orders.deliverer_price,custom_orders.order_status,custom_orders.order_cancel_status,custom_orders.postscript,custom_orders.created_at,users.nickname,users.avatar_url,users.phone,deliverers.nickname as deliverer_nickname,deliverers.avatar_url as deliverer_avatar_url,deliverers.phone as deliverer_phone'))
             ->where('custom_orders.id',$id)
             ->first();
 
