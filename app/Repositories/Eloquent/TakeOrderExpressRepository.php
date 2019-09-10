@@ -33,7 +33,7 @@ class TakeOrderExpressRepository extends BaseRepository implements TakeOrderExpr
 
     public function getExpresses($take_order_id)
     {
-        $take_order = app(TakeOrderExtraPriceRepository::class)->find($take_order_id,['user_id','deliverer_id']);
+        $take_order = app(TakeOrderRepository::class)->find($take_order_id,['user_id','deliverer_id']);
 
         $user_id = User::isLogin();
         if(!$user_id || ($user_id != $take_order->user_id && $$user_id != $take_order->deliverer_id))
