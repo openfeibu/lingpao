@@ -153,6 +153,14 @@ class MessageService
                 ];
                 $page = '';
                 break;
+            case 'chat':
+                $template_id = config('wechat.mini_program.default.template_id.chat');
+                $data = [
+                    'keyword1' => $data['from_nickname'],
+                    'keyword2' => $data['content'],
+                ];
+                $page = '';
+                break;
         }
         $page = $page ? $page : '/pages/index/index';
         $result = $app->template_message->send([

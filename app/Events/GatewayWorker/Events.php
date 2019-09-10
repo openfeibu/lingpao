@@ -2,6 +2,7 @@
 
 namespace App\Events\GatewayWorker;
 
+use App\Models\FormId;
 use GatewayWorker\Lib\Gateway;
 use Workerman\Autoloader;
 use Log,DB;
@@ -223,6 +224,7 @@ class Events
         $room_id = $conversationId = $message->conversationId;
         $to_user_id = $friendId = $message->friendId;
         $from_user_id = $userId = $user->id;
+        $from_user = User::where('id',$from_user_id)->first(['nickname']);
         $content = $message->content;
         $room = Room::where(function($query) use ($to_user_id,$from_user_id){
             $query->where('to_user_id',$to_user_id)->where('from_user_id',$from_user_id);
@@ -281,6 +283,23 @@ class Events
                 'unread' => $unread,
             ];
             Gateway::sendToClient($to_client_id, json_encode($unread_response));
+
+            if(!Gateway::isOnline($to_client_id))
+            {
+                //1小时可以推一条，以免form_id限制
+                $last_form_id = FormId::where('status','used')->where('user_type','chat')->where('updated_at','>',date('Y-m-d H:i:s',strtotime("-1 hours")))->orderBy('id','desc')->first();
+                if(!$last_form_id)
+                {
+                    //通知
+                    $message_data = [
+                        'user_id' => $to_user_id,
+                        'type' => 'chat',
+                        'from_nickname' => $from_user->nickname,
+                        'content' => $message->type == 'image' ? "[图片]" : $content,
+                    ];
+                    app(MessageService::class)->sendMessage($message_data);
+                }
+            }
         }
     }
     public static function onClose($client_id)
