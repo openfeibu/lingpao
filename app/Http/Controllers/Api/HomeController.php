@@ -86,7 +86,19 @@ class HomeController extends BaseController
         app(MessageService::class)->sendMessage($message_data);
         */
        // app(ScheduleService::class)->complete();
-       
+//        $last_form_id = FormId::where('status','used')->where('use_type','chat')->where('updated_at','>',date('Y-m-d H:i:s',strtotime("-1 hours")))->where('user_id',12)->orderBy('id','desc')->first();
+//
+//        if(!$last_form_id)
+//        {
+//            //通知
+//            $message_data = [
+//                'user_id' => 12,
+//                'type' => 'chat',
+//                'from_nickname' => '123',
+//                'content' => '123',
+//            ];
+//            app(MessageService::class)->sendMessage($message_data);
+//        }
     }
     public function collectFormId(Request $request)
     {
