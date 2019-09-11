@@ -143,6 +143,7 @@ class TakeOrderController extends BaseController
 
         $order = $this->takeOrderRepository->create($order_data);
         $task_order = $this->taskOrderRepository->create([
+            'order_sn' => $order_sn,
             'name' => '代拿',
             'user_id' => $user->id,
             'objective_id' => $order->id,
@@ -259,7 +260,7 @@ class TakeOrderController extends BaseController
             throw new PermissionDeniedException('没有取消该任务的权限');
         }
         $this->takeOrderRepository->userCancelOrder($take_order);
-        throw new \App\Exceptions\RequestSuccessException(trans("task.refund_success"));
+        throw new \App\Exceptions\RequestSuccessException(trans("task_order.refund_success"));
     }
 
     public function agreeCancelOrder(Request $request)
@@ -278,7 +279,7 @@ class TakeOrderController extends BaseController
         }
 
         $this->takeOrderRepository->agreeCancelOrder($take_order);
-        throw new \App\Exceptions\RequestSuccessException(trans("task.refund_success"));
+        throw new \App\Exceptions\RequestSuccessException(trans("task_order.refund_success"));
     }
     public function disagreeCancelOrder(Request $request)
     {

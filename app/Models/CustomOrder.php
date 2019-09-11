@@ -38,9 +38,9 @@ class CustomOrder extends BaseModel
         $order_cancel_status = $this->attributes['order_cancel_status'];
         if($order_status == 'cancel')
         {
-            return trans('task.take_order.user_status_desc.'.$order_cancel_status);
+            return trans('task_order.user_status_desc.'.$order_cancel_status);
         }
-        return trans('task.take_order.user_status_desc.'.$order_status);
+        return trans('task_order.user_status_desc.'.$order_status);
     }
     public function getPaymentDescAttribute()
     {

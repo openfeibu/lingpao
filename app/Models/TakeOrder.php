@@ -28,9 +28,9 @@ class TakeOrder extends BaseModel
         $order_cancel_status = $this->attributes['order_cancel_status'];
         if($order_status == 'cancel')
         {
-            return trans('task.take_order.user_status_desc.'.$order_cancel_status);
+            return trans('task_order.user_status_desc.'.$order_cancel_status);
         }
-        return trans('task.take_order.user_status_desc.'.$order_status);
+        return trans('task_order.user_status_desc.'.$order_status);
     }
 
     public function getServicePriceDataAttribute()
@@ -47,7 +47,7 @@ class TakeOrder extends BaseModel
             $data = [
                 'service_price' => $service->service_price,
                 'service_price_pay_status' => $service->status,
-                'service_price_pay_status_desc' => trans('task.take_order.service_price_pay_status.'.$service->status)
+                'service_price_pay_status_desc' => trans('task_order.service_price_pay_status.'.$service->status)
             ];
         }
         return $data;
@@ -69,7 +69,7 @@ class TakeOrder extends BaseModel
     {
         $id = $this->attributes['id'];
         $status = TakeOrderExtraPrice::where('take_order_id',$id)->value('status');
-        return $status ? trans('task.take_order.service_price_pay_status.'.$status) : '';
+        return $status ? trans('task_order.service_price_pay_status.'.$status) : '';
     }
     public function getAllTotalPriceAttribute()
     {

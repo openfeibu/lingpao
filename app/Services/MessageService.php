@@ -73,57 +73,57 @@ class MessageService
                 $data = [
                     'keyword1' => $data['nickname'],
                     'keyword2' => date('Y-m-d H:i:s'),
-                    'keyword3' => sprintf(trans('task.be_accepted'),trans('task.'.$data['task_type'].'.name')),
+                    'keyword3' => sprintf(trans('task_order.be_accepted'),trans('task_order.'.$data['task_type'].'.name')),
                 ];
                 $page = '';
                 break;
             case 'finish_order':
                 $template_id = config('wechat.mini_program.default.template_id.status_change');
                 $data = [
-                    'keyword1' => trans('task.'.$data['task_type'].'.name'),
+                    'keyword1' => trans('task_order.'.$data['task_type'].'.name'),
                     'keyword2' => $data['order_sn'],
-                    'keyword3' => trans('task.take_order.order_status.finish'),
-                    'keyword4' => sprintf(trans('task.be_finished'),trans('task.'.$data['task_type'].'.name')),
+                    'keyword3' => trans('task_order.order_status.finish'),
+                    'keyword4' => sprintf(trans('task_order.be_finished'),trans('task_order.'.$data['task_type'].'.name')),
                 ];
                 $page = '';
                 break;
             case 'complete_order':
                 $template_id = config('wechat.mini_program.default.template_id.status_change');
                 $data = [
-                    'keyword1' => trans('task.'.$data['task_type'].'.name'),
+                    'keyword1' => trans('task_order.'.$data['task_type'].'.name'),
                     'keyword2' => $data['order_sn'],
-                    'keyword3' => trans('task.take_order.order_status.completed'),
-                    'keyword4' => sprintf(trans('task.be_completed'),trans('task.'.$data['task_type'].'.name')),
+                    'keyword3' => trans('task_order.order_status.completed'),
+                    'keyword4' => sprintf(trans('task_order.be_completed'),trans('task_order.'.$data['task_type'].'.name')),
                 ];
                 $page = '';
                 break;
             case 'deliverer_cancel_order':
                 $template_id = config('wechat.mini_program.default.template_id.status_change');
                 $data = [
-                    'keyword1' => trans('task.'.$data['task_type'].'.name'),
+                    'keyword1' => trans('task_order.'.$data['task_type'].'.name'),
                     'keyword2' => $data['order_sn'],
-                    'keyword3' => trans('task.take_order.order_cancel_status.deliverer_apply_cancel'),
-                    'keyword4' => sprintf(trans('task.be_canceled'),trans('task.'.$data['task_type'].'.name')),
+                    'keyword3' => trans('task_order.order_cancel_status.deliverer_apply_cancel'),
+                    'keyword4' => sprintf(trans('task_order.be_canceled'),trans('task_order.'.$data['task_type'].'.name')),
                 ];
                 $page = '';
                 break;
             case 'user_agree_cancel_order':
                 $template_id = config('wechat.mini_program.default.template_id.status_change');
                 $data = [
-                    'keyword1' => trans('task.'.$data['task_type'].'.name'),
+                    'keyword1' => trans('task_order.'.$data['task_type'].'.name'),
                     'keyword2' => $data['order_sn'],
-                    'keyword3' => trans('task.take_order.order_cancel_status.user_agree_cancel'),
-                    'keyword4' => sprintf(trans('task.be_agree_cancel'),trans('task.'.$data['task_type'].'.name')),
+                    'keyword3' => trans('task_order.order_cancel_status.user_agree_cancel'),
+                    'keyword4' => sprintf(trans('task_order.be_agree_cancel'),trans('task_order.'.$data['task_type'].'.name')),
                 ];
                 $page = '';
                 break;
             case 'user_disagree_cancel_order':
                 $template_id = config('wechat.mini_program.default.template_id.status_change');
                 $data = [
-                    'keyword1' => trans('task.'.$data['task_type'].'.name'),
+                    'keyword1' => trans('task_order.'.$data['task_type'].'.name'),
                     'keyword2' => $data['order_sn'],
-                    'keyword3' => trans('task.take_order.order_cancel_status.user_disagree_cancel'),
-                    'keyword4' => sprintf(trans('task.be_disagree_cancel'),trans('task.'.$data['task_type'].'.name')),
+                    'keyword3' => trans('task_order.order_cancel_status.user_disagree_cancel'),
+                    'keyword4' => sprintf(trans('task_order.be_disagree_cancel'),trans('task_order.'.$data['task_type'].'.name')),
                 ];
                 $page = '';
                 break;
@@ -138,7 +138,7 @@ class MessageService
             case 'extra_price_paid':
                 $template_id = config('wechat.mini_program.default.template_id.status_change');
                 $data = [
-                    'keyword1' => trans('task.'.$data['task_type'].'.name'),
+                    'keyword1' => trans('task_order.'.$data['task_type'].'.name'),
                     'keyword2' => $data['order_sn'],
                     'keyword3' => '用户已支付代拿服务费',
                     'keyword4' => '请及时完成任务',

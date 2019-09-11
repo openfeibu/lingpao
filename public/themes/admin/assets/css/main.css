@@ -250,7 +250,9 @@ button.layui-close{
     text-indent: 1em;
     width: 200px;
 }
-
+.avatar{
+    width: 50px;
+}
 
 
 

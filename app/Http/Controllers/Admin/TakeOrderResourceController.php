@@ -52,6 +52,7 @@ class TakeOrderResourceController extends BaseController
     public function show(Request $request,$id)
     {
         $take_order = $this->repository->getAdminOrder($id);
+
         return $this->response->title(trans('app.name'))
             ->data(compact('take_order'))
             ->view('take_order.show')

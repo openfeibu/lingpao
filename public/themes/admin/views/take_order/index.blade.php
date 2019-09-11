@@ -9,7 +9,33 @@
         <div class="layui-col-md12">
             <div class="tabel-message layui-form">
                 <div class="layui-inline">
-                    <input class="layui-input search_key" name="search_name" id="demoReload" placeholder="昵称/手机号" autocomplete="off">
+                    <label class="layui-form-label">{!! trans('app.order_sn')!!}：</label>
+                    <div class="layui-input-inline">
+                        <input class="layui-input search_key" name="order_sn" id="demoReload" placeholder="ID/昵称/手机号" autocomplete="off">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">{!! trans('task_order.label.user')!!}：</label>
+                    <div class="layui-input-inline">
+                        <input class="layui-input search_key" name="search_user" id="demoReload" placeholder="ID/昵称/手机号" autocomplete="off">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">{!! trans('task_order.label.deliverer')!!}：</label>
+                    <div class="layui-input-inline">
+                        <input class="layui-input search_key" name="search_deliverer" id="demoReload" placeholder="ID/昵称/手机号" autocomplete="off">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">{!! trans('app.order_status')!!}</label>
+                    <div class="layui-input-block">
+                        <select name="order_status" class="search_key">
+                            <option value="">全部</option>
+                            @foreach(config('common.task_order.order_status') as $order_status)
+                            <option value="{{ $order_status }}">{{ trans('task_order.order_status.'.$order_status) }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
                 <button class="layui-btn" data-type="reload">搜索</button>
             </div>
@@ -53,14 +79,15 @@
             ,cols: [[
                 {checkbox: true, fixed: true}
                 ,{field:'id',title:'ID', width:80, sort: true}
-                ,{field:'user_detail',title:'{!! trans('task.label.user')!!}',toolbar:'#userTEM'}
-                ,{field:'deliverer_detail',title:'{!! trans('task.label.deliverer')!!}',toolbar:'#delivererTEM'}
-                ,{field:'coupon_name',title:'{!! trans('task.label.coupon_name')!!}'}
-                ,{field:'coupon_price',title:'{!! trans('task.label.coupon_price')!!}'}
-                ,{field:'total_price',title:'{!! trans('task.label.total_price')!!}'}
+                ,{field:'user_detail',title:'{!! trans('task_order.label.user')!!}',toolbar:'#userTEM'}
+                ,{field:'deliverer_detail',title:'{!! trans('task_order.label.deliverer')!!}',toolbar:'#delivererTEM'}
+                ,{field:'express_count',title:'{!! trans('app.express_count')!!}'}
+                ,{field:'express_price',title:'{!! trans('app.express_price')!!}'}
+                ,{title:'{!! trans('app.coupon_price')!!}',templet: '<div>-@{{d.coupon_price }}@{{d.coupon_name }}</div>'}
+                ,{field:'all_total_price',title:'{!! trans('app.total_price')!!}'}
                 ,{title:'{!! trans('take_order.label.service_price')!!}',templet: '<div>@{{d.service_price_data.service_price }}</div>'}
                 ,{field:'payment_desc',title:'{!! trans('app.payment.name')!!}'}
-                ,{field:'status_desc',title:'{!! trans('task.label.order_status')!!}'}
+                ,{field:'status_desc',title:'{!! trans('app.order_status')!!}'}
                 ,{field:'created_at',title:'{!! trans('app.created_at')!!}'}
                 ,{field:'score',title:'操作', width:100, align: 'right',toolbar:'#barDemo'}
             ]]

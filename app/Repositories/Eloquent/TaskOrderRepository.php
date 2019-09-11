@@ -145,17 +145,31 @@ class TaskOrderRepository extends BaseRepository implements TaskOrderRepositoryI
     public function getAdminTaskOrders($type)
     {
         $limit = Request::get('limit',config('app.limit'));
-        $order_status = Request::get('order_status','');
-        $orders = $this->model->select(DB::raw('*'))
-            ->whereNotIn('order_status', ['unpaid'])
+        $search = Request::input('search',['order_status'=>'','search_user'=>'','search_deliverer'=>'','order_sn'=>'']);
+        $orders = $this->model->join('users','users.id','=','task_orders.user_id')
+            ->leftJoin('users as deliverer','deliverer.id','=','task_orders.deliverer_id')
+            ->select(DB::raw('task_orders.*'))
+            ->whereNotIn('task_orders.order_status', ['unpaid'])
             ->when($type, function ($query) use ($type) {
-                return $query->where('type','>=', $type);
+                return $query->where('task_orders.type', $type);
             })
-            ->when($order_status, function ($query) use ($order_status) {
-                return $query->where('order_status', $order_status);
+            ->when($search['order_status'], function ($query) use ($search) {
+                return $query->where('order_status', $search['order_status']);
+            })
+            ->when($search['order_sn'], function ($query) use ($search) {
+                return $query->where('order_sn', $search['order_sn']);
+            })
+            ->when($search['search_user'], function ($query) use ($search) {
+                return $query->where(function($query) use ($search) {
+                    return $query->where('users.id', $search['search_user'])->orWhere('users.nickname','like','%'.$search['search_user'].'%')->orWhere('users.phone','like','%'.$search['search_user'].'%');
+                });
+            })
+            ->when($search['search_deliverer'], function ($query) use ($search) {
+                return $query->where(function($query) use ($search) {
+                    return $query->where('deliverer.id', $search['search_deliverer'])->orWhere('deliverer.nickname','like','%'.$search['search_deliverer'].'%')->orWhere('deliverer.phone','like','%'.$search['search_deliverer'].'%');
+                });
             });
-
-        $orders = $orders->orderBy('id','desc')->paginate($limit);
+        $orders = $orders->orderBy('task_orders.id','desc')->paginate($limit);
 
         $orders_data = [];
         foreach ($orders as $key => $order)

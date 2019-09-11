@@ -22,7 +22,7 @@ return [
         'visible'      => [],
         'guarded'      => ['*'],
         'slugs'        => [],
-        'fillable'     => ['name','user_id','deliverer_id','objective_model','objective_id','type','order_status','order_cancel_status','created_at','updated_at'],
+        'fillable'     => ['order_sn','name','user_id','deliverer_id','objective_model','objective_id','type','order_status','order_cancel_status','created_at','updated_at'],
         'translate'    => [],
         'upload_folder' => '/take_order',
         'encrypt'      => ['id'],

@@ -61,13 +61,13 @@ class Handler extends ExceptionHandler
     public function handle($request,$exception)
     {
         $responseJson = $this->custom_handle($exception);
-        if ($request->ajax())
+        if($responseJson)
         {
-            return app(ResourceResponse::class)->code($responseJson['code'])->status($responseJson['status'])->message($responseJson['message'])->json();
-            //return app(ApiResponse::class)->json($responseJson);
-        }else{
-            if($responseJson)
+            if ($request->ajax())
             {
+                return app(ResourceResponse::class)->code($responseJson['code'])->status($responseJson['status'])->message($responseJson['message'])->json();
+                //return app(ApiResponse::class)->json($responseJson);
+            }else{
                 return response()->view('message.error',$responseJson);
             }
         }

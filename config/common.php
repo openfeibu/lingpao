@@ -13,17 +13,12 @@ return [
     'auth_file' => '/system/auth_file.jpeg',
     'wechat_notify_url' => config("app.api_url").'/wechat/notify',
     'user' => [
-        'roles' => [
-            'common' => '普通',
-            'deliverer' => '骑手',
-            'expert_deliverer' => '骑士',
-        ],
+        'roles' => ['common','deliverer','expert_deliverer'],
     ],
     'deliverer_identification' => [
-        'status' => [
-            'checking' => '审核中',
-            'passed' => '审核通过',
-            'invalid' => '审核不通过',
-        ],
+        'status' => ['checking','passed','invalid'],
+    ],
+    'task_order' => [
+        'order_status' => [ 'new' , 'cancel','accepted','finish','completed','remarked']
     ],
 ];
