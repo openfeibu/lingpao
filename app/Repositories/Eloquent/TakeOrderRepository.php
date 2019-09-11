@@ -65,7 +65,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
     public function getOrder($id)
     {
         $take_order = $this->model->join('users','users.id','=','take_orders.user_id')
-            ->select(DB::raw('take_orders.id,take_orders.order_sn,take_orders.user_id,take_orders.deliverer_id,take_orders.urgent,take_orders.total_price,take_orders.deliverer_price,express_count,take_orders.order_status,take_orders.order_cancel_status,take_orders.postscript,take_orders.payment,take_orders.created_at,users.nickname,users.avatar_url'))
+            ->select(DB::raw('take_orders.id,take_orders.order_sn,take_orders.user_id,take_orders.deliverer_id,take_orders.urgent,take_orders.tip,take_orders.total_price,take_orders.deliverer_price,express_count,take_orders.order_status,take_orders.order_cancel_status,take_orders.postscript,take_orders.payment,take_orders.created_at,users.nickname,users.avatar_url'))
             ->where('take_orders.id',$id)
             ->first();
         $take_order->friendly_date = friendly_date($take_order->created_at);
@@ -76,7 +76,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
     {
         $take_order = $this->model->join('users','users.id','=','take_orders.user_id')
             ->leftJoin('users as deliverers' ,'deliverers.id','take_orders.deliverer_id')
-            ->select(DB::raw('take_orders.id,take_orders.order_sn,take_orders.user_id,take_orders.deliverer_id,take_orders.urgent,take_orders.coupon_name,take_orders.coupon_price,take_orders.total_price,take_orders.deliverer_price,take_orders.express_count,take_orders.express_price,take_orders.order_status,take_orders.order_cancel_status,take_orders.postscript,take_orders.payment,take_orders.created_at,users.nickname,users.avatar_url,users.phone,deliverers.nickname as deliverer_nickname,deliverers.avatar_url as deliverer_avatar_url,deliverers.phone as deliverer_phone'))
+            ->select(DB::raw('take_orders.id,take_orders.order_sn,take_orders.user_id,take_orders.deliverer_id,take_orders.urgent,take_orders.tip,take_orders.coupon_name,take_orders.coupon_price,take_orders.total_price,take_orders.deliverer_price,take_orders.express_count,take_orders.express_price,take_orders.order_status,take_orders.order_cancel_status,take_orders.postscript,take_orders.payment,take_orders.created_at,users.nickname,users.avatar_url,users.phone,deliverers.nickname as deliverer_nickname,deliverers.avatar_url as deliverer_avatar_url,deliverers.phone as deliverer_phone'))
             ->where('take_orders.id',$id)
             ->first();
         $take_order->friendly_date = friendly_date($take_order->created_at);
@@ -289,7 +289,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
         app(TaskOrderRepository::class)->where('type','take_order')->where('objective_id',$take_order->id)->updateData([
             'deliverer_id' => NULL
         ]);
-        $this->updateOrderStatus(['order_status' => 'new','order_cancel_status' => ''],$take_order->id);
+        $this->updateOrderStatus(['deliverer_id' => NULL,'order_status' => 'new','order_cancel_status' => ''],$take_order->id);
         /*
         $data = [
             'id' => $take_order->id,

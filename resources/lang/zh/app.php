@@ -126,4 +126,11 @@ return [
     'postscript' => '备注',
     'express_count' => '快递单量',
     'express_price' => '快递总价',
+    'order_price' => '订单价',
+    'best_time' => '期待时间',
+    'tip' => '小费',
+    'urgent' => '加急',
+    'partner_trade_no' => '提现单号',
+    'price' => '价格',
+    'status' => '状态',
 ];

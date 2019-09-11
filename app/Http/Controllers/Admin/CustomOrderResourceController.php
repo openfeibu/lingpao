@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Admin\ResourceController as BaseController;
 use App\Repositories\Eloquent\TaskOrderRepositoryInterface;
-use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
+use App\Repositories\Eloquent\CustomOrderRepositoryInterface;
 use Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -11,23 +11,24 @@ use App\Models\User;
 /**
  * Resource controller class for user.
  */
-class TakeOrderResourceController extends BaseController
+class CustomOrderResourceController extends BaseController
 {
 
     /**
      * Initialize user resource controller.
      *
-     * @param type TakeOrderRepositoryInterface $takeOrderRepository
+     * @param type CustomOrderRepositoryInterface $customOrderRepository
      * @param type TaskOrderRepositoryInterface $taskOrderRepository
+     *
      */
 
     public function __construct(
-        TakeOrderRepositoryInterface $takeOrderRepository,
+        CustomOrderRepositoryInterface $customOrderRepository,
         TaskOrderRepositoryInterface $taskOrderRepository
     )
     {
         parent::__construct();
-        $this->repository = $takeOrderRepository;
+        $this->repository = $customOrderRepository;
         $this->taskOrderRepository = $taskOrderRepository;
         $this->repository
             ->pushCriteria(\App\Repositories\Criteria\RequestCriteria::class);
@@ -36,7 +37,7 @@ class TakeOrderResourceController extends BaseController
     public function index(Request $request)
     {
         if ($this->response->typeIs('json')) {
-            $type = 'take_order';
+            $type = 'custom_order';
             $orders_data = $this->taskOrderRepository->getAdminTaskOrders($type);
 
             return $this->response
@@ -46,17 +47,17 @@ class TakeOrderResourceController extends BaseController
                 ->output();
         }
         return $this->response->title(trans('app.name'))
-            ->view('take_order.index')
+            ->view('custom_order.index')
             ->output();
     }
 
     public function show(Request $request,$id)
     {
-        $take_order = $this->repository->getAdminOrder($id);
+        $custom_order = $this->repository->getAdminOrder($id);
 
         return $this->response->title(trans('app.name'))
-            ->data(compact('take_order'))
-            ->view('take_order.show')
+            ->data(compact('custom_order'))
+            ->view('custom_order.show')
             ->output();
     }
 }

@@ -31,6 +31,48 @@
                 // console.log(data.id)
                 window.location.href=main_url+'/'+data.id
                 // layer.alert('编辑行：<br>'+ JSON.stringify(data))
+            }else if(obj.event === 'withdraw_reject'){
+                layer.prompt({
+                    formType: 2,
+                    value: '',
+                    title: '请填写驳回理由',
+                    area: ['400px', '200px'] //自定义文本域宽高
+                }, function(value, index, elem){
+                    var load = layer.load();
+                    $.ajax({
+                        url : "{{ guard_url('withdraw/reject') }}",
+                        data : {'id':data.id,'return_content':value,'_token':"{!! csrf_token() !!}"},
+                        type : 'post',
+                        success : function (data) {
+                            obj.del();
+                            layer.msg(data.msg);
+                            layer.close(load);
+                            layer.close(index);
+                        },
+                        error : function (jqXHR, textStatus, errorThrown) {
+                            layer.close(load);
+                            layer.msg('服务器出错');
+                        }
+                    });
+                });
+            }else if(obj.event === 'withdraw_pass'){
+                layer.confirm('确定支付么？', function(index){
+                    layer.close(index);
+                    var load = layer.load();
+                    $.ajax({
+                        url : "{{ guard_url('withdraw/pass') }}",
+                        data : {'id':data.id,'_token':"{!! csrf_token() !!}"},
+                        type : 'post',
+                        success : function (data) {
+                            obj.del();
+                            layer.close(load);
+                        },
+                        error : function (jqXHR, textStatus, errorThrown) {
+                            layer.close(load);
+                            layer.msg('服务器出错');
+                        }
+                    });
+                });
             }
         });
         table.on('edit(fb-table)', function(obj){

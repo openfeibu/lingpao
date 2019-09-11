@@ -14,5 +14,10 @@ class Withdraw extends BaseModel
 
     protected $config = 'model.user.withdraw';
 
+    protected $appends = ['status_desc'];
 
+    public function getStatusDescAttribute()
+    {
+        return trans('withdraw.status.'.$this->attributes['status']);
+    }
 }

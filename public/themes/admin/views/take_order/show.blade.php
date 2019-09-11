@@ -79,6 +79,18 @@
                         @endforeach
                     </div>
                     <div class="layui-form-item">
+                        <label class="layui-form-label">{!! trans('app.postscript')!!}：</label>
+                        <div class="layui-input-inline">
+                            <p class="input-p">{{ $take_order['postscript'] }}</p>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{!! trans('app.urgent')!!}：</label>
+                        <div class="layui-input-inline">
+                            <p class="input-p">@if($take_order['urgent']) 是 @else 否 @endif</p>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
                         <label class="layui-form-label">{!! trans('app.express_count')!!}：</label>
                         <div class="layui-input-inline">
                             <p class="input-p">{{ $take_order['express_count'] }}</p>
@@ -90,7 +102,13 @@
                             <p class="input-p">{{ $take_order['express_price'] }}</p>
                         </div>
                     </div>
-                    @if($take_order['coupon_price'])
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">{!! trans('app.tip')!!}：</label>
+                        <div class="layui-input-inline">
+                            <p class="input-p">{{ $take_order['tip'] }}</p>
+                        </div>
+                    </div>
+                    @if($take_order['coupon_price'] > 0)
                         <div class="layui-form-item">
                             <label class="layui-form-label">{!! trans('app.coupon_price')!!}：</label>
                             <div class="layui-input-inline">

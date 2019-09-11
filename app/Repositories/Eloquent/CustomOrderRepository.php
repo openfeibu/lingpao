@@ -40,7 +40,7 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
     {
         $custom_order = $this->model->join('users','users.id','=','custom_orders.user_id')
             ->leftJoin('users as deliverers' ,'deliverers.id','custom_orders.deliverer_id')
-            ->select(DB::raw('custom_orders.id,custom_orders.custom_order_category_id,custom_orders.order_sn,custom_orders.user_id,custom_orders.deliverer_id,custom_orders.coupon_name,custom_orders.coupon_price,custom_orders.total_price,custom_orders.best_time,custom_orders.deliverer_price,custom_orders.order_status,custom_orders.order_cancel_status,custom_orders.postscript,custom_orders.created_at,users.nickname,users.avatar_url,users.phone,deliverers.nickname as deliverer_nickname,deliverers.avatar_url as deliverer_avatar_url,deliverers.phone as deliverer_phone'))
+            ->select(DB::raw('custom_orders.id,custom_orders.custom_order_category_id,custom_orders.order_sn,custom_orders.user_id,custom_orders.deliverer_id,custom_orders.coupon_name,custom_orders.coupon_price,custom_orders.total_price,custom_orders.tip,custom_orders.best_time,custom_orders.deliverer_price,custom_orders.order_price,custom_orders.order_status,custom_orders.order_cancel_status,custom_orders.postscript,custom_orders.payment,custom_orders.created_at,users.nickname,users.avatar_url,users.phone,deliverers.nickname as deliverer_nickname,deliverers.avatar_url as deliverer_avatar_url,deliverers.phone as deliverer_phone'))
             ->where('custom_orders.id',$id)
             ->first();
 
@@ -48,18 +48,17 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
 
         return $custom_order;
     }
-    public function updateOrderStatus($data,$id)
+    public function getAdminOrder($id)
     {
-        $this->update($data,$id);
-        $task_order_id = TaskOrder::where('type','custom_order')->where('objective_id',$id)->value('id');
-        $task_data = [
-            'order_status' => $data['order_status'],
-        ];
-        if(isset($data['order_cancel_status']))
-        {
-            $task_data['order_cancel_status'] = $data['order_cancel_status'];
-        }
-        app(TaskOrderRepository::class)->updateOrderStatus($data,$task_order_id);
+        $custom_order = $this->model->join('users','users.id','=','custom_orders.user_id')
+            ->leftJoin('users as deliverers' ,'deliverers.id','custom_orders.deliverer_id')
+            ->select(DB::raw('custom_orders.id,custom_orders.custom_order_category_id,custom_orders.order_sn,custom_orders.user_id,custom_orders.deliverer_id,custom_orders.coupon_name,custom_orders.coupon_price,custom_orders.tip,custom_orders.total_price,custom_orders.best_time,custom_orders.deliverer_price,custom_orders.order_price,custom_orders.order_status,custom_orders.order_cancel_status,custom_orders.postscript,custom_orders.payment,custom_orders.created_at,users.nickname,users.avatar_url,users.phone,deliverers.nickname as deliverer_nickname,deliverers.avatar_url as deliverer_avatar_url,deliverers.phone as deliverer_phone'))
+            ->where('custom_orders.id',$id)
+            ->first();
+
+        $custom_order->friendly_date = friendly_date($custom_order->created_at);
+
+        return $custom_order;
     }
     public function getOrderDetail($id)
     {
@@ -91,6 +90,19 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
             'deliverer' => $order_deliverer_data
         ];
         return $data;
+    }
+    public function updateOrderStatus($data,$id)
+    {
+        $this->update($data,$id);
+        $task_order_id = TaskOrder::where('type','custom_order')->where('objective_id',$id)->value('id');
+        $task_data = [
+            'order_status' => $data['order_status'],
+        ];
+        if(isset($data['order_cancel_status']))
+        {
+            $task_data['order_cancel_status'] = $data['order_cancel_status'];
+        }
+        app(TaskOrderRepository::class)->updateOrderStatus($data,$task_order_id);
     }
     public function acceptOrder($custom_order)
     {
@@ -248,7 +260,7 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
         app(TaskOrderRepository::class)->where('type','custom_order')->where('objective_id',$custom_order->id)->updateData([
             'deliverer_id' => NULL
         ]);
-        $this->updateOrderStatus(['order_status' => 'new','order_cancel_status' => ''],$custom_order->id);
+        $this->updateOrderStatus(['deliverer_id' => NULL,'order_status' => 'new','order_cancel_status' => ''],$custom_order->id);
         /*
         $data = [
             'id' => $custom_order->id,

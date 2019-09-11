@@ -122,7 +122,7 @@ return [
         //'slugs'         => [],
         'dates'         => ['created_at', 'updated_at'],
         'appends'       => [],
-        'fillable'      => ['user_id','partner_trade_no','price','status','created_at','updated_at'],
+        'fillable'      => ['user_id','partner_trade_no','price','status','content','created_at','updated_at'],
         'translate'     => [],
         'upload_folder' => 'user/user',
         'casts'         => [

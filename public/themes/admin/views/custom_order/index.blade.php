@@ -2,7 +2,7 @@
     <div class="layui-card fb-minNav">
         <div class="layui-breadcrumb" lay-filter="breadcrumb" style="visibility: visible;">
             <a href="{{ route('home') }}">主页</a><span lay-separator="">/</span>
-            <a><cite>{{ trans("take_order.name") }}管理</cite></a>
+            <a><cite>{{ trans("task_order.custom_order.name") }}管理</cite></a>
         </div>
     </div>
     <div class="main_full">
@@ -67,27 +67,24 @@
 </script>
 
 <script>
-    var main_url = "{{guard_url('take_order')}}";
-    var delete_all_url = "{{guard_url('take_order/destroyAll')}}";
+    var main_url = "{{guard_url('custom_order')}}";
+    var delete_all_url = "{{guard_url('custom_order/destroyAll')}}";
     layui.use(['jquery','element','table'], function(){
         var table = layui.table;
         var form = layui.form;
         var $ = layui.$;
         table.render({
             elem: '#fb-table'
-            ,url: '{{guard_url('take_order')}}'
+            ,url: '{{guard_url('custom_order')}}'
             ,cols: [[
                 {checkbox: true, fixed: true}
                 ,{field:'id',title:'ID', width:80, sort: true}
                 ,{field:'user_detail',title:'{!! trans('task_order.label.user')!!}',toolbar:'#userTEM'}
                 ,{field:'deliverer_detail',title:'{!! trans('task_order.label.deliverer')!!}',toolbar:'#delivererTEM'}
-                ,{title:'{!! trans('app.urgent')!!}',templet: '<div>@{{#  if(d.urgent){ }} 是 @{{# } else { }} 否 @{{#  } }}</div>'}
-                //,{field:'express_count',title:'{!! trans('app.express_count')!!}'}
-                ,{field:'express_price',title:'{!! trans('app.express_price')!!}'}
+                ,{field:'order_price',title:'{!! trans('app.order_price')!!}'}
                 ,{field:'tip',title:'{!! trans('app.tip')!!}'}
                 ,{title:'{!! trans('app.coupon_price')!!}',templet: '<div>-@{{d.coupon_price }}@{{d.coupon_name }}</div>'}
-                ,{title:'{!! trans('take_order.label.service_price')!!}',templet: '<div>@{{d.service_price_data.service_price }}</div>'}
-                ,{field:'all_total_price',title:'{!! trans('app.total_price')!!}'}
+                ,{field:'total_price',title:'{!! trans('app.total_price')!!}'}
                 ,{field:'payment_desc',title:'{!! trans('app.payment.name')!!}'}
                 ,{field:'status_desc',title:'{!! trans('app.order_status')!!}'}
                 ,{field:'created_at',title:'{!! trans('app.created_at')!!}'}

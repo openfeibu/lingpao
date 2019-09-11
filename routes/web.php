@@ -32,6 +32,10 @@ Route::group([
     Route::post('/deliverer_identification/changeStatus', 'DelivererIdentificationResourceController@changeStatus')->name('deliverer_identification.change_status');
 
     Route::resource('take_order', 'TakeOrderResourceController');
+    Route::resource('custom_order', 'CustomOrderResourceController');
+    Route::resource('withdraw', 'WithdrawResourceController');
+    Route::post('/withdraw/pass', 'BannerResourceController@pass');
+    Route::post('/withdraw/reject', 'BannerResourceController@reject');
 
     Route::resource('news', 'NewsResourceController');
     Route::post('/news/destroyAll', 'NewsResourceController@destroyAll')->name('news.destroy_all');
