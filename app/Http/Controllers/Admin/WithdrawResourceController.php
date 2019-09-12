@@ -163,6 +163,7 @@ class WithdrawResourceController extends BaseController
         $this->tradeRecordRepository->update(['trade_status'=>'cashfail','type' => 1],$trade->id);
         $balance = User::where('id',$withdraw->user_id)->value('balance');
         $new_balance = $balance + $withdraw->price ;
+        //只能是字母或者数字，不能包含有其他字符
         $out_trade_no = generate_order_sn();
         $balanceData = array(
             'user_id' => $withdraw->user_id,
