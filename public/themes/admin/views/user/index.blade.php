@@ -9,9 +9,13 @@
         <div class="layui-col-md12">
             {!! Theme::partial('message') !!}
             <div class="tabel-message layui-form">
+
+                {{--<div class="layui-inline tabel-btn">--}}
+                    {{--<button class="layui-btn layui-btn-warm push_user" data-type="push_user" data-events="push_user">批量设置身份</button>--}}
+                {{--</div>--}}
                 <div class="layui-inline">
                     <label class="layui-form-label">{!! trans('user.label.roles')!!}</label>
-                    <div class="layui-input-block">
+                    <div class="layui-input-inline">
                         <select name="role" class="search_key">
                             <option value="">全部</option>
                             @foreach(config('common.user.roles') as $key => $role)
@@ -35,6 +39,9 @@
 
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-sm" target="_blank" href="{{ guard_url('balance_record?user_id=') }}@{{d.id}}">钱包明细</a>
+    @{{#  if(d.role == 'deliverer' || d.role == 'expert_deliverer'){ }}
+    <a class="layui-btn layui-btn-sm" href="{{ guard_url('remark?deliverer_id=') }}@{{ d.id }}">查看评价</a>
+    @{{#  } }}
     <a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a>
 </script>
 <script type="text/html" id="imageTEM">
@@ -60,7 +67,7 @@
                 ,{field:'balance',title:'{!! trans('app.balance')!!}'}
                 ,{field:'role_name',title:'{!! trans('user.label.roles')!!}'}
                 ,{field:'created_at',title:'{!! trans('app.created_at')!!}'}
-                ,{field:'score',title:'操作', width:200, align: 'right',toolbar:'#barDemo'}
+                ,{field:'score',title:'操作', width:250, align: 'right',toolbar:'#barDemo'}
             ]]
             ,id: 'fb-table'
             ,page: true

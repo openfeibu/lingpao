@@ -42,7 +42,7 @@ class DelivererIdentificationResourceController extends BaseController
                 ->selectRaw('deliverer_identifications.*,CASE deliverer_identifications.status WHEN "checking" THEN 1 ELSE 2 END as status_num,users.nickname,users.avatar_url,users.phone')
                 ->orderBy('status','asc')
                 ->orderBy('id','desc')
-                ->paginate($limit,['deliverer_identifications.*','users.nickname','users.avatar_url','users.phone']);
+                ->paginate($limit);
             foreach ($deliverer_identifications as $key => $identification)
             {
                 $identification->student_id_card_image_full = $identification->student_id_card_image_full ;

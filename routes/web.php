@@ -37,6 +37,7 @@ Route::group([
     Route::resource('withdraw', 'WithdrawResourceController');
     Route::post('/withdraw/pass', 'WithdrawResourceController@pass');
     Route::post('/withdraw/reject', 'WithdrawResourceController@reject');
+    Route::resource('remark', 'RemarkResourceController');
 
     Route::resource('news', 'NewsResourceController');
     Route::post('/news/destroyAll', 'NewsResourceController@destroyAll')->name('news.destroy_all');
