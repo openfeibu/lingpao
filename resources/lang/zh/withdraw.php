@@ -9,5 +9,6 @@ return [
         'checking' => '审核中',
         'success' => '成功',
         'failed' => '失败',
+        'reject' => '驳回'
     ],
 ];

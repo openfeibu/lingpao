@@ -2,6 +2,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Admin\ResourceController as BaseController;
+use App\Repositories\Eloquent\BalanceRecordRepositoryInterface;
+use App\Repositories\Eloquent\TradeRecordRepositoryInterface;
+use App\Repositories\Eloquent\UserRepositoryInterface;
 use App\Repositories\Eloquent\WithdrawRepositoryInterface;
 use Auth,Log;
 use Illuminate\Http\Request;
@@ -22,11 +25,17 @@ class WithdrawResourceController extends BaseController
      */
 
     public function __construct(
-        WithdrawRepositoryInterface $withdrawRepository
+        WithdrawRepositoryInterface $withdrawRepository,
+        TradeRecordRepositoryInterface $tradeRecordRepository,
+        BalanceRecordRepositoryInterface $balanceRecordRepository,
+        UserRepositoryInterface $userRepository
     )
     {
         parent::__construct();
         $this->repository = $withdrawRepository;
+        $this->tradeRecordRepository = $tradeRecordRepository;
+        $this->balanceRecordRepository = $balanceRecordRepository;
+        $this->userRepository = $userRepository;
         $this->repository
             ->pushCriteria(\App\Repositories\Criteria\RequestCriteria::class);
     }
@@ -77,8 +86,16 @@ class WithdrawResourceController extends BaseController
         $withdraw = $this->repository
             ->join('users','users.id','=','withdraws.user_id')
             ->orderBy('withdraws.id','desc')
-            ->select('users.nickname','users.avatar_url','users.phone','users.open_id','withdraws.*')
-            ->find($id);
+            ->find($id,['users.nickname','users.avatar_url','users.phone','users.open_id','withdraws.*']);
+
+        if(!in_array($withdraw->status,['checking','failed']))
+        {
+            return $this->response->message("该状态不能操作提现")
+                ->code(400)
+                ->status('error')
+                ->url(guard_url('withdraw'))
+                ->redirect();
+        }
 
         $config = [
             'app_id' => config('wechat.mini_program.default.app_id'),
@@ -99,10 +116,14 @@ class WithdrawResourceController extends BaseController
         ]);
         Log::debug('withdraw_result:');
         Log::debug($result);
-        if($result['return_code'] == 'SUCCESS')
+        $trade = $this->tradeRecordRepository->where('out_trade_no',$withdraw->partner_trade_no)->first(['id']);
+        if($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS')
         {
+            $this->tradeRecordRepository->update(['trade_status'=>'cashed'],$trade->id);
             $this->repository->update([
-                'status' => 'success'
+                'status' => 'success',
+                'payment_no' => $result['payment_no'],
+                'payment_time' => $result['payment_time']
             ],$id);
             return $this->response->message("支付成功")
                 ->code(0)
@@ -124,6 +145,46 @@ class WithdrawResourceController extends BaseController
     }
     public function reject(Request $request)
     {
+        $id = $request->id;
+        $withdraw = $this->repository
+            ->join('users','users.id','=','withdraws.user_id')
+            ->orderBy('withdraws.id','desc')
+            ->find($id,['users.nickname','users.avatar_url','users.phone','users.open_id','withdraws.*']);
 
+        if(!in_array($withdraw->status,['checking','failed']))
+        {
+            return $this->response->message("该状态不能操作驳回")
+                ->code(400)
+                ->status('error')
+                ->url(guard_url('withdraw'))
+                ->redirect();
+        }
+        $trade = $this->tradeRecordRepository->where('out_trade_no',$withdraw->partner_trade_no)->first(['id']);
+        $this->tradeRecordRepository->update(['trade_status'=>'cashfail','type' => 1],$trade->id);
+        $balance = User::where('id',$withdraw->user_id)->value('balance');
+        $new_balance = $balance + $withdraw->price ;
+        $out_trade_no = generate_order_sn();
+        $balanceData = array(
+            'user_id' => $withdraw->user_id,
+            'balance' => $new_balance,
+            'price'	=> $withdraw->price,
+            'out_trade_no' => $out_trade_no,
+            'fee' => 0,
+            'type' => 1,
+            'trade_type' => 'WITHDRAWALS_FAILED',
+            'description' => '提现失败',
+        );
+        $this->balanceRecordRepository->create($balanceData);
+        $this->userRepository->update(['balance' => $new_balance],$withdraw->user_id);
+        $this->repository->update([
+            'status' => 'reject',
+            'content' => $request->return_content,
+        ],$id);
+
+        return $this->response->message("操作成功")
+            ->code(0)
+            ->status('success')
+            ->url(guard_url('withdraw'))
+            ->redirect();
     }
 }

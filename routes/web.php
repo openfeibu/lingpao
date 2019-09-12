@@ -34,8 +34,8 @@ Route::group([
     Route::resource('take_order', 'TakeOrderResourceController');
     Route::resource('custom_order', 'CustomOrderResourceController');
     Route::resource('withdraw', 'WithdrawResourceController');
-    Route::post('/withdraw/pass', 'BannerResourceController@pass');
-    Route::post('/withdraw/reject', 'BannerResourceController@reject');
+    Route::post('/withdraw/pass', 'WithdrawResourceController@pass');
+    Route::post('/withdraw/reject', 'WithdrawResourceController@reject');
 
     Route::resource('news', 'NewsResourceController');
     Route::post('/news/destroyAll', 'NewsResourceController@destroyAll')->name('news.destroy_all');

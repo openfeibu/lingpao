@@ -44,10 +44,14 @@
                         data : {'id':data.id,'return_content':value,'_token':"{!! csrf_token() !!}"},
                         type : 'post',
                         success : function (data) {
-                            obj.del();
-                            layer.msg(data.msg);
                             layer.close(load);
                             layer.close(index);
+                            if(data.code == 0)
+                            {
+                                obj.del();
+                            }else{
+                                layer.msg(data.message);
+                            }
                         },
                         error : function (jqXHR, textStatus, errorThrown) {
                             layer.close(load);
@@ -64,8 +68,14 @@
                         data : {'id':data.id,'_token':"{!! csrf_token() !!}"},
                         type : 'post',
                         success : function (data) {
-                            obj.del();
                             layer.close(load);
+                            if(data.code == 0)
+                            {
+                                obj.del();
+                            }else{
+                                layer.msg(data.message);
+                            }
+
                         },
                         error : function (jqXHR, textStatus, errorThrown) {
                             layer.close(load);
