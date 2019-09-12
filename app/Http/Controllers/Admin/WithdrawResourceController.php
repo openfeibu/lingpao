@@ -2,11 +2,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Admin\ResourceController as BaseController;
+use App\Models\Withdraw;
 use App\Repositories\Eloquent\BalanceRecordRepositoryInterface;
 use App\Repositories\Eloquent\TradeRecordRepositoryInterface;
 use App\Repositories\Eloquent\UserRepositoryInterface;
 use App\Repositories\Eloquent\WithdrawRepositoryInterface;
-use Auth,Log;
+use Auth,Log,DB;
 use Illuminate\Http\Request;
 use App\Models\User;
 use EasyWeChat\Factory;
@@ -43,10 +44,19 @@ class WithdrawResourceController extends BaseController
     public function index(Request $request)
     {
         $limit = $request->input('limit',config('app.limit'));
+        $search = $request->input('search',[]);
+        $search_name = isset($search['search_name']) ? $search['search_name'] : '';
         if ($this->response->typeIs('json')) {
 
-            $withdraws = $this->repository
-                ->join('users','users.id','=','withdraws.user_id')
+            $withdraws = Withdraw::join('users','users.id','=','withdraws.user_id')
+                ->select(DB::raw('users.nickname,users.avatar_url,users.phone,withdraws.*,CASE status WHEN "checking" THEN 1 WHEN "failed" THEN 2 WHEN "reject" THEN 3 ELSE 4 END as status_num'));
+            if(!empty($search_name))
+            {
+                $withdraws = $withdraws->where(function ($query) use ($search_name){
+                    return $query->where('users.phone','like','%'.$search_name.'%')->orWhere('users.nickname','like','%'.$search_name.'%')->orWhere('users.id',$search_name);
+                });
+            }
+            $withdraws = $withdraws->orderBy('status_num','asc')
                 ->orderBy('withdraws.id','desc')
                 ->paginate($limit,['users.nickname','users.avatar_url','users.phone','withdraws.*']);
 
