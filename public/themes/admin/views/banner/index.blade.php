@@ -7,6 +7,7 @@
     </div>
     <div class="main_full">
         <div class="layui-col-md12">
+            {!! Theme::partial('message') !!}
             <div class="tabel-message">
                 <div class="layui-inline tabel-btn">
                     <button class="layui-btn layui-btn-warm "><a href="{{ url('/admin/banner/create') }}">添加轮播图</a></button>

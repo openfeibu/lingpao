@@ -7,6 +7,7 @@
     </div>
     <div class="main_full">
         <div class="layui-col-md12">
+            {!! Theme::partial('message') !!}
             <div class="tabel-message layui-form">
                 <div class="layui-inline">
                     <label class="layui-form-label">{!! trans('user.label.roles')!!}</label>
@@ -14,7 +15,7 @@
                         <select name="role" class="search_key">
                             <option value="">全部</option>
                             @foreach(config('common.user.roles') as $key => $role)
-                                <option value="{{ $key }}">{{ $role }}</option>
+                                <option value="{{ $role }}">{{ trans('user.roles.'.$role) }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -56,6 +57,7 @@
                 ,{field:'nickname',title:'{!! trans('user.label.nickname')!!}'}
                 ,{field:'avatar_url',title:'{!! trans('user.label.avatar_url')!!}',toolbar:'#imageTEM'}
                 ,{field:'phone',title:'{!! trans('user.label.phone')!!}'}
+                ,{field:'balance',title:'{!! trans('app.balance')!!}'}
                 ,{field:'role_name',title:'{!! trans('user.label.roles')!!}'}
                 ,{field:'created_at',title:'{!! trans('app.created_at')!!}'}
                 ,{field:'score',title:'操作', width:200, align: 'right',toolbar:'#barDemo'}

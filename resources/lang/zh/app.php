@@ -116,6 +116,7 @@ return [
             'balance' => '钱包支付',
         ],
     ],
+    'balance' => '余额',
     'order_sn' => '单号',
     'total_price' => '总价',
     'urgent' => '加急',

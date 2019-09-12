@@ -28,6 +28,7 @@ Route::group([
     Route::post('/banner/destroyAll', 'BannerResourceController@destroyAll');
 
     Route::get('/balance_record', 'BalanceRecordResourceController@index')->name('balance_record.index');
+    Route::get('/trade_record', 'TradeRecordResourceController@index')->name('trade_record.index');
     Route::resource('deliverer_identification', 'DelivererIdentificationResourceController');
     Route::post('/deliverer_identification/changeStatus', 'DelivererIdentificationResourceController@changeStatus')->name('deliverer_identification.change_status');
 
