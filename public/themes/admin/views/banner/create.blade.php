@@ -36,6 +36,15 @@
                         </div>
                     </div>
                     <div class="layui-form-item">
+                        <label class="layui-form-label">类型</label>
+                        <div class="layui-input-inline">
+                            <select name="interest" lay-filter="aihao">
+                                <option value="h5" selected="">h5</option>
+                                <option value="weapp">小程序</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
                         <div class="layui-input-block">
                             <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
                         </div>

@@ -36,6 +36,15 @@
                         </div>
                     </div>
                     <div class="layui-form-item">
+                        <label class="layui-form-label">类型</label>
+                        <div class="layui-input-inline">
+                            <select name="interest" lay-filter="aihao">
+                                <option value="h5" @if($banner['type'] == 'h5') selected="" @endif>h5</option>
+                                <option value="weapp" @if($banner['type'] == 'weapp') selected="" @endif>小程序</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
                         <div class="layui-input-block">
                             <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
                         </div>
