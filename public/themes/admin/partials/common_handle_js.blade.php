@@ -95,6 +95,36 @@
                         }
                     });
                 });
+            }else if(obj.event === 'withdraw_paid'){
+                layer.confirm('确定已线下支付么？', function(index){
+                    layer.close(index);
+                    var load = layer.load();
+                    $.ajax({
+                        url : "{{ guard_url('withdraw/paid') }}",
+                        data : {'id':data.id,'_token':"{!! csrf_token() !!}"},
+                        type : 'post',
+                        success : function (data) {
+                            layer.close(load);
+                            if(data.code == 0)
+                            {
+                                var nPage = $(".layui-laypage-curr em").eq(1).text();
+                                //执行重载
+                                table.reload('fb-table', {
+                                    page: {
+                                        curr: nPage //重新从第 1 页开始
+                                    }
+                                });
+                            }else{
+                                layer.msg(data.message);
+                            }
+
+                        },
+                        error : function (jqXHR, textStatus, errorThrown) {
+                            layer.close(load);
+                            layer.msg('服务器出错');
+                        }
+                    });
+                });
             }
         });
         table.on('edit(fb-table)', function(obj){

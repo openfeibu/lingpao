@@ -153,6 +153,34 @@ class WithdrawResourceController extends BaseController
 
 
     }
+    public function paid(Request $request)
+    {
+        $id = $request->id;
+
+        $withdraw = $this->repository
+            ->join('users','users.id','=','withdraws.user_id')
+            ->orderBy('withdraws.id','desc')
+            ->find($id,['users.nickname','users.avatar_url','users.phone','users.open_id','withdraws.*']);
+
+        if(!in_array($withdraw->status,['checking','failed']))
+        {
+            return $this->response->message("该状态不能操作提现")
+                ->code(400)
+                ->status('error')
+                ->url(guard_url('withdraw'))
+                ->redirect();
+        }
+        $this->repository->update([
+            'status' => 'offline',
+            'payment_time' => date('Y-m-d H:i:s')
+        ],$id);
+        return $this->response->message("支付成功")
+            ->code(0)
+            ->status('success')
+            ->url(guard_url('withdraw'))
+            ->redirect();
+
+    }
     public function reject(Request $request)
     {
         $id = $request->id;

@@ -27,6 +27,7 @@
 
 <script type="text/html" id="barDemo">
     @{{#  if(d.status == 'checking' || d.status == 'failed'){ }}
+    <a class="layui-btn layui-btn-sm" lay-event="withdraw_paid">已线下支付</a>
     <a class="layui-btn layui-btn-sm" lay-event="withdraw_pass">支付</a>
     <a class="layui-btn layui-btn-sm" lay-event="withdraw_reject">驳回</a>
     @{{#  } }}
@@ -52,7 +53,7 @@
                 ,{field:'price',title:'{!! trans('app.price')!!}'}
                 ,{title:'{!! trans('app.status')!!}',templet: '<div> @{{d.status_desc }} @{{# if(d.status == "reject"){  }}  （@{{d.content }}）@{{# } }}</div>' }
                 ,{field:'created_at',title:'{!! trans('app.created_at')!!}'}
-                ,{field:'score',title:'操作', width:150, align: 'right',toolbar:'#barDemo'}
+                ,{field:'score',title:'操作', width:250, align: 'right',toolbar:'#barDemo'}
             ]]
             ,id: 'fb-table'
             ,page: true

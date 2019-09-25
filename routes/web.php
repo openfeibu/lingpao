@@ -36,6 +36,7 @@ Route::group([
     Route::resource('custom_order', 'CustomOrderResourceController');
     Route::resource('withdraw', 'WithdrawResourceController');
     Route::post('/withdraw/pass', 'WithdrawResourceController@pass');
+    Route::post('/withdraw/paid', 'WithdrawResourceController@paid');
     Route::post('/withdraw/reject', 'WithdrawResourceController@reject');
     Route::resource('remark', 'RemarkResourceController');
 
