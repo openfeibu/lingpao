@@ -20,8 +20,8 @@ class GwGateway {
     public function index() {
         $context = [
             'ssl' => [
-                'local_cert' => 'D:\phpstudy\PHPTutorial\Apache\conf\cert\2692675_api\2692675_api.lingpaoxy.com.pem',
-                'local_pk' => 'D:\phpstudy\PHPTutorial\Apache\conf\cert\2692675_api\2692675_api.lingpaoxy.com.key',
+                'local_cert' => 'E:\UPUPW_ANK_W64\cert\2692675_api\2692675_api.lingpaoxy.com.pem',
+                'local_pk' => 'E:\UPUPW_ANK_W64\cert\2692675_api\2692675_api.lingpaoxy.com.key',
                 'verify_peer' => false
             ]
         ];
