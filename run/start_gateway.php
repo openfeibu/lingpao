@@ -41,6 +41,8 @@ class GwGateway {
         $gateway->transport = GW_TRANSPORT;
         // 心跳间隔，单位：秒，0 表示不发送心跳检测
         $gateway->pingInterval = GW_GATEWAY_PING_INTERVAL;
+
+        $gateway->pingNotResponseLimit = GW_GATEWAY_PING_NOT_RESPONSE_LIMIT;
         // 心跳数据
         $gateway->pingData = '{"type":"heart"}';
 

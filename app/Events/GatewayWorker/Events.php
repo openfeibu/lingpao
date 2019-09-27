@@ -210,6 +210,9 @@ class Events
                 $response['type'] = $message->type;
                 $response['conversationId'] = $conversationId;
                 break;
+            case 'close':
+                Gateway::closeClient($client_id);
+                break;
             default:
                 $response['code'] = 400;
                 $response['message'] = 'Undefined';
