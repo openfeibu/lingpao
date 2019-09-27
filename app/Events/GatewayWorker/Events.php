@@ -287,9 +287,9 @@ class Events
             if(!Gateway::isOnline($to_client_id))
             {
                 //1小时可以推一条，以免form_id限制
-                $last_form_id = FormId::where('status','used')->where('use_type','chat')->where('updated_at','>',date('Y-m-d H:i:s',strtotime("-1 hours")))->where('user_id',$to_user_id)->orderBy('id','desc')->first();
-                if(!$last_form_id)
-                {
+//                $last_form_id = FormId::where('status','used')->where('use_type','chat')->where('updated_at','>',date('Y-m-d H:i:s',strtotime("-1 hours")))->where('user_id',$to_user_id)->orderBy('id','desc')->first();
+//                if(!$last_form_id)
+//                {
                     //通知
                     $message_data = [
                         'user_id' => $to_user_id,
@@ -298,7 +298,7 @@ class Events
                         'content' => $message->type == 'image' ? "[图片]" : $content,
                     ];
                     app(MessageService::class)->sendMessage($message_data);
-                }
+                //}
             }
         }
     }

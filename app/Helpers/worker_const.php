@@ -16,6 +16,8 @@ define('GW_TRANSPORT','ssl');
 // 心跳检测间隔，单位：秒，0 表示不发送心跳检测
 define('GW_GATEWAY_PING_INTERVAL',30);
 
+define('GW_GATEWAY_PING_NOT_RESPONSE_LIMIT',1);
+
 // 本机ip，分布式部署时请设置成内网ip（非127.0.0.1）
 define('GW_LOCAL_HOST_IP','127.0.0.1');
 
