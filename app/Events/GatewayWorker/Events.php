@@ -53,7 +53,9 @@ class Events
         $user_id = $user->id;
         $user->client_id = $client_id;
         $user->save();
+        $user->websocket_online = 1;
         $to_client_id = 0;
+
 
         switch ($message->type) {
             case 'heart':
