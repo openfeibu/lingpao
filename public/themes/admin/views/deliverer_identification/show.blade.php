@@ -39,7 +39,7 @@
                             <select name="status">
                                 @foreach(config('common.deliverer_identification.status') as $key => $status)
                                     @if($key != 'checking')
-                                    <option value="{{ $key }}" @if($deliverer_identification->status == $key) selected @endif>{{ $status }}</option>
+                                    <option value="{{ $status }}" @if($deliverer_identification->status == $status) selected @endif>{{ trans('deliverer_identification.status.'.$status) }}</option>
                                     @endif
                                 @endforeach
                             </select>

@@ -80,7 +80,7 @@ class GatewayWorkerServer extends Command
         $gateway->startPort            = GW_GATEWAY_START_PORT;                              #监听本机端口的起始端口
         $gateway->pingInterval         = GW_GATEWAY_PING_INTERVAL;
         #$gateway->transport            = GW_TRANSPORT; #SSl
-        $gateway->pingNotResponseLimit = GW_GATEWAY_PING_NOT_RESPONSE_LIMIT;      #服务端主动发送心跳
+        //$gateway->pingNotResponseLimit = GW_GATEWAY_PING_NOT_RESPONSE_LIMIT;      #服务端主动发送心跳
         $gateway->pingData             = '{"type":"heart"}';
         $gateway->registerAddress      = GW_REGISTER_ADDRESS;                  #注册服务地址
     }
