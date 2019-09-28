@@ -90,7 +90,7 @@ class DelivererIdentificationResourceController extends BaseController
 
             if($data['status'] == 'passed')
             {
-                User::where('id','user_id')->update(['role' => 'deliverer']);
+                User::where('id',$identification->user_id)->update(['role' => 'deliverer']);
             }
 
             //消息推送 发单人
