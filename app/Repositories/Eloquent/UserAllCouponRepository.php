@@ -34,7 +34,7 @@ class UserAllCouponRepository extends BaseRepository implements UserAllCouponRep
                 ];
                 break;
             case 'UserBalanceCoupon':
-                $user_balance_coupon = UserBalanceCoupon::where(['user_id' => $user_id,'id' => $coupon->objective_id])->whereRaw("date_add(`created_at`, interval 1 MONTH)  >= "."'".date('Y-m-d H:i:s')."'")->first();
+                $user_balance_coupon = UserBalanceCoupon::where(['user_id' => $user_id,'id' => $coupon->objective_id])->whereRaw("date_add(STR_TO_DATE(`created_at`,'%Y-%m-%d'), interval 1 MONTH)  >= "."'".date('Y-m-d')."'")->first();
                 if(!$user_balance_coupon)
                 {
                     throw new OutputServerMessageException('优惠券不存在');
