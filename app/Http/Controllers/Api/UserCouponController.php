@@ -28,11 +28,11 @@ class UserCouponController extends BaseController
     public function getUserCoupons(Request $request)
     {
         $user_balance_coupon_data = [];
-        $user_balance_coupon = app(UserBalanceCoupon::class)
-            ->select(DB::raw("uac.id,user_balance_coupons.id as user_balance_coupon_id,user_balance_coupons.user_id, user_balance_coupons.price, user_balance_coupons.balance,'balance_coupon' as type"))
+        $user_balance_coupon = UserBalanceCoupon::select(DB::raw("uac.id,user_balance_coupons.id as user_balance_coupon_id,user_balance_coupons.user_id, user_balance_coupons.price, user_balance_coupons.balance,'balance_coupon' as type,user_balance_coupons.created_at"))
             ->join('user_all_coupons as uac','uac.objective_id','=','user_balance_coupons.id')
             ->where('user_balance_coupons.user_id',$this->user->id)
-            ->where('uac.objective_model','UserBalanceCoupon')
+            ->whereRaw("date_add(`user_balance_coupons`.`created_at`, interval 1 MONTH)  >= "."'".date('Y-m-d')."'")
+            ->where('uac.objective_model','=','UserBalanceCoupon')
             ->first();
         if($user_balance_coupon)
         {
