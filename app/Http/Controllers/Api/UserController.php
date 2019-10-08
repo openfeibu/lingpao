@@ -17,6 +17,7 @@ use App\Models\User;
 use App\Services\WXBizDataCryptService;
 use App\Services\AmapService;
 use Log,Input;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class UserController extends BaseController
 {
@@ -95,6 +96,11 @@ class UserController extends BaseController
         $errCode = $WXBizDataCryptService->decryptData($encryptedData, $iv, $data );
 
         if ($errCode != 0) {
+            if($errCode == -41003)
+            {
+                User::where('id',$user->id)->update('token','');
+                throw new UnauthorizedHttpException('jwt-auth', 'token过期请重新登陆');
+            }
             throw new OutputServerMessageException('错误码：'.$errCode);
         }
 
