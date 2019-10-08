@@ -7,6 +7,7 @@ use App\Repositories\Eloquent\UserAllCouponRepositoryInterface;
 use App\Repositories\Eloquent\BaseRepository;
 use App\Models\User;
 use App\Models\UserAllCoupon;
+use App\Models\UserBalanceCoupon;
 
 class UserAllCouponRepository extends BaseRepository implements UserAllCouponRepositoryInterface
 {
