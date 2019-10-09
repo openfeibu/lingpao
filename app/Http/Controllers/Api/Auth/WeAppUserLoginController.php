@@ -155,5 +155,29 @@ class WeAppUserLoginController extends BaseController
             ]);
         }
     }
+    /*
+    public function test()
+    {
+        for($i=7;$i<=231;$i++)
+        {
+            $exist_user_balance_coupon = $this->userBalanceCouponRepository->where('user_id',$i)->first();
+            if(!$exist_user_balance_coupon)
+            {
+                $user_balance_coupon = $this->userBalanceCouponRepository->create([
+                    'user_id' => $i,
+                    'price' => setting('register_balance_coupon'),
+                    'balance' => setting('register_balance_coupon'),
+                ]);
+                $this->userAllCouponRepository->create([
+                    'user_id' => $i,
+                    'type' => 'balance',
+                    'objective_id' => $user_balance_coupon->id,
+                    'objective_model' => 'UserBalanceCoupon'
+                ]);
+            }
 
+        }
+
+    }
+    */
 }

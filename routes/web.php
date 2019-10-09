@@ -34,6 +34,8 @@ Route::group([
 
     Route::resource('take_order', 'TakeOrderResourceController');
     Route::resource('custom_order', 'CustomOrderResourceController');
+    Route::resource('custom_order_category', 'CustomOrderCategoryResourceController');
+    Route::post('/custom_order_category/destroyAll', 'CustomOrderCategoryResourceController@destroyAll');
     Route::resource('withdraw', 'WithdrawResourceController');
     Route::post('/withdraw/pass', 'WithdrawResourceController@pass');
     Route::post('/withdraw/paid', 'WithdrawResourceController@paid');

@@ -109,4 +109,5 @@ $api->version('v1', function ($api) {
     $api->get('wechat/index','App\Http\Controllers\Api\WechatController@index');
 
     $api->get('/test','App\Http\Controllers\Api\HomeController@test');
+    $api->get('/user/test','App\Http\Controllers\Api\Auth\WeAppUserLoginController@test');
 });
