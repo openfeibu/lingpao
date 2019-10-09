@@ -4,7 +4,7 @@
         <i class="layui-icon layui-icon-upload-drag"></i>
         <p>点击上传，或将文件拖拽到此处</p>
         @if($files)
-            <img id="image_{!!$field!!}" src="{!!url("/image/sm".$files['path'])!!}" style="position:absolute;height:120px;width:100%;left:0px;top: 0px;">
+            <img id="image_{!!$field!!}" src="{!!url("/image/original".$files['path'])!!}" style="position:absolute;height:120px;width:100%;left:0px;top: 0px;">
         @else
             <img id="image_{!!$field!!}" src="" style="position:absolute;height:120px;width:100%;left:0px;top: 0px;display: none;">
         @endif
