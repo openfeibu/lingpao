@@ -38,7 +38,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">类型</label>
                         <div class="layui-input-inline">
-                            <select name="interest" lay-filter="aihao">
+                            <select name="type" lay-filter="aihao">
                                 <option value="h5" selected="">h5</option>
                                 <option value="weapp">小程序</option>
                             </select>

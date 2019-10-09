@@ -38,7 +38,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">类型</label>
                         <div class="layui-input-inline">
-                            <select name="type" lay-filter="aihao">
+                            <select name="interest" lay-filter="aihao">
                                 <option value="h5" @if($banner['type'] == 'h5') selected="" @endif>h5</option>
                                 <option value="weapp" @if($banner['type'] == 'weapp') selected="" @endif>小程序</option>
                             </select>
