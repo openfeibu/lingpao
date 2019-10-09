@@ -9,20 +9,20 @@
                             <ul class="layui-row fb-clearfix dataBox layui-col-space30">
                                 <li class="layui-col-xs4">
                                     <a lay-href="" class="fb-backlog-body">
-                                        <h3> 今日交易量（元）</h3>
-                                        <p><cite>{{ $user_count }}</cite></p>
+                                        <h3> 今日交易金额（元）</h3>
+                                        <p><cite>{{ $today_transaction_total_price }}</cite></p>
                                     </a>
                                 </li>
                                 <li class="layui-col-xs4 ">
                                     <a lay-href="" class="fb-backlog-body">
-                                        <h3> 总交易量（元）</h3>
-                                        <p><cite>{{ $take_order_count }}</cite></p>
+                                        <h3> 总交易金额（元）</h3>
+                                        <p><cite>{{ $transaction_total_price }}</cite></p>
                                     </a>
                                 </li>
                                 <li class="layui-col-xs4">
                                     <a lay-href="" class="fb-backlog-body">
                                         <h3> 用户总余额（元）</h3>
-                                        <p><cite>{{ $custom_order_count }}</cite></p>
+                                        <p><cite>{{ $balance_sum }}</cite></p>
                                     </a>
                                 </li>
                       
@@ -48,13 +48,13 @@
                                 <li class="layui-col-xs4">
                                     <a lay-href="" class="fb-backlog-body">
                                         <h3>今日新增用户数</h3>
-                                        <p><cite>{{ $take_order_count }}</cite></p>
+                                        <p><cite>{{ $today_user_count }}</cite></p>
                                     </a>
                                 </li>
                                  <li class="layui-col-xs4 ">
                                     <a lay-href="" class="fb-backlog-body">
                                         <h3>骑手总数</h3>
-                                        <p><cite>{{ $user_count }}</cite></p>
+                                        <p><cite>{{ $deliverer_count }}</cite></p>
                                     </a>
                                 </li>
                             </ul>
@@ -72,13 +72,13 @@
                                 <li class="layui-col-xs4">
                                     <a lay-href="" class="fb-backlog-body">
                                         <h3> 代拿任务总数</h3>
-                                        <p><cite>{{ $user_count }}</cite></p>
+                                        <p><cite>{{ $take_order_count }}</cite></p>
                                     </a>
                                 </li>
                                 <li class="layui-col-xs4 ">
                                     <a lay-href="" class="fb-backlog-body">
                                         <h3> 今日代拿任务总数</h3>
-                                        <p><cite>{{ $take_order_count }}</cite></p>
+                                        <p><cite>{{ $today_take_order_count }}</cite></p>
                                     </a>
                                 </li>
                                 
@@ -87,13 +87,13 @@
                                 <li class="layui-col-xs4">
                                     <a lay-href="" class="fb-backlog-body">
                                         <h3> 帮帮忙任务总数</h3>
-                                        <p><cite>{{ $user_count }}</cite></p>
+                                        <p><cite>{{ $custom_order_count }}</cite></p>
                                     </a>
                                 </li>
                                 <li class="layui-col-xs4 ">
                                     <a lay-href="" class="fb-backlog-body">
                                         <h3> 今日帮帮忙任务总数</h3>
-                                        <p><cite>{{ $take_order_count }}</cite></p>
+                                        <p><cite>{{ $today_custom_order_count }}</cite></p>
                                     </a>
                                 </li>
                                 
@@ -102,13 +102,13 @@
                                 <li class="layui-col-xs4">
                                     <a lay-href="" class="fb-backlog-body">
                                         <h3> 代寄任务总数</h3>
-                                        <p><cite>{{ $user_count }}</cite></p>
+                                        <p><cite>{{ $send_order_count }}</cite></p>
                                     </a>
                                 </li>
                                 <li class="layui-col-xs4 ">
                                     <a lay-href="" class="fb-backlog-body">
                                         <h3> 今日代寄任务总数</h3>
-                                        <p><cite>{{ $take_order_count }}</cite></p>
+                                        <p><cite>{{ $today_send_order_count }}</cite></p>
                                     </a>
                                 </li>
                                 
