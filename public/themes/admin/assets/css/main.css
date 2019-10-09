@@ -1,4 +1,5 @@
 .fb-clearfix:after{content: "";width: 100%;height: 0;display: block;clear: both;}
+html{min-height:100%}
 body{background: #f5f5f5;}
 .layui-side-menu{background:#20222A;width: 200px;overflow-x: hidden;}
 .layui-side-menu .layui-nav{margin-top: 5px}
@@ -91,19 +92,29 @@ body{background: #f5f5f5;}
     float: right;
     margin-top: 5px;
 }
-.login{width:1200px;height:612px;background:url("../img/bg.png") no-repeat center;position:absolute;top:50%;margin-top:-350px;left:50%;margin-left:-600px;}
-.login-bg{background:#349fff}
-.login-con{width:1029px;height100%;margin:0 0 0 115px;position:relative;}
-.login-con .login-con-title{padding:35px 50px;color:#2b2b2b;font-size:16px;}
+.login{width:500px;height:400px;background:#fff;position:absolute;top:50%;margin-top:-250px;left:50%;margin-left:-250px;border-radius:10px;}
+.login-bg{background: -webkit-linear-gradient(#00c1de, #13e4c6); /* Safari 5.1 - 6.0 */
+  background: -o-linear-gradient(#00c1de, #13e4c6); /* Opera 11.1 - 12.0 */
+  background: -moz-linear-gradient(#00c1de, #13e4c6); /* Firefox 3.6 - 15 */
+  background: linear-gradient(#00c1de, #13e4c6); /* 标准的语法 */}
+.login-con{width:100%;height:100%;position:relative;}
+.login-con .login-con-title{padding:30px 0;color:#2b2b2b;font-size:16px;text-align:center;line-height:50px;color:#00c1de}
+.login-con .login-con-title img{width:80px;height:80px;margin:0 auto;display:block;}
 .login-con form{width:320px;position:absolute;top:160px;right:85px;}
 .form-title{height:50px;color:#349fff;line-height:50px;text-align:center;border-bottom:2px solid #349fff;font-size:16px;margin-bottom:30px;}
 .login-con form .layui-input{width:100%;height:50px;border:none;border-bottom:1px solid #bbb;margin:10px 0}
-.login-con form .login_btn{width:180px !important;height:40px;border-radius:40px;background:#349fff;color:#fff;margin:50px auto;display:block;border:none;cursor:pointer;}
+.login-con form .login_btn{width:180px !important;height:40px;border-radius:40px;background:#00c1de;color:#fff;margin:30px auto 0 auto;display:block;border:none;cursor:pointer;}
 .layui-alert {
     padding: 15px;
     margin-bottom: 20px;
     border: 1px solid transparent;
     border-radius: 4px;
+}
+.login .layui-alert{
+	position:absolute;
+	top:0;
+	z-index:999;
+	width:470px;
 }
 .layui-close{
     float: right;
@@ -253,8 +264,25 @@ button.layui-close{
 .avatar{
     width: 50px;
 }
-
-
+/*新增*/
+.mt20{
+	margin-top:20px;
+}
+.fb-backlog .fb-backlog-body{
+padding:20px ;
+}
+.fb-backlog ul{padding:15px;}
+.fb-backlog li a{background: -webkit-linear-gradient(#00c1de, #13e4c6); /* Safari 5.1 - 6.0 */
+  background: -o-linear-gradient(#00c1de, #13e4c6); /* Opera 11.1 - 12.0 */
+  background: -moz-linear-gradient(#00c1de, #13e4c6); /* Firefox 3.6 - 15 */
+  background: linear-gradient(#00c1de, #13e4c6); /* 标准的语法 */}
+  .fb-backlog-body h3{color:#fff;}
+.fb-backlog-body p cite{	
+	font-weight:bold;
+	color:#fff;
+	font-family:"微软雅黑";
+	font-size:36px;
+}
 
 
 
