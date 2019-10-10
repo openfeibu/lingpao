@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exceptions\OutputServerMessageException;
 use App\Http\Controllers\Admin\ResourceController as BaseController;
 use App\Models\CustomOrderCategory;
 use App\Repositories\Eloquent\CustomOrderCategoryRepositoryInterface;
+use App\Repositories\Eloquent\CustomOrderRepositoryInterface;
 use Illuminate\Http\Request;
 use Mockery\CountValidator\Exception;
 
@@ -19,10 +21,12 @@ class CustomOrderCategoryResourceController extends BaseController
      * @param type CustomOrderCategoryRepositoryInterface $customOrderCategoryRepository
      *
      */
-    public function __construct(CustomOrderCategoryRepositoryInterface $customOrderCategoryRepository)
+    public function __construct(CustomOrderCategoryRepositoryInterface $customOrderCategoryRepository,
+                                CustomOrderRepositoryInterface $customOrderRepository)
     {
         parent::__construct();
         $this->repository = $customOrderCategoryRepository;
+        $this->customOrderRepository = $customOrderRepository;
         $this->repository
             ->pushCriteria(\App\Repositories\Criteria\RequestCriteria::class);
     }
@@ -31,10 +35,11 @@ class CustomOrderCategoryResourceController extends BaseController
             $categories = $this->repository
                 ->orderBy('order','asc')
                 ->orderBy('id','asc')
-                ->all();
+                ->get();
+            //var_dump($categories->toArray());exit;
             return $this->response
                 ->success()
-                ->data($categories->toArray()['data'])
+                ->data($categories->toArray())
                 ->output();
         }
         return $this->response->title(trans('app.admin.panel'))
@@ -106,8 +111,12 @@ class CustomOrderCategoryResourceController extends BaseController
     public function destroy(Request $request,CustomOrderCategory $custom_order_category)
     {
         try {
+            $exist = $this->customOrderRepository->where('custom_order_category_id',$custom_order_category->id)->first();
+            if($exist)
+            {
+                throw new OutputServerMessageException("该分类下存在订单，请勿删除");
+            }
             $custom_order_category->forceDelete();
-
             return $this->response->message(trans('messages.success.deleted', ['Module' => trans('custom_order_category.name')]))
                 ->status("success")
                 ->http_code(202)
