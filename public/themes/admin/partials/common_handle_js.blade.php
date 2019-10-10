@@ -166,6 +166,35 @@
                     ,where: where
                 });
             },
+            add_custom_order_category:function(){
+                layer.prompt({
+                    formType: 0,
+                    value: '',
+                    title: '提示',
+                }, function(value, index, elem){
+                    layer.close(index);
+                    // 加载样式
+                    var load = layer.load();
+                    $.ajax({
+                        url : main_url,
+                        data : {'name':value,'_token':"{!! csrf_token() !!}"},
+                        type : 'POST',
+                        success : function (data) {
+                            layer.close(load);
+                            var nPage = $(".layui-laypage-curr em").eq(1).text();
+                            //执行重载
+                            table.reload('fb-table', {
+
+                            });
+                        },
+                        error : function (jqXHR, textStatus, errorThrown) {
+                            layer.close(load);
+                            layer.msg('服务器出错');
+                        }
+                    });
+                });
+
+            },
             del:function(){
                 var checkStatus = table.checkStatus('fb-table')
                         ,data = checkStatus.data;

@@ -10,8 +10,8 @@
             {!! Theme::partial('message') !!}
             <div class="tabel-message">
                 <div class="layui-inline tabel-btn">
-                    <button class="layui-btn layui-btn-warm " data-type="add" data-events="add-custom-order-category">添加分类</button>
-                    <button class="layui-btn layui-btn-primary " data-type="del" data-events="del">删除</button>
+                    <button class="layui-btn layui-btn-warm " data-type="add_custom_order_category" data-events="add_custom_order_category">添加分类</button>
+                    {{--<button class="layui-btn layui-btn-primary " data-type="del" data-events="del">删除</button>--}}
                 </div>
             </div>
 
@@ -38,15 +38,16 @@
             elem: '#fb-table'
             ,url: '{{guard_url('custom_order_category')}}'
             ,cols: [[
-                {checkbox: true, fixed: true}
-                ,{field:'id',title:'ID', width:80}
-                ,{field:'name',title:'名称', width:200,toolbar:'#imageTEM'}
+                //{checkbox: true, fixed: true}
+                {field:'id',title:'ID', width:80}
+                ,{field:'name',title:'名称'}
                 ,{field:'order',title:'排序', edit:'text'}
                 ,{field:'score',title:'操作', width:200, align: 'right',toolbar:'#barDemo'}
             ]]
             ,id: 'fb-table'
             ,height: 'full-200'
         });
+
     });
 </script>
 {!! Theme::partial('common_handle_js') !!}
