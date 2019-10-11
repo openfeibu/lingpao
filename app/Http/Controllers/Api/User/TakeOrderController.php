@@ -279,7 +279,7 @@ class TakeOrderController extends BaseController
         }
 
         $this->takeOrderRepository->agreeCancelOrder($take_order);
-        throw new \App\Exceptions\RequestSuccessException(trans("task_order.refund_success"));
+        throw new \App\Exceptions\RequestSuccessException(trans("task_order.agree_cancel"));
     }
     public function disagreeCancelOrder(Request $request)
     {
