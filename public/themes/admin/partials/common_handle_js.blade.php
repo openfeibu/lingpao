@@ -230,6 +230,10 @@
                             });
                         })  ;
 
+            },
+            coupon_is_open:function()
+            {
+
             }
         };
         $('.tabel-message .layui-btn').on('click', function(){

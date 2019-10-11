@@ -125,6 +125,10 @@ class AppServiceProvider extends ServiceProvider
             'App\Repositories\Eloquent\DelivererIdentificationRepositoryInterface',
             \App\Repositories\Eloquent\DelivererIdentificationRepository::class
         );
+        $this->app->bind(
+            'App\Repositories\Eloquent\CouponRepositoryInterface',
+            \App\Repositories\Eloquent\CouponRepository::class
+        );
         $this->app->bind('filer', function ($app) {
             return new \App\Helpers\Filer\Filer();
         });
