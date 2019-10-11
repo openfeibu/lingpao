@@ -18,7 +18,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">{!! trans('deliverer_identification.label.student_id_card_image')!!}：</label>
                         <div class="layui-input-block">
-                            <p class="input-p"> <img src="{{ url('image/original'.$deliverer_identification->student_id_card_image) }}"></p>
+                            <p class="input-p"> <a target="_blank" href="{{ url('image/original'.$deliverer_identification->student_id_card_image) }}" ><img width="300px" src="{{ url('image/original'.$deliverer_identification->student_id_card_image) }}"></p></a>
                         </div>
                     </div>
                     @if($deliverer_identification->status != 'checking')
