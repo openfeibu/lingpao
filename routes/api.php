@@ -102,6 +102,19 @@ $api->version('v1', function ($api) {
     $api->post('/custom_order/finish_order','App\Http\Controllers\Api\Deliverer\CustomOrderController@finishOrder');
     $api->post('/custom_order/deliverer/cancel_order','App\Http\Controllers\Api\Deliverer\CustomOrderController@cancelOrder');
 
+    $api->get('/send_order/express_company','App\Http\Controllers\Api\User\SendOrderController@getExpressCompanies');
+    $api->get('/send_order/item_type','App\Http\Controllers\Api\User\SendOrderController@getItemTypes');
+    $api->post('/send_order/create_order','App\Http\Controllers\Api\User\SendOrderController@createOrder');
+    //$api->get('/send_order/order','App\Http\Controllers\Api\User\SendOrderController@getOrders');
+    //$api->get('/send_order/order/{id}','App\Http\Controllers\Api\User\SendOrderController@getOrder');
+    $api->post('/send_order/complete_order','App\Http\Controllers\Api\User\SendOrderController@completeOrder');
+    $api->post('/send_order/user/cancel_order','App\Http\Controllers\Api\User\SendOrderController@cancelOrder');
+    $api->post('/send_order/agree_cancel_order','App\Http\Controllers\Api\User\SendOrderController@agreeCancelOrder');
+    $api->post('/send_order/disagree_cancel_order','App\Http\Controllers\Api\User\SendOrderController@disagreeCancelOrder');
+    $api->post('/send_order/accept_order','App\Http\Controllers\Api\Deliverer\SendOrderController@acceptOrder');
+    $api->post('/send_order/finish_order','App\Http\Controllers\Api\Deliverer\SendOrderController@finishOrder');
+    $api->post('/send_order/deliverer/cancel_order','App\Http\Controllers\Api\Deliverer\SendOrderController@cancelOrder');
+
     $api->get('/coupon','App\Http\Controllers\Api\CouponController@coupon');
     $api->post('/coupon/receive','App\Http\Controllers\Api\CouponController@receiveCoupon');
 
