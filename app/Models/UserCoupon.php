@@ -14,5 +14,12 @@ class UserCoupon extends BaseModel
 
     protected $config = 'model.coupon.user_coupon';
 
+    protected $appends = ['status_desc'];
 
+    public function getStatusDescAttribute()
+    {
+        $status = $this->attributes['status'];
+
+        return trans('user_coupon.status.'.$status);
+    }
 }

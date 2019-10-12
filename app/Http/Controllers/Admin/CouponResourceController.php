@@ -90,7 +90,7 @@ class CouponResourceController extends BaseController
 
             $coupon->update($attributes);
 
-            return $this->response->message(trans('messages.success.created', ['Module' => trans('coupon.name')]))
+            return $this->response->message(trans('messages.success.updated', ['Module' => trans('coupon.name')]))
                 ->code(0)
                 ->status('success')
                 ->url(guard_url('coupon/'))

@@ -46,6 +46,8 @@ Route::group([
     Route::resource('coupon', 'CouponResourceController');
     Route::post('coupon/destroyAll', 'CouponResourceController@destroyAll');
 
+    Route::resource('user_coupon', 'UserCouponResourceController');
+
     Route::resource('news', 'NewsResourceController');
     Route::post('/news/destroyAll', 'NewsResourceController@destroyAll')->name('news.destroy_all');
     Route::post('/news/updateRecommend', 'NewsResourceController@updateRecommend')->name('news.update_recommend');

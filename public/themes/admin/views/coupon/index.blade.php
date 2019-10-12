@@ -26,6 +26,7 @@
     </div>
 </div>
 <script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-sm" href="{{ url('/admin/user_coupon?coupon_id=') }}@{{ d.id }}">领取记录</a>
     <a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del">删除</a>
 </script>
@@ -34,9 +35,7 @@
 </script>
 <script type="text/html" id="switchTEM">
     <form class="layui-form">
-
         <input type="checkbox" name="switch" lay-skin="switch" @{{# if(d.is_open){ }} checked @{{#  } }} data-type="coupon_is_open" data-events="coupon_is_open" lay-filter="coupon_is_open" coupon_id="@{{ d.id }}">
-
     </form>
 </script>
 <script>
@@ -60,7 +59,7 @@
                 ,{field:'num',title:'{!! trans('coupon.label.num')!!}'}
                 ,{field:'receive_num',title:'{!! trans('coupon.label.receive_num')!!}'}
                 ,{field:'stock',title:'{!! trans('coupon.label.stock')!!}'}
-                ,{field:'score',title:'操作', width:200, align: 'right',toolbar:'#barDemo'}
+                ,{field:'score',title:'操作', width:250, align: 'right',toolbar:'#barDemo'}
             ]]
             ,id: 'fb-table'
             ,height: 'full-200'
