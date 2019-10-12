@@ -99,7 +99,7 @@ class SettingResourceController extends BaseController
 
     public function arguments(Request $request)
     {
-        $arguments = $this->repository->whereIn('category',['arguments','constant'])->all()->toArray();
+        $arguments = $this->repository->whereIn('category',['arguments','constant'])->orderBy('order','asc')->orderBy('id','asc')->all()->toArray();
         foreach ($arguments as $key => $argument)
         {
             //$arguments[$argument['slug']] = $argument['value'];
