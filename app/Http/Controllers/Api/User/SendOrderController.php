@@ -32,61 +32,40 @@ class SendOrderController extends BaseController
         $rule = [
             'urgent' => 'sometimes|in:0,1',
             'urgent_price' => 'sometimes|numeric|min:0',
-            'tip' => 'sometimes|numeric|min:0',
             'payment' => "required|in:wechat,balance",
-            "postscript" => 'sometimes|required|string'
+            "postscript" => 'sometimes|required|string',
+            'consignee' => 'required',
+            'consignee_mobile' => 'required|regex:'.config('regex.phone'),
+            'consignee_address' => 'required',
+            'sender' => 'required',
+            'sender_mobile' => 'required|regex:'.config('regex.phone'),
+            'sender_address' => 'required',
+            "best_time" => 'required',
         ];
         validateCustomParameter($order_data,$rule);
 
-        $expresses = $request->get('expresses',[]);
-        $express_count = count($expresses);
-
-        if(!$express_count){
-            throw new OutputServerMessageException('请先完善订单');
-        }
-
-        $express_rule = [
-            'take_place' => 'required',
-            'consignee' => 'required',
-            'mobile' => 'required|regex:'.config('regex.phone'),
-            'address' => 'required',
-            'description' => 'sometimes',
-            'take_code' => 'sometimes',
-            'express_company' => 'required',
-            'express_arrive_date' => 'required',
-        ];
-
-        foreach ($expresses as $key => $express)
-        {
-            validateCustomParameter($express,$express_rule);
-        }
-
-        $tip = !empty($order_data['tip']) ? $order_data['tip'] : 0;
-
         $urgent = !empty($order_data['urgent']) ? $order_data['urgent'] : 0;
-        $express_price = setting('take_order_min_price');
+        $order_price = setting('send_order_min_price');
         $urgent_price = 0;
         if($urgent)
         {
-            $express_price = setting('urgent_min_price');
+            $order_price = setting('urgent_min_price');
             $urgent_price = setting('urgent_min_price');
         }
-        $total_price = $express_price * $express_count + $tip;
+        $original_price = $order_price;
+        $total_price = $order_price;
 
         //骑手所得款项
-        $deliverer_price = $express_price * $express_count + $tip;
-        //check_urgent_price($urgent_price);
+        $deliverer_price = $order_price;
 
         $coupon_id = !empty($request->coupon_id) ? intval($request->coupon_id): 0;
         $coupon_price = 0;
         if($coupon_id)
         {
             $coupon_data = $this->userAllCouponRepository->useCoupon($user->id,$coupon_id,$total_price);
-            //$coupon = $this->userCouponRepository->getAvailableCoupon(['user_id' => $user->id,'id' => $user_coupon_id],$total_price);
             $coupon_price = $coupon_data['price'];
             $total_price =  $total_price - $coupon_price;
         }
-
 
         if($order_data['payment'] == 'balance')
         {
@@ -98,18 +77,16 @@ class SendOrderController extends BaseController
             'user_id' => $user->id,
             'urgent' => $urgent,
             'urgent_price' => $urgent_price,
-            'tip' => !empty($order_data['tip']) ? $order_data['tip'] : 0,
             'payment' => $order_data['payment'],
-            'total_price' => $total_price,
-            'express_price' => $express_price,
-            'original_price' => $express_price * $express_count ,
-            'express_count' => $express_count,
             'coupon_id' => $coupon_id,
             'coupon_name' => isset($coupon_data) && !empty($coupon_data) ? $coupon_data['name'] : '',
             'coupon_price' => $coupon_price,
             'deliverer_price' => $deliverer_price,
             'order_status' => 'unpaid',
             'postscript' => !empty($order_data['postscript']) ? $order_data['postscript'] : '',
+            'total_price' => $total_price,
+            'original_price' => $original_price ,
+            'order_price' => $order_price,
         ];
 
         $order = $this->takeOrderRepository->create($order_data);
@@ -121,11 +98,6 @@ class SendOrderController extends BaseController
             'objective_model' => 'TakeOrder',
             'type' => 'take_order',
         ]);
-        foreach ($expresses as $key => $express)
-        {
-            $express['take_order_id'] = $order->id;
-            $this->takeOrderExpressRepository->create($express);
-        }
         $data = [
             'task_order_id' => $task_order->id,
             'take_order_id' => $order->id,
