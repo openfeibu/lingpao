@@ -43,7 +43,7 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
     {
         $limit = Request::get('limit',config('app.limit'));
         $send_orders = $this->model->join('users','users.id','=','send_orders.user_id')
-            ->select(DB::raw('send_orders.id,send_orders.order_sn,send_orders.user_id,send_orders.deliverer_id,send_orders.urgent,send_orders.total_price,send_orders.deliverer_price,send_orders.express_count,send_orders.order_status,send_orders.order_cancel_status,send_orders.postscript,send_orders.payment,send_orders.created_at,CASE send_orders.order_status WHEN "new" THEN 1 ELSE 2 END as status_num,users.nickname,users.avatar_url'))
+            ->select(DB::raw('send_orders.id,send_orders.order_sn,send_orders.user_id,send_orders.deliverer_id,send_orders.coupon_id,send_orders.coupon_name,send_orders.coupon_price,send_orders.item_type_name,send_orders.express_company_name,send_orders.best_time,send_orders.order_status,send_orders.order_cancel_status,send_orders.payment,send_orders.urgent,send_orders.urgent_price,send_orders.original_price,send_orders.order_price,send_orders.total_price,send_orders.deliverer_price,send_orders.fee,send_orders.postscript,send_orders.sender,send_orders.sender_mobile,send_orders.sender_address,send_orders.consignee,send_orders.consignee_mobile,send_orders.consignee_address,send_orders.created_at,CASE send_orders.order_status WHEN "new" THEN 1 ELSE 2 END as status_num,users.nickname,users.avatar_url'))
             ->whereIn('send_orders.order_status', ['new','accepted']);
         if($where)
         {
@@ -63,7 +63,7 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
     public function getOrder($id)
     {
         $send_order = $this->model->join('users','users.id','=','send_orders.user_id')
-            ->select(DB::raw('send_orders.id,send_orders.order_sn,send_orders.user_id,send_orders.deliverer_id,send_orders.urgent,send_orders.tip,send_orders.total_price,send_orders.deliverer_price,express_count,send_orders.order_status,send_orders.order_cancel_status,send_orders.postscript,send_orders.payment,send_orders.created_at,users.nickname,users.avatar_url'))
+            ->select(DB::raw('send_orders.id,send_orders.order_sn,send_orders.user_id,send_orders.deliverer_id,send_orders.coupon_id,send_orders.coupon_name,send_orders.coupon_price,send_orders.item_type_name,send_orders.express_company_name,send_orders.best_time,send_orders.order_status,send_orders.order_cancel_status,send_orders.payment,send_orders.urgent,send_orders.urgent_price,send_orders.original_price,send_orders.order_price,send_orders.total_price,send_orders.deliverer_price,send_orders.fee,send_orders.postscript,send_orders.sender,send_orders.sender_mobile,send_orders.sender_address,send_orders.consignee,send_orders.consignee_mobile,send_orders.consignee_address,send_orders.created_at,users.nickname,users.avatar_url'))
             ->where('send_orders.id',$id)
             ->first();
         $send_order->friendly_date = friendly_date($send_order->created_at);
@@ -73,7 +73,7 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
     {
         $send_order = $this->model->join('users','users.id','=','send_orders.user_id')
             ->leftJoin('users as deliverers' ,'deliverers.id','send_orders.deliverer_id')
-            ->select(DB::raw('send_orders.id,send_orders.order_sn,send_orders.user_id,send_orders.deliverer_id,send_orders.urgent,send_orders.tip,send_orders.coupon_name,send_orders.coupon_price,send_orders.total_price,send_orders.deliverer_price,send_orders.express_count,send_orders.express_price,send_orders.order_status,send_orders.order_cancel_status,send_orders.postscript,send_orders.payment,send_orders.created_at,users.nickname,users.avatar_url,users.phone,deliverers.nickname as deliverer_nickname,deliverers.avatar_url as deliverer_avatar_url,deliverers.phone as deliverer_phone'))
+            ->select(DB::raw('send_orders.order_sn,send_orders.user_id,send_orders.deliverer_id,send_orders.coupon_id,send_orders.coupon_name,send_orders.coupon_price,send_orders.item_type_name,send_orders.express_company_name,send_orders.best_time,send_orders.order_status,send_orders.order_cancel_status,send_orders.payment,send_orders.urgent,send_orders.urgent_price,send_orders.original_price,send_orders.order_price,send_orders.total_price,send_orders.deliverer_price,send_orders.fee,send_orders.postscript,send_orders.sender,send_orders.sender_mobile,send_orders.sender_address,send_orders.consignee,send_orders.consignee_mobile,send_orders.consignee_address,send_orders.created_at,users.nickname,users.avatar_url,users.phone,deliverers.nickname as deliverer_nickname,deliverers.avatar_url as deliverer_avatar_url,deliverers.phone as deliverer_phone'))
             ->where('send_orders.id',$id)
             ->first();
         $send_order->friendly_date = friendly_date($send_order->created_at);
@@ -82,11 +82,9 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
     public function getOrderDetail($id)
     {
         $user = User::tokenAuth();
-        $send_order = $this->find($id,['id','order_sn','user_id','deliverer_id','urgent','urgent_price','tip','coupon_id','coupon_name','coupon_price','original_price','total_price','order_status','order_cancel_status','express_count','express_price','deliverer_price','postscript','created_at']);
+        $send_order = $this->find($id,['order_sn','user_id','deliverer_id','coupon_id','coupon_name','coupon_price','item_type_name','express_company_name','best_time','order_status','order_cancel_status','payment','urgent','urgent_price','original_price','order_price','total_price','deliverer_price','fee','postscript','sender','sender_mobile','sender_address','consignee','consignee_mobile','consignee_address','created_at']);
         $send_order->friendly_date = friendly_date($send_order->created_at);
         $send_order_data = $send_order->toArray();
-        $send_order_expresses = app(SendOrderExpressRepository::class)->getExpresses($send_order->id);
-        $send_order_data['expresses'] = $send_order_expresses->toArray();
 
         if(in_array($send_order->order_status,['unpaid']))
         {
@@ -103,7 +101,6 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
             $user_field = array_merge($user_field,['phone']);
 
         }
-
 
         $send_order_user_data = visible_data($send_order_user->toArray(),$user_field);
         $send_order_deliverer_data = $send_order_deliverer ? visible_data($send_order_deliverer->toArray(),$user_field) : [];

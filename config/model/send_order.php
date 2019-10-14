@@ -21,7 +21,7 @@ return [
         'visible'      => [],
         'guarded'      => ['*'],
         'slugs'        => [],
-        'fillable'     => ['order_sn','user_id','deliverer_id','coupon_id','coupon_name','coupon_price','item_type_name','express_company_name','best_time','order_status','order_cancel_status','payment','original_price','order_price','total_price','deliverer_price','fee','postscript','sender','sender_mobile','sender_address','consignee','consignee_mobile','consignee_address','created_at','updated_at'],
+        'fillable'     => ['order_sn','user_id','deliverer_id','coupon_id','coupon_name','coupon_price','item_type_name','express_company_name','best_time','order_status','order_cancel_status','payment','urgent','urgent_price','original_price','order_price','total_price','deliverer_price','fee','postscript','sender','sender_mobile','sender_address','consignee','consignee_mobile','consignee_address','created_at','updated_at'],
         'translate'    => [],
         'upload_folder' => '/take_order',
         'encrypt'      => ['id'],

@@ -19,7 +19,7 @@ class SendOrder extends BaseModel
     public function getTaskOrderIdAttribute()
     {
         $id = $this->attributes['id'];
-        return TaskOrder::where('type','take_order')->where('objective_id',$id)->value('id');
+        return TaskOrder::where('type','send_order')->where('objective_id',$id)->value('id');
     }
 
     public function getStatusDescAttribute()

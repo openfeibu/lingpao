@@ -58,6 +58,9 @@ class TaskOrderController extends BaseController
             case 'custom_order':
                 $order_detail = $this->customOrderRepository->getOrderDetail($order->objective_id);
                break;
+            case 'send_order':
+                $order_detail = $this->sendOrderRepository->getOrderDetail($order->objective_id);
+                break;
         }
 
         $order_detail['type'] = $order->type;
