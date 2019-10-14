@@ -4,12 +4,11 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Repositories\Eloquent\UserAllCouponRepositoryInterface;
 use App\Repositories\Eloquent\UserBalanceCouponRepositoryInterface;
+use App\Services\SessionKeyService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\BaseController;
 use App\Models\User;
-use \GuzzleHttp\Client;
 use Log,Event;
-use App\Helpers\Constants as Constants;
 use App\Services\WXBizDataCryptService;
 use App\Repositories\Eloquent\UserRepositoryInterface;
 
@@ -17,17 +16,19 @@ class WeAppUserLoginController extends BaseController
 {
     public function __construct(UserRepositoryInterface $userRepository,
                                 UserBalanceCouponRepositoryInterface $userBalanceCouponRepository,
-                                UserAllCouponRepositoryInterface $userAllCouponRepository)
+                                UserAllCouponRepositoryInterface $userAllCouponRepository,
+                                SessionKeyService $sessionKeyService)
     {
         parent::__construct();
         $this->userRepository = $userRepository;
         $this->userBalanceCouponRepository = $userBalanceCouponRepository;
         $this->userAllCouponRepository = $userAllCouponRepository;
+        $this->sessionKeyService = $sessionKeyService;
     }
     public function code(Request $request)
     {
         $code = $request->input('code');
-        $we_data =  $this->getSessionKey($code);
+        $we_data = $this->sessionKeyService->getSessionKey($code);
         $token = $this->generatetoken($we_data['session_key']);
         $user_info = (object)Array();
         $user_info->openId = $we_data['openid'];
@@ -46,7 +47,7 @@ class WeAppUserLoginController extends BaseController
         $encryptedData = $request->input('encryptedData');
         $iv = $request->input('iv');
 
-        $data = $this->getSessionKey($code);
+        $data = $this->sessionKeyServicegetSessionKey($code);
         $sessionKey = $data['session_key'];
 
         $token = $this->generatetoken($sessionKey);
@@ -69,51 +70,7 @@ class WeAppUserLoginController extends BaseController
 
         return $this->response->success()->data($user)->json();
     }
-    /**
-     * 通过 code 换取 session key
-     * @param string $code
-     * @return string $session_key
-     * @throws \Exception
-     */
-    public function getSessionKey($code)
-    {
-        $appId = config("weapp.appid");
-        $appSecret = config("weapp.secret");
-        list($session_key, $openid) = array_values($this->getSessionKeyDirectly($appId, $appSecret, $code));
-        return [
-            'session_key' => $session_key,
-            'openid' => $openid
-        ];
-    }
-    /**
-     * 直接请求微信获取 session key
-     * @param string $appId
-     * @param string $appSecret
-     * @param string $code
-     * @return array { $session_key, $openid }
-     * @throws \Exception
-     */
-    private function getSessionKeyDirectly($appId, $appSecret, $code)
-    {
-        $requestParams = [
-            'appid' => $appId,
-            'secret' => $appSecret,
-            'js_code' => $code,
-            'grant_type' => 'authorization_code'
-        ];
-        $client = new Client();
-        $url = config('weapp.code2session_url') . http_build_query($requestParams);
-        $res = $client->request("GET", $url, [
-            'timeout' => Constants::getNetworkTimeout()
-        ]);
-        $status = $res->getStatusCode();
-        $body = json_decode($res->getBody(), true);
 
-        if ($status !== 200 || !$body || isset($body['errcode'])) {
-            throw new \App\Exceptions\OutputServerMessageException(Constants::E_LOGIN_FAILED);
-        }
-        return $body;
-    }
     public function generatetoken($sessionKey)
     {
         $this->token = sha1($sessionKey . mt_rand());

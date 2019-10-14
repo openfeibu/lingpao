@@ -12,6 +12,7 @@ use App\Repositories\Eloquent\UserRepositoryInterface;
 use App\Repositories\Eloquent\BalanceRecordRepositoryInterface;
 use App\Repositories\Eloquent\TradeRecordRepositoryInterface;
 use App\Repositories\Eloquent\RemarkRepositoryInterface;
+use App\Services\SessionKeyService;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Services\WXBizDataCryptService;
@@ -26,7 +27,8 @@ class UserController extends BaseController
                                 DelivererIdentificationRepositoryInterface $delivererIdentificationRepository,
                                 BalanceRecordRepositoryInterface $balanceRecordRepository,
                                 TradeRecordRepositoryInterface $tradeRecordRepository,
-                                WithdrawRepositoryInterface $withdrawRepository)
+                                WithdrawRepositoryInterface $withdrawRepository,
+                                SessionKeyService $sessionKeyService)
     {
         parent::__construct();
         $this->middleware('auth.api',['except' => 'getRemarks']);
@@ -36,6 +38,7 @@ class UserController extends BaseController
         $this->tradeRecordRepository = $tradeRecordRepository;
         $this->withdrawRepository = $withdrawRepository;
         $this->delivererIdentificationRepository = $delivererIdentificationRepository;
+        $this->sessionKeyService = $sessionKeyService;
     }
     public function getUser(Request $request)
     {
@@ -90,7 +93,10 @@ class UserController extends BaseController
         $encryptedData = $request->input('encryptedData');
         $iv = $request->input('iv');
 
-        $WXBizDataCryptService = new WXBizDataCryptService($user['session_key']);
+        $code = $request->input('code');
+        $we_data = $this->sessionKeyService->getSessionKey($code);
+
+        $WXBizDataCryptService = new WXBizDataCryptService($we_data['session_key']);
 
         $data = [];
         $errCode = $WXBizDataCryptService->decryptData($encryptedData, $iv, $data );
@@ -109,7 +115,8 @@ class UserController extends BaseController
         $phone = $phone_data->phoneNumber;
 
         User::where('id',$user->id)->update([
-            'phone' => $phone
+            'phone' => $phone,
+            'session_key' => $we_data['session_key']
         ]);
         return $this->response->success('提交成功')->data(['phone' => $phone])->json();
     }
