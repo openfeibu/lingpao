@@ -177,7 +177,10 @@ class UserController extends BaseController
         $encryptedData = $request->input('encryptedData');
         $iv = $request->input('iv');
 
-        $WXBizDataCryptService = new WXBizDataCryptService($user['session_key']);
+        $code = $request->input('code');
+        $we_data = $this->sessionKeyService->getSessionKey($code);
+
+        $WXBizDataCryptService = new WXBizDataCryptService($we_data['session_key']);
 
         $data = [];
         $errCode = $WXBizDataCryptService->decryptData($encryptedData, $iv, $data );
@@ -200,6 +203,7 @@ class UserController extends BaseController
             throw new OutputServerMessageException('手机号码验证不一致');
         }
         $user->pay_password = '';
+        $user->session_key = $we_data['session_key'];
         $user->save();
 
         throw new RequestSuccessException("验证成功");
