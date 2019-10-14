@@ -37,7 +37,7 @@ class TaskOrderRepository extends BaseRepository implements TaskOrderRepositoryI
         $type = Request::get('type','all');
         $limit = Request::get('limit',config('app.limit'));
         $orders = $this->model->select(DB::raw('*,CASE order_status WHEN "new" THEN 1 WHEN "accepted" THEN 2 ELSE 3 END as status_num'))
-            //->whereIn('type',['take_order','custom_order'])
+            ->whereIn('type',['take_order','custom_order'])
             //->whereIn('order_status', ['new','accepted']);
             ->whereNotIn('order_status', ['unpaid']);
         if($type != 'all')
