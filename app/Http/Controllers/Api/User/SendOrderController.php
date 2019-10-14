@@ -57,7 +57,7 @@ class SendOrderController extends BaseController
             'urgent' => 'sometimes|in:0,1',
             'urgent_price' => 'sometimes|numeric|min:0',
             'payment' => "required|in:wechat,balance",
-            "postscript" => 'sometimes|required|string',
+            "postscript" => 'sometimes',
             'consignee' => 'required',
             'consignee_mobile' => 'required|regex:'.config('regex.phone'),
             'consignee_address' => 'required',
