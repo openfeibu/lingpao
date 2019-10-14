@@ -9,6 +9,7 @@ use App\Exceptions\OutputServerMessageException;
 use App\Models\TaskOrder;
 use App\Models\User;
 use App\Models\TakeOrder;
+use App\Repositories\Eloquent\SendOrderRepositoryInterface;
 use App\Repositories\Eloquent\UserRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderExpressRepositoryInterface;
@@ -31,6 +32,7 @@ class TaskOrderController extends BaseController
                                 UserRepositoryInterface $userRepository,
                                 TaskOrderRepositoryInterface $taskOrderRepository,
                                 CustomOrderRepositoryInterface $customOrderRepository,
+                                SendOrderRepositoryInterface $sendOrderRepository,
                                 RemarkRepositoryInterface $remarkRepository)
     {
         parent::__construct();
@@ -41,6 +43,7 @@ class TaskOrderController extends BaseController
         $this->taskOrderRepository = $taskOrderRepository;
         $this->remarkRepository = $remarkRepository;
         $this->customOrderRepository = $customOrderRepository;
+        $this->sendOrderRepository = $sendOrderRepository;
     }
     public function getOrders(Request $request)
     {
