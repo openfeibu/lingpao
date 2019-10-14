@@ -2,6 +2,18 @@
 
 namespace App\Http\Controllers\Api\User;
 
+use App\Exceptions\PermissionDeniedException;
+use App\Exceptions\NotFoundPayPasswordException;
+use App\Exceptions\OutputServerMessageException;
+use App\Models\TaskOrder;
+use App\Models\User;
+use App\Repositories\Eloquent\SendOrderRepositoryInterface;
+use App\Repositories\Eloquent\UserAllCouponRepositoryInterface;
+use App\Repositories\Eloquent\UserCouponRepositoryInterface;
+use App\Repositories\Eloquent\UserRepositoryInterface;
+use App\Repositories\Eloquent\TaskOrderRepositoryInterface;
+use App\Repositories\Eloquent\RemarkRepositoryInterface;
+use App\Services\PayService;
 use App\Models\SendOrderExpressCompany;
 use App\Models\SendOrderItemType;
 use Illuminate\Http\Request;
@@ -10,10 +22,22 @@ use Log;
 
 class SendOrderController extends BaseController
 {
-    public function __construct()
+    public function __construct(SendOrderRepositoryInterface $sendOrderRepository,
+                                UserCouponRepositoryInterface $userCouponRepository,
+                                UserAllCouponRepositoryInterface $userAllCouponRepository,
+                                UserRepositoryInterface $userRepository,
+                                TaskOrderRepositoryInterface $taskOrderRepository,
+                                RemarkRepositoryInterface $remarkRepository,
+                                PayService $payService)
     {
         parent::__construct();
         $this->middleware('auth.api',['except' => ['getExpressCompanies','getItemTypes']]);
+        $this->userCouponRepository = $userCouponRepository;
+        $this->userRepository = $userRepository;
+        $this->taskOrderRepository = $taskOrderRepository;
+        $this->sendOrderRepository = $sendOrderRepository;
+        $this->userAllCouponRepository = $userAllCouponRepository;
+        $this->payService = $payService;
     }
     public function getExpressCompanies(Request $request)
     {
@@ -41,6 +65,8 @@ class SendOrderController extends BaseController
             'sender_mobile' => 'required|regex:'.config('regex.phone'),
             'sender_address' => 'required',
             "best_time" => 'required',
+            'item_type_name' => 'required',
+            'express_company_name' => 'required',
         ];
         validateCustomParameter($order_data,$rule);
 
@@ -71,7 +97,7 @@ class SendOrderController extends BaseController
         {
             checkBalance($user,$total_price);
         }
-        $order_sn = generate_order_sn('TAKE-');
+        $order_sn = generate_order_sn('SEND-');
         $order_data = [
             'order_sn' => $order_sn,
             'user_id' => $user->id,
@@ -87,27 +113,37 @@ class SendOrderController extends BaseController
             'total_price' => $total_price,
             'original_price' => $original_price ,
             'order_price' => $order_price,
+            'consignee' => $order_data['consignee'],
+            'consignee_mobile' => $order_data['consignee_mobile'],
+            'consignee_address' => $order_data['consignee_address'],
+            'sender' => $order_data['sender'],
+            'sender_mobile' => $order_data['sender_mobile'],
+            'sender_address' => $order_data['sender_address'],
+            "best_time" => $order_data['best_time'],
+            'item_type_name' => $order_data['item_type_name'],
+            'express_company_name' => $order_data['express_company_name'],
         ];
 
-        $order = $this->takeOrderRepository->create($order_data);
+        $order = $this->sendOrderRepository->create($order_data);
         $task_order = $this->taskOrderRepository->create([
             'order_sn' => $order_sn,
-            'name' => '代拿',
+            'name' => '代寄',
             'user_id' => $user->id,
             'objective_id' => $order->id,
-            'objective_model' => 'TakeOrder',
-            'type' => 'take_order',
+            'objective_model' => 'SendOrder',
+            'type' => 'send_order',
         ]);
+
         $data = [
             'task_order_id' => $task_order->id,
-            'take_order_id' => $order->id,
+            'send_order_id' => $order->id,
             'order_sn' => $order_sn,
-            'body' => "发布代拿",
-            'detail' => "发布代拿",
+            'body' => "发布代寄",
+            'detail' => "发布代寄",
             'total_price' => $total_price,
-            'trade_type' => 'CREATE_TAKE_ORDER',
+            'trade_type' => 'CREATE_SEND_ORDER',
             'payment' => $request->payment,
-            'pay_from' => 'TakeOrder',
+            'pay_from' => 'SendOrder',
             'coupon_id' => $coupon_id,
             'coupon_price' => $coupon_price,
         ];

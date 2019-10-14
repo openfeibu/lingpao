@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\RequestSuccessException;
 use App\Repositories\Eloquent\BalanceRecordRepositoryInterface;
 use App\Repositories\Eloquent\CustomOrderRepositoryInterface;
+use App\Repositories\Eloquent\SendOrderRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderExtraPriceRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\TradeRecordRepositoryInterface;
@@ -31,6 +32,7 @@ class PayService
                                 TaskOrderRepositoryInterface $taskOrderRepository,
                                 TakeOrderExtraPriceRepositoryInterface $takeOrderExtraPriceRepository,
                                 CustomOrderRepositoryInterface $customOrderRepository,
+                                SendOrderRepositoryInterface $sendOrderRepository,
                                 UserCouponRepositoryInterface $userCouponRepository,
                                 UserAllCouponRepositoryInterface $userAllCouponRepository)
     {
@@ -43,6 +45,7 @@ class PayService
         $this->customOrderRepository = $customOrderRepository;
         $this->userCouponRepository = $userCouponRepository;
         $this->userAllCouponRepository = $userAllCouponRepository;
+        $this->sendOrderRepository = $sendOrderRepository;
     }
 
     public function payHandle($data)
@@ -58,6 +61,9 @@ class PayService
                 break;
             case 'CustomOrder':
                 return $this->customOrderPayHandle($data);
+            case 'SendOrder':
+                return $this->sendOrderPayHandle($data);
+                break;
             default:
                 throw new \App\Exceptions\OutputServerMessageException('操作失败');
                 break;
@@ -153,6 +159,37 @@ class PayService
                     return [
                         'task_order_id' => $data['task_order_id'],
                         'custom_order_id' => $data['custom_order_id'],
+                        'order_sn' => $data['order_sn'],
+                    ];
+                }
+                break;
+        }
+    }
+    private function sendOrderPayHandle($data)
+    {
+        switch($data['payment'])
+        {
+            //微信
+            case 'wechat':
+                $parameter = $this->getTaskWechatParameter($data);
+                $pay_config =  $this->wechat($parameter);
+                return [
+                    'task_order_id' => $data['task_order_id'],
+                    'send_order_id' => $data['send_order_id'],
+                    'order_sn' => $data['order_sn'],
+                    'pay_config' => $pay_config,
+                ];
+                break;
+            case 'balance':
+
+                $result = $this->balance($data);
+                if($result['return_code'] == 'SUCCESS')
+                {
+                    $this->sendOrderRepository->updateOrderStatus(['order_status' => 'new'],$data['send_order_id']);
+                    $data['coupon_id'] ? $this->userAllCouponRepository->usedCoupon($data['coupon_id'],$data['coupon_price']) : '';
+                    return [
+                        'task_order_id' => $data['task_order_id'],
+                        'send_order_id' => $data['send_order_id'],
                         'order_sn' => $data['order_sn'],
                     ];
                 }

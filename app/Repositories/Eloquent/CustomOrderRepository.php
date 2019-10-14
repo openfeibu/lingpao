@@ -142,7 +142,7 @@ class CustomOrderRepository extends BaseRepository implements CustomOrderReposit
             ];
             app(MessageService::class)->sendMessage($message_data);
         } catch (Exception $e) {
-            throw new \App\Exceptions\RequestFailedException('无法接受任务');
+            throw new \App\Exceptions\OutputServerMessageException('无法接受任务');
         }
         return $custom_order;
     }

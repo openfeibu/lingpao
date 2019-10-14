@@ -1065,6 +1065,9 @@ if(!function_exists('get_task_objective_model')) {
             case "CustomOrder":
                 return app(\App\Models\CustomOrder::class);
                 break;
+            case "SendOrder":
+                return app(\App\Models\SendOrder::class);
+                break;
         }
     }
 }
