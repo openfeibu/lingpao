@@ -47,7 +47,7 @@ class WeAppUserLoginController extends BaseController
         $encryptedData = $request->input('encryptedData');
         $iv = $request->input('iv');
 
-        $data = $this->sessionKeyServicegetSessionKey($code);
+        $data =  $data = $this->sessionKeyService->getSessionKey($code);
         $sessionKey = $data['session_key'];
 
         $token = $this->generatetoken($sessionKey);
