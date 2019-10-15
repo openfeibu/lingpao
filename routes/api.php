@@ -114,6 +114,8 @@ $api->version('v1', function ($api) {
     $api->post('/send_order/accept_order','App\Http\Controllers\Api\Deliverer\SendOrderController@acceptOrder');
     $api->post('/send_order/finish_order','App\Http\Controllers\Api\Deliverer\SendOrderController@finishOrder');
     $api->post('/send_order/deliverer/cancel_order','App\Http\Controllers\Api\Deliverer\SendOrderController@cancelOrder');
+    $api->post('/send_order/submit_carriage','App\Http\Controllers\Api\Deliverer\SendOrderController@submitCarriage');
+    $api->post('/send_order/pay_carriage','App\Http\Controllers\Api\User\SendOrderController@payCarriage');
 
     $api->get('/coupon','App\Http\Controllers\Api\CouponController@coupon');
     $api->post('/coupon/receive','App\Http\Controllers\Api\CouponController@receiveCoupon');

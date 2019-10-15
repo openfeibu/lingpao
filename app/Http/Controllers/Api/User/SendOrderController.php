@@ -151,4 +151,46 @@ class SendOrderController extends BaseController
 
         return $this->response->success()->data($data)->json();
     }
+    //运费 + 附加费
+    public function payCarriage(Request $request)
+    {
+        $rule = [
+            'id' => 'required|integer',
+            'payment' => "required|in:wechat,balance",
+        ];
+        validateParameter($rule);
+
+        $user = User::tokenAuth();
+
+        $take_order = $this->takeOrderRepository->find($request->id);
+
+        $take_order_extra_price = $this->takeOrderExtraPriceRepository->where('take_order_id',$take_order->id)->first();
+        if($take_order->user_id != $user->id){
+            throw new PermissionDeniedException();
+        }
+        if($take_order_extra_price->status == 'paid' || $take_order->order_status != 'accepted')
+        {
+            throw new OutputServerMessageException("该任务状态不支持支付");
+        }
+        $total_price = $take_order_extra_price->total_price;
+        if($request->payment == 'balance')
+        {
+            checkBalance($user,$total_price);
+        }
+        $this->takeOrderExtraPriceRepository->update(['payment' => $request->payment],$take_order_extra_price->id);
+        $data = [
+            'take_order' => $take_order,
+            'extra_price_id' => $take_order_extra_price->id,
+            'order_sn' => $take_order_extra_price->order_sn,
+            'total_price' => $total_price,
+            'body' => "代拿增加服务费",
+            'detail' => "代拿增加服务费",
+            'trade_type' => 'TAKE_ORDER_EXTRA_PRICE',
+            'payment' => $request->payment,
+            'pay_from' => 'TakeOrderExtraPrice',
+        ];
+        $data = $this->payService->payHandle($data);
+
+        return $this->response->success()->data($data)->json();
+    }
 }

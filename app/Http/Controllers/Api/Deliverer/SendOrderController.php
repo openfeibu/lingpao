@@ -7,7 +7,7 @@ use App\Exceptions\PermissionDeniedException;
 use App\Exceptions\RequestSuccessException;
 use App\Repositories\Eloquent\UserRepositoryInterface;
 use App\Repositories\Eloquent\SendOrderRepositoryInterface;
-use App\Repositories\Eloquent\SendOrderExtraPriceRepositoryInterface;
+use App\Repositories\Eloquent\SendOrderCarriageRepositoryInterface;
 use App\Services\MessageService;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -17,13 +17,13 @@ use Log;
 class SendOrderController extends BaseController
 {
     public function __construct(SendOrderRepositoryInterface $sendOrderRepository,
-                                SendOrderExtraPriceRepositoryInterface $sendOrderExtraPriceRepository,
+                                SendOrderCarriageRepositoryInterface $sendOrderCarriageRepository,
                                 UserRepositoryInterface $userRepository)
     {
         parent::__construct();
         $this->middleware('auth.api',['except' => []]);
         $this->sendOrderRepository = $sendOrderRepository;
-        $this->sendOrderExtraPriceRepository = $sendOrderExtraPriceRepository;
+        $this->sendOrderCarriageRepository = $sendOrderCarriageRepository;
         $this->userRepository = $userRepository;
         $this->deliverer = User::tokenAuth();
     }
@@ -86,14 +86,17 @@ class SendOrderController extends BaseController
 
         throw new \App\Exceptions\RequestSuccessException("操作成功，请等待或联系用户操作！");
     }
-    public function submitServicePrice(Request $request)
+    public function submitCarriage(Request $request)
     {
         $rule = [
             'id' => 'required|integer',
-            'service_price' => 'required|integer',
+            'carriage' => 'required|integer',
+            'extra_price' => 'required|integer',
         ];
         validateParameter($rule);
-        $total_price = $service_price = $request->service_price;
+        $carriage = $request->carriage;
+        $extra_price = $request->extra_price;
+        $total_price = $carriage + $extra_price;
         $send_order = $this->sendOrderRepository->find($request->id);
         $this->checkDelivererPermission($send_order->deliverer_id);
 
@@ -101,7 +104,8 @@ class SendOrderController extends BaseController
             throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许该操作');
         }
 
-        $send_order_extra_price = $this->sendOrderExtraPriceRepository->where('send_order_id',$send_order->id)->first(['id','status']);
+        $send_order_extra_price = $this->sendOrderCarriageRepository->where('send_order_id',$send_order->id)->first(['id','status']);
+
 
         if($send_order_extra_price)
         {
@@ -109,29 +113,31 @@ class SendOrderController extends BaseController
             {
                 throw new \App\Exceptions\OutputServerMessageException('已支付，不允许该操作');
             }
-            $this->sendOrderExtraPriceRepository->update([
-                'service_price' => $service_price,
+            $this->sendOrderCarriageRepository->update([
+                'carriage' => $carriage,
+                'extra_price' => $extra_price,
                 'total_price' => $total_price,
             ],$send_order_extra_price->id);
         }else{
-            $order_sn = 'TAKEEXTRA-'.generate_order_sn();
-            $this->sendOrderExtraPriceRepository->create([
+            $order_sn = 'SENDCARRIAGE-'.generate_order_sn();
+            $this->sendOrderCarriageRepository->create([
                 'order_sn' => $order_sn,
                 'send_order_id' => $send_order->id,
-                'service_price' => $service_price,
+                'carriage' => $carriage,
+                'extra_price' => $extra_price,
                 'total_price' => $total_price,
                 'status' => 'unpaid'
             ]);
             //通知 发单人
             $message_data = [
                 'task_type'=> 'send_order',
-                'type' => 'extra_price_pay',
+                'type' => 'carriage_pay',
                 'user_id' => $send_order->user_id,
                 'total_price' => $total_price
             ];
             app(MessageService::class)->sendMessage($message_data);
         }
-
+        $this->sendOrderRepository->updateOrderStatus(['order_status' => 'unpaid_carriage'],$send_order->id);
         throw new RequestSuccessException();
     }
     private function checkDelivererPermission($deliverer_id,$message="")

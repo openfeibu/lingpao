@@ -14,12 +14,34 @@ class SendOrder extends BaseModel
 
     protected $config = 'model.send_order.send_order';
 
-    protected $appends = ['task_order_id','status_desc','payment_desc'];
+    protected $appends = ['task_order_id','carriage_data','status_desc','payment_desc'];
 
     public function getTaskOrderIdAttribute()
     {
         $id = $this->attributes['id'];
         return TaskOrder::where('type','send_order')->where('objective_id',$id)->value('id');
+    }
+
+    public function getCarriageDataAttribute()
+    {
+        $id = $this->attributes['id'];
+        $data = [
+            'carriage' => 0,
+            'extra_price' => 0,
+            'carriage_pay_status' => '',
+            'carriage_pay_status_desc' => ''
+        ];
+        $carriage = SendOrderCarriage::where('send_order_id',$id)->first();
+        if($carriage)
+        {
+            $data = [
+                'carriage' => $carriage->carriage,
+                'extra_price' => $carriage->extra_price,
+                'carriage_pay_status' => $carriage->status,
+                'carriage_pay_status_desc' => trans('task.send_order.carriage_pay_status.'.$carriage->status)
+            ];
+        }
+        return $data;
     }
 
     public function getStatusDescAttribute()
@@ -28,9 +50,9 @@ class SendOrder extends BaseModel
         $order_cancel_status = $this->attributes['order_cancel_status'];
         if($order_status == 'cancel')
         {
-            return trans('task_order.user_status_desc.'.$order_cancel_status);
+            return trans('task.send_order.user_status_desc.'.$order_cancel_status);
         }
-        return trans('task_order.user_status_desc.'.$order_status);
+        return trans('task.send_order.user_status_desc.'.$order_status);
     }
 
     public function getPaymentDescAttribute()

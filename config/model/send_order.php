@@ -67,4 +67,22 @@ return [
             'order_sn'  => 'like',
         ],
     ],
+    'send_order_carriage' => [
+        'model'        => 'App\Models\SendOrderCarriage',
+        'table'        => 'send_order_carriage_prices',
+        'primaryKey'   => 'id',
+        'hidden'       => [],
+        'visible'      => [],
+        'guarded'      => ['*'],
+        'slugs'        => [],
+        'fillable'     => ['send_order_id','order_sn','carriage','extra_price','total_price','payment','status','created_at','updated_at'],
+        'translate'    => [],
+        'upload_folder' => '/send_order',
+        'encrypt'      => ['id'],
+        'revision'     => [],
+        'perPage'      => '20',
+        'search'        => [
+            'order_sn'  => 'like',
+        ],
+    ],
 ];

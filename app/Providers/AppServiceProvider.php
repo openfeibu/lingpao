@@ -82,6 +82,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Repositories\Eloquent\SendOrderRepository::class
         );
         $this->app->bind(
+            'App\Repositories\Eloquent\SendOrderCarriageRepositoryInterface',
+            \App\Repositories\Eloquent\SendOrderCarriageRepository::class
+        );
+        $this->app->bind(
             'App\Repositories\Eloquent\CustomOrderRepositoryInterface',
             \App\Repositories\Eloquent\CustomOrderRepository::class
         );
