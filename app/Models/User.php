@@ -78,6 +78,14 @@ class User extends AuthModel
             throw new PermissionDeniedException("请先在个人中心申请骑手认证");
         }
     }
+    public static function IsExpertDeliverer()
+    {
+        $user_role = self::$user->role;
+        if($user_role != 'expert_deliverer')
+        {
+            throw new PermissionDeniedException("请联系客服申请骑士认证");
+        }
+    }
 
     public function deliverer()
     {

@@ -8,6 +8,7 @@ use App\Exceptions\OutputServerMessageException;
 use App\Models\TaskOrder;
 use App\Models\User;
 use App\Repositories\Eloquent\SendOrderRepositoryInterface;
+use App\Repositories\Eloquent\SendOrderCarriageRepositoryInterface;
 use App\Repositories\Eloquent\UserAllCouponRepositoryInterface;
 use App\Repositories\Eloquent\UserCouponRepositoryInterface;
 use App\Repositories\Eloquent\UserRepositoryInterface;
@@ -23,6 +24,7 @@ use Log;
 class SendOrderController extends BaseController
 {
     public function __construct(SendOrderRepositoryInterface $sendOrderRepository,
+                                SendOrderCarriageRepositoryInterface $sendOrderCarriageRepository,
                                 UserCouponRepositoryInterface $userCouponRepository,
                                 UserAllCouponRepositoryInterface $userAllCouponRepository,
                                 UserRepositoryInterface $userRepository,
@@ -36,6 +38,7 @@ class SendOrderController extends BaseController
         $this->userRepository = $userRepository;
         $this->taskOrderRepository = $taskOrderRepository;
         $this->sendOrderRepository = $sendOrderRepository;
+        $this->sendOrderCarriageRepository = $sendOrderCarriageRepository;
         $this->userAllCouponRepository = $userAllCouponRepository;
         $this->payService = $payService;
     }
@@ -162,35 +165,118 @@ class SendOrderController extends BaseController
 
         $user = User::tokenAuth();
 
-        $take_order = $this->takeOrderRepository->find($request->id);
+        $send_order = $this->sendOrderRepository->find($request->id);
 
-        $take_order_extra_price = $this->takeOrderExtraPriceRepository->where('take_order_id',$take_order->id)->first();
-        if($take_order->user_id != $user->id){
+        $send_order_carriage = $this->sendOrderCarriageRepository->where('send_order_id',$send_order->id)->first();
+        if($send_order->user_id != $user->id){
             throw new PermissionDeniedException();
         }
-        if($take_order_extra_price->status == 'paid' || $take_order->order_status != 'accepted')
+        if($send_order->order_status != 'unpaid_carriage')
         {
             throw new OutputServerMessageException("该任务状态不支持支付");
         }
-        $total_price = $take_order_extra_price->total_price;
+        $total_price = $send_order_carriage->total_price;
         if($request->payment == 'balance')
         {
             checkBalance($user,$total_price);
         }
-        $this->takeOrderExtraPriceRepository->update(['payment' => $request->payment],$take_order_extra_price->id);
+        $this->sendOrderCarriageRepository->update(['payment' => $request->payment],$send_order_carriage->id);
         $data = [
-            'take_order' => $take_order,
-            'extra_price_id' => $take_order_extra_price->id,
-            'order_sn' => $take_order_extra_price->order_sn,
+            'send_order' => $send_order,
+            'send_order_carriage_price_id' => $send_order_carriage->id,
+            'order_sn' => $send_order_carriage->order_sn,
+            'carriage' => $send_order_carriage->carriage,
+            'extra_price' => $send_order_carriage->extra_price,
             'total_price' => $total_price,
-            'body' => "代拿增加服务费",
-            'detail' => "代拿增加服务费",
-            'trade_type' => 'TAKE_ORDER_EXTRA_PRICE',
+            'body' => "代寄运费",
+            'detail' => "代寄运费",
+            'trade_type' => 'SEND_ORDER_CARRIAGE',
             'payment' => $request->payment,
-            'pay_from' => 'TakeOrderExtraPrice',
+            'pay_from' => 'SendOrderCarriagePrice',
         ];
         $data = $this->payService->payHandle($data);
 
         return $this->response->success()->data($data)->json();
+    }
+
+
+    /**
+     * 发单人结算任务
+     */
+    public function completeOrder(Request $request)
+    {
+        //检验请求参数
+        $rule = [
+            'id' => 'required|integer',
+        ];
+        validateParameter($rule);
+
+        $user = User::tokenAuth();
+
+        $send_order = $this->sendOrderRepository->find($request->id);
+
+        if($send_order->user_id != $user->id)
+        {
+            throw new PermissionDeniedException();
+        }
+
+        $this->sendOrderRepository->completeOrder($send_order);
+
+        throw new \App\Exceptions\RequestSuccessException("确认成功！");
+    }
+
+    public function cancelOrder(Request $request)
+    {
+        $rule = [
+            'id' => 'required|integer',
+        ];
+        validateParameter($rule);
+
+        $user = User::tokenAuth();
+
+        $send_order = $this->sendOrderRepository->find($request->id);
+
+        if($send_order->user_id != $user->id){
+            throw new PermissionDeniedException('没有取消该任务的权限');
+        }
+        $this->sendOrderRepository->userCancelOrder($send_order);
+        throw new \App\Exceptions\RequestSuccessException(trans("task_order.refund_success"));
+    }
+
+    public function agreeCancelOrder(Request $request)
+    {
+        $rule = [
+            'id' => 'required|integer',
+        ];
+        validateParameter($rule);
+
+        $user = User::tokenAuth();
+
+        $send_order = $this->sendOrderRepository->find($request->id);
+
+        if($send_order->user_id != $user->id){
+            throw new PermissionDeniedException();
+        }
+
+        $this->sendOrderRepository->agreeCancelOrder($send_order);
+        throw new \App\Exceptions\RequestSuccessException(trans("task_order.agree_cancel"));
+    }
+    public function disagreeCancelOrder(Request $request)
+    {
+        $rule = [
+            'id' => 'required|integer',
+        ];
+        validateParameter($rule);
+
+        $user = User::tokenAuth();
+
+        $send_order = $this->sendOrderRepository->find($request->id);
+
+        if($send_order->user_id != $user->id){
+            throw new PermissionDeniedException();
+        }
+
+        $this->sendOrderRepository->disagreeCancelOrder($send_order);
+        throw new \App\Exceptions\RequestSuccessException("驳回成功");
     }
 }

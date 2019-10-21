@@ -145,6 +145,24 @@ class MessageService
                 ];
                 $page = '';
                 break;
+            case 'carriage_pay':
+                $template_id = config('wechat.mini_program.default.template_id.wait_pay');
+                $data = [
+                    'keyword1' => '骑手请求支付运费',
+                    'keyword2' => $data['total_price'],
+                ];
+                $page = '';
+                break;
+            case 'carriage_paid':
+                $template_id = config('wechat.mini_program.default.template_id.status_change');
+                $data = [
+                    'keyword1' => trans('task_order.'.$data['task_type'].'.name'),
+                    'keyword2' => $data['order_sn'],
+                    'keyword3' => '用户已支付代寄运费',
+                    'keyword4' => '请及时完成任务',
+                ];
+                $page = '';
+                break;
             case 'check':
                 $template_id = config('wechat.mini_program.default.template_id.check');
                 $data = [

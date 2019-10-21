@@ -6,6 +6,7 @@ use App\Exceptions\RequestSuccessException;
 use App\Repositories\Eloquent\BalanceRecordRepositoryInterface;
 use App\Repositories\Eloquent\CustomOrderRepositoryInterface;
 use App\Repositories\Eloquent\SendOrderRepositoryInterface;
+use App\Repositories\Eloquent\SendOrderCarriageRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderExtraPriceRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
 use App\Repositories\Eloquent\TradeRecordRepositoryInterface;
@@ -33,6 +34,7 @@ class PayService
                                 TakeOrderExtraPriceRepositoryInterface $takeOrderExtraPriceRepository,
                                 CustomOrderRepositoryInterface $customOrderRepository,
                                 SendOrderRepositoryInterface $sendOrderRepository,
+                                SendOrderCarriageRepositoryInterface $sendOrderCarriageRepository,
                                 UserCouponRepositoryInterface $userCouponRepository,
                                 UserAllCouponRepositoryInterface $userAllCouponRepository)
     {
@@ -46,6 +48,7 @@ class PayService
         $this->userCouponRepository = $userCouponRepository;
         $this->userAllCouponRepository = $userAllCouponRepository;
         $this->sendOrderRepository = $sendOrderRepository;
+        $this->sendOrderCarriageRepository = $sendOrderCarriageRepository;
     }
 
     public function payHandle($data)
@@ -63,6 +66,9 @@ class PayService
                 return $this->customOrderPayHandle($data);
             case 'SendOrder':
                 return $this->sendOrderPayHandle($data);
+                break;
+            case 'SendOrderCarriage':
+                return $this->sendOrderCarriagePayHandle($data);
                 break;
             default:
                 throw new \App\Exceptions\OutputServerMessageException('操作失败');
@@ -192,6 +198,38 @@ class PayService
                         'send_order_id' => $data['send_order_id'],
                         'order_sn' => $data['order_sn'],
                     ];
+                }
+                break;
+        }
+    }
+    private function sendOrderCarriagePayHandle($data)
+    {
+        switch($data['payment']) {
+            //微信
+            case 'wechat':
+                $parameter = $this->getTaskWechatParameter($data);
+                $pay_config =  $this->wechat($parameter);
+                return [
+                    'pay_config' => $pay_config,
+                ];
+                break;
+            case "balance":
+                $result = $this->balance($data);
+                if($result['return_code'] == 'SUCCESS')
+                {
+                    $this->sendOrderCarriageRepository->update(['status' => 'paid'],$data['send_order_carriage_price_id']);
+                    $this->sendOrderRepository->update(['deliverer_price' => $data['send_order']->deliverer_price+$data['extra_price'] ],$data['send_order']->id);
+                    $this->sendOrderRepository->updateOrderStatus(['order_status' => 'paid_carriage'],$data['send_order']->id);
+                    //通知 发单人
+                    $message_data = [
+                        'user_id' => $data['send_order']->deliverer_id,
+                        'order_sn' => $data['order_sn'],
+                        'task_type'=> 'send_order',
+                        'type' => 'carriage_paid',
+                        'total_price' => $data['total_price']
+                    ];
+                    app(MessageService::class)->sendMessage($message_data);
+                    throw new RequestSuccessException("支付成功");
                 }
                 break;
         }

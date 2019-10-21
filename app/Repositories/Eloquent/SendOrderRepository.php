@@ -165,7 +165,7 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
     }
     public function finishOrder($send_order)
     {
-        if ($send_order->order_status != 'accepted') {
+        if ($send_order->order_status != 'paid_carriage') {
             throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许完成任务');
         }
         $this->updateOrderStatus(['order_status' => 'finish'],$send_order->id);
@@ -197,8 +197,8 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
             'out_trade_no' => $send_order->order_sn,
             'fee' => $fee,
             'type' => 1,
-            'trade_type' => 'ACCEPT_TAKE_ORDER',
-            'description' => '接代拿任务',
+            'trade_type' => 'ACCEPT_SEND_ORDER',
+            'description' => '接代寄任务',
         );
 
         $trade_no = 'BALANCE-'.generate_order_sn();
@@ -209,11 +209,11 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
             'trade_status' => 'income',
             'type' => 1,
             'pay_from' => 'SendOrder',
-            'trade_type' => 'ACCEPT_TAKE_ORDER',
+            'trade_type' => 'ACCEPT_SEND_ORDER',
             'price' => $income,
             'fee' => $fee,
             'payment' => $send_order->payment,
-            'description' => '接代拿任务',
+            'description' => '接代寄任务',
         );
 
         $this->updateOrderStatus(['order_status' => 'completed','fee' => $fee],$send_order->id);
@@ -249,8 +249,8 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
             'payment' => $send_order->payment,
             'coupon_id' => $send_order->coupon_id,
             'coupon_price' => $send_order->coupon_price,
-            'trade_type' => 'CANCEL_TAKE_ORDER',
-            'description' => '取消代拿任务',
+            'trade_type' => 'CANCEL_SEND_ORDER',
+            'description' => '取消代寄任务',
         ];
         app(RefundService::class)->refundHandle($data,'SendOrder',User::tokenAuth());
     }
@@ -290,8 +290,8 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
             'payment' => $send_order->payment,
             'coupon_id' => $send_order->coupon_id,
             'coupon_price' => $send_order->coupon_price,
-            'trade_type' => 'CANCEL_TAKE_ORDER',
-            'description' => '取消代拿任务',
+            'trade_type' => 'CANCEL_SEND_ORDER',
+            'description' => '取消代寄任务',
         ];
         app(RefundService::class)->refundHandle($data,'SendOrder',User::tokenAuth());
          */
