@@ -168,6 +168,7 @@ class SendOrderController extends BaseController
         $send_order = $this->sendOrderRepository->find($request->id);
 
         $send_order_carriage = $this->sendOrderCarriageRepository->where('send_order_id',$send_order->id)->first();
+
         if($send_order->user_id != $user->id){
             throw new PermissionDeniedException();
         }
@@ -180,6 +181,7 @@ class SendOrderController extends BaseController
         {
             checkBalance($user,$total_price);
         }
+
         $this->sendOrderCarriageRepository->update(['payment' => $request->payment],$send_order_carriage->id);
         $data = [
             'send_order' => $send_order,
