@@ -67,7 +67,7 @@ class PayService
             case 'SendOrder':
                 return $this->sendOrderPayHandle($data);
                 break;
-            case 'SendOrderCarriagePrice':
+            case 'SendOrderCarriage':
                 return $this->sendOrderCarriagePayHandle($data);
                 break;
             default:

@@ -67,6 +67,21 @@ class RefundService
                 break;
             case 'CustomOrder':
                 return $this->customOrderRefundHandle($data);
+            case 'SendOrder':
+                $extra_price = $this->sendOrderCarriageRepository->where('take_order_id',$data['id'])->where('status','paid')->first();
+                if($extra_price)
+                {
+                    $extra_price_data = [
+                        'id' => $extra_price->id,
+                        'total_price' => $extra_price->total_price,
+                        'order_sn' =>  $extra_price->order_sn,
+                        'payment' => $extra_price->payment,
+                        'trade_type' => 'CANCEL_TAKE_ORDER',
+                        'description' => '取消代拿任务',
+                    ];
+                    $this->takeOrderExtraPriceRefundHandle($extra_price_data);
+                }
+                return $this->sendOrderRefundHandle($data);
             default :
                 throw new \App\Exceptions\OutputServerMessageException('操作失败');
                 break;
@@ -146,6 +161,31 @@ class RefundService
         if($status)
         {
             $this->customOrderRepository->updateOrderStatus(['order_status' => 'cancel','order_cancel_status' => 'refunded'],$data['id']);
+        }
+    }
+    public function sendOrderRefundHandle($data)
+    {
+        $status = false;
+        switch ($data['payment'])
+        {
+            case 'balance':
+                $result = $this->balance($data);
+                if($result['return_code'] == 'SUCCESS')
+                {
+                    $status = true;
+                }
+                break;
+            case 'wechat':
+                $result = $this->wechat($data);
+
+                $status = true;
+                Log::debug("代寄任务退款result:");
+                Log::debug($result);
+                break;
+        }
+        if($status)
+        {
+            $this->sendOrderRepository->updateOrderStatus(['order_status' => 'cancel','order_cancel_status' => 'refunded'],$data['id']);
         }
     }
     private function balance($data)

@@ -236,7 +236,7 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
     }
     public function userCancelOrder($send_order)
     {
-        if ($send_order->order_status == 'accepted') {
+        if (in_array($send_order->order_status,['accepted','unpaid_carriage','paid_carriage'])) {
             throw new \App\Exceptions\OutputServerMessageException('已被接单，请联系骑手取消任务');
         }
         if ($send_order->order_status != 'new') {

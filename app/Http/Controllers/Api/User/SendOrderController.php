@@ -194,7 +194,7 @@ class SendOrderController extends BaseController
             'detail' => "代寄运费",
             'trade_type' => 'SEND_ORDER_CARRIAGE',
             'payment' => $request->payment,
-            'pay_from' => 'SendOrderCarriagePrice',
+            'pay_from' => 'SendOrderCarriage',
         ];
         $data = $this->payService->payHandle($data);
 
