@@ -148,7 +148,7 @@ class MessageService
             case 'carriage_pay':
                 $template_id = config('wechat.mini_program.default.template_id.wait_pay');
                 $data = [
-                    'keyword1' => '骑手请求支付运费',
+                    'keyword1' => '请及时支付代寄运费',
                     'keyword2' => $data['total_price'],
                 ];
                 $page = '';
