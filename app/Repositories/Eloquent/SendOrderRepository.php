@@ -165,7 +165,7 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
     }
     public function finishOrder($send_order)
     {
-        if ($send_order->order_status != 'paid_carriage') {
+        if ($send_order->order_status != 'accepted') {
             throw new OutputServerMessageException('当前任务状态不允许完成任务');
         }
         $this->updateOrderStatus(['order_status' => 'finish'],$send_order->id);

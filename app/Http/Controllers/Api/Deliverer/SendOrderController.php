@@ -109,8 +109,8 @@ class SendOrderController extends BaseController
         $order_status = 'unpaid_carriage';
         if($total_price == 0)
         {
-            $status = 'paid';
-            $order_status = 'paid_carriage';
+            $this->sendOrderCarriageRepository->deleteWhere(['send_order_id' => $send_order->id]);
+            throw new RequestSuccessException();
         }
         if($send_order_carriage)
         {
