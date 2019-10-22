@@ -300,6 +300,7 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
         }
         $send_order_carriage = app(SendOrderCarriageRepository::class)->where('send_order_id',$send_order->id)->first(['id','status']);
         $order_status = 'accepted';
+        /*
         if($send_order_carriage)
         {
             if($send_order_carriage['status'] == 'unpaid')
@@ -311,6 +312,7 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
                 $order_status = 'paid_carriage';
             }
         }
+        */
         $this->updateOrderStatus(['order_status' => $order_status,'order_cancel_status' => 'user_disagree_cancel'],$send_order->id);
         //通知 接单人
         $message_data = [

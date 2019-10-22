@@ -172,7 +172,7 @@ class SendOrderController extends BaseController
         if($send_order->user_id != $user->id){
             throw new PermissionDeniedException();
         }
-        if($send_order->order_status != 'unpaid_carriage')
+        if($send_order_carriage->status == 'paid' || $send_order->order_status != 'accepted')
         {
             throw new OutputServerMessageException("该任务状态不支持支付");
         }
@@ -200,7 +200,30 @@ class SendOrderController extends BaseController
 
         return $this->response->success()->data($data)->json();
     }
+    public function protestCarriage(Request $request)
+    {
+        $rule = [
+            'id' => 'required|integer',
+        ];
+        validateParameter($rule);
 
+        $user = User::tokenAuth();
+
+        $send_order = $this->sendOrderRepository->find($request->id);
+
+        $send_order_carriage = $this->sendOrderCarriageRepository->where('send_order_id',$send_order->id)->first();
+
+        if($send_order->user_id != $user->id){
+            throw new PermissionDeniedException();
+        }
+        if($send_order_carriage->status == 'paid' || $send_order->order_status != 'accepted')
+        {
+            throw new OutputServerMessageException("该任务状态不支持拒绝支付");
+        }
+        $this->sendOrderCarriageRepository->update(['status' => 'protest'],$send_order_carriage->id);
+
+        throw new \App\Exceptions\RequestSuccessException("操作成功！");
+    }
 
     /**
      * 发单人结算任务

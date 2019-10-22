@@ -114,7 +114,7 @@ class SendOrderController extends BaseController
         }
         if($send_order_carriage)
         {
-            if($send_order_carriage->status != 'unpaid')
+            if(!in_array($send_order_carriage->status,['unpaid','protest']) )
             {
                 throw new \App\Exceptions\OutputServerMessageException('已支付，不允许该操作');
             }
@@ -143,7 +143,7 @@ class SendOrderController extends BaseController
             ];
             app(MessageService::class)->sendMessage($message_data);
         }
-        $this->sendOrderRepository->updateOrderStatus(['order_status' => $order_status],$send_order->id);
+        //$this->sendOrderRepository->updateOrderStatus(['order_status' => $order_status],$send_order->id);
         throw new RequestSuccessException();
     }
 
