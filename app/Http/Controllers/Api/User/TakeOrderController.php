@@ -341,4 +341,29 @@ class TakeOrderController extends BaseController
 
         return $this->response->success()->data($data)->json();
     }
+    public function protestServicePrice(Request $request)
+    {
+        $rule = [
+            'id' => 'required|integer',
+        ];
+        validateParameter($rule);
+
+        $user = User::tokenAuth();
+
+        $take_order = $this->takeOrderRepository->find($request->id);
+
+        $take_order_extra_price = $this->takeOrderExtraPriceRepository->where('take_order_id',$take_order->id)->first();
+
+        if($take_order->user_id != $user->id){
+            throw new PermissionDeniedException();
+        }
+        if($take_order_extra_price->status == 'paid' || $take_order->order_status != 'accepted')
+        {
+            throw new OutputServerMessageException("该任务状态不支持拒绝支付");
+        }
+        $this->takeOrderExtraPriceRepository->update(['status' => 'protest'],$take_order_extra_price->id);
+
+        throw new \App\Exceptions\RequestSuccessException("操作成功！");
+    }
+
 }

@@ -74,7 +74,7 @@ class TakeOrder extends BaseModel
     public function getAllTotalPriceAttribute()
     {
         $id = $this->attributes['id'];
-        $service_price = TakeOrderExtraPrice::where('take_order_id',$id)->value('service_price');
+        $service_price = TakeOrderExtraPrice::where('take_order_id',$id)->where('status','paid')->value('service_price');
         $all_total_price = $service_price ? $this->attributes['total_price'] +  $service_price : $this->attributes['total_price'];
         return $all_total_price;
     }
