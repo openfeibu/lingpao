@@ -283,6 +283,8 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
         ]);
         $this->updateOrderStatus(['deliverer_id' => NULL,'order_status' => 'new','order_cancel_status' => ''],$send_order->id);
 
+        app(SendOrderCarriageRepository::class)->deleteWhere(['send_order_id' => $send_order->id]);
+
         //通知 接单人
         $message_data = [
             'task_type'=> 'send_order',
