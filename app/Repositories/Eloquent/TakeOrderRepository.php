@@ -290,7 +290,7 @@ class TakeOrderRepository extends BaseRepository implements TakeOrderRepositoryI
             'deliverer_id' => NULL
         ]);
         $this->updateOrderStatus(['deliverer_id' => NULL,'order_status' => 'new','order_cancel_status' => ''],$take_order->id);
-        app(TakeOrderExpressRepository::class)->deleteWhere(['take_order_id' => $take_order->id]);
+        app(TakeOrderExtraPriceRepository::class)->deleteWhere(['take_order_id' => $take_order->id]);
         //弃用：模式二：同意后直接退款，不生成新的任务
         /*
         $data = [
