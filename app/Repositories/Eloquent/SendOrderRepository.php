@@ -121,11 +121,11 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
         }
         if ($send_order->order_status != 'new')
         {
-            throw new \App\Exceptions\OutputServerMessageException('任务已被接');
+            throw new OutputServerMessageException('任务已被接');
         }
         if($send_order->created_at < date('Y-m-d 00:00:00'))
         {
-            throw new \App\Exceptions\OutputServerMessageException('任务已过有效期');
+            throw new OutputServerMessageException('任务已过有效期');
         }
         try {
             $this->updateOrderStatus([
@@ -145,7 +145,7 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
             ];
             app(MessageService::class)->sendMessage($message_data);
         } catch (Exception $e) {
-            throw new \App\Exceptions\OutputServerMessageException('无法接受任务');
+            throw new OutputServerMessageException('无法接受任务');
         }
         return $send_order;
 
@@ -166,7 +166,7 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
     public function finishOrder($send_order)
     {
         if ($send_order->order_status != 'paid_carriage') {
-            throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许完成任务');
+            throw new OutputServerMessageException('当前任务状态不允许完成任务');
         }
         $this->updateOrderStatus(['order_status' => 'finish'],$send_order->id);
 
@@ -183,7 +183,7 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
     public function completeOrder($send_order)
     {
         if ($send_order->order_status != 'finish') {
-            throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许结算任务');
+            throw new OutputServerMessageException('当前任务状态不允许结算任务');
         }
 
         $deliverer = app(UserRepository::class)->where('id',$send_order->deliverer_id)->first();
@@ -237,10 +237,10 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
     public function userCancelOrder($send_order)
     {
         if (in_array($send_order->order_status,['accepted','unpaid_carriage','paid_carriage'])) {
-            throw new \App\Exceptions\OutputServerMessageException('已被接单，请联系骑手取消任务');
+            throw new OutputServerMessageException('已被接单，请联系骑手取消任务');
         }
         if ($send_order->order_status != 'new') {
-            throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许取消');
+            throw new OutputServerMessageException('当前任务状态不允许取消');
         }
         $data = [
             'id' => $send_order->id,
@@ -256,8 +256,8 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
     }
     public function delivererCancelOrder($send_order)
     {
-        if ($send_order->order_status != 'accepted') {
-            throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许取消');
+        if (!in_array($send_order->order_status,['accepted','unpaid_carriage','paid_carriage'])) {
+            throw new OutputServerMessageException('当前任务状态不允许取消');
         }
         $this->updateOrderStatus(['order_status' => 'cancel','order_cancel_status' => 'deliverer_apply_cancel'],$send_order->id);
 
@@ -274,7 +274,7 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
     public function agreeCancelOrder($send_order)
     {
         if ($send_order->order_cancel_status != 'deliverer_apply_cancel') {
-            throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许同意取消');
+            throw new OutputServerMessageException('当前任务状态不允许同意取消');
         }
         $this->updateOrderStatus(['order_status' => 'cancel','order_cancel_status' => 'user_agree_cancel'],$send_order->id);
 
@@ -282,19 +282,7 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
             'deliverer_id' => NULL
         ]);
         $this->updateOrderStatus(['deliverer_id' => NULL,'order_status' => 'new','order_cancel_status' => ''],$send_order->id);
-        /*
-        $data = [
-            'id' => $send_order->id,
-            'total_price' => $send_order->total_price,
-            'order_sn' =>  $send_order->order_sn,
-            'payment' => $send_order->payment,
-            'coupon_id' => $send_order->coupon_id,
-            'coupon_price' => $send_order->coupon_price,
-            'trade_type' => 'CANCEL_SEND_ORDER',
-            'description' => '取消代寄任务',
-        ];
-        app(RefundService::class)->refundHandle($data,'SendOrder',User::tokenAuth());
-         */
+
         //通知 接单人
         $message_data = [
             'task_type'=> 'send_order',
@@ -308,9 +296,22 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
     public function disagreeCancelOrder($send_order)
     {
         if ($send_order->order_cancel_status != 'deliverer_apply_cancel') {
-            throw new \App\Exceptions\OutputServerMessageException('当前任务状态不允许该操作');
+            throw new OutputServerMessageException('当前任务状态不允许该操作');
         }
-        $this->updateOrderStatus(['order_status' => 'accepted','order_cancel_status' => 'user_disagree_cancel'],$send_order->id);
+        $send_order_carriage = app(SendOrderCarriageRepository::class)->where('send_order_id',$send_order->id)->first(['id','status']);
+        $order_status = 'accepted';
+        if($send_order_carriage)
+        {
+            if($send_order_carriage['status'] == 'unpaid')
+            {
+                $order_status = 'unpaid_carriage';
+            }
+            if($send_order_carriage['status'] == 'paid')
+            {
+                $order_status = 'paid_carriage';
+            }
+        }
+        $this->updateOrderStatus(['order_status' => $order_status,'order_cancel_status' => 'user_disagree_cancel'],$send_order->id);
         //通知 接单人
         $message_data = [
             'task_type'=> 'send_order',

@@ -7,6 +7,8 @@ use App\Repositories\Eloquent\BalanceRecordRepositoryInterface;
 use App\Repositories\Eloquent\CustomOrderRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderExtraPriceRepositoryInterface;
 use App\Repositories\Eloquent\TakeOrderRepositoryInterface;
+use App\Repositories\Eloquent\SendOrderRepositoryInterface;
+use App\Repositories\Eloquent\SendOrderCarriageRepositoryInterface;
 use App\Repositories\Eloquent\TradeRecordRepositoryInterface;
 use App\Repositories\Eloquent\UserAllCouponRepositoryInterface;
 use App\Repositories\Eloquent\UserCouponRepositoryInterface;
@@ -30,6 +32,8 @@ class RefundService
                                 TaskOrderRepositoryInterface $taskOrderRepository,
                                 TakeOrderExtraPriceRepositoryInterface $takeOrderExtraPriceRepository,
                                 CustomOrderRepositoryInterface $customOrderRepository,
+                                SendOrderRepositoryInterface $sendOrderRepository,
+                                SendOrderCarriageRepositoryInterface $sendOrderCarriageRepository,
                                 UserCouponRepositoryInterface $userCouponRepository,
                                 UserAllCouponRepositoryInterface $userAllCouponRepository)
     {
@@ -40,6 +44,8 @@ class RefundService
         $this->taskOrderRepository = $taskOrderRepository;
         $this->takeOrderExtraPriceRepository = $takeOrderExtraPriceRepository;
         $this->customOrderRepository = $customOrderRepository;
+        $this->sendOrderRepository = $sendOrderRepository;
+        $this->sendOrderCarriageRepository = $sendOrderCarriageRepository;
         $this->userCouponRepository = $userCouponRepository;
         $this->userAllCouponRepository = $userAllCouponRepository;
     }
@@ -68,18 +74,18 @@ class RefundService
             case 'CustomOrder':
                 return $this->customOrderRefundHandle($data);
             case 'SendOrder':
-                $extra_price = $this->sendOrderCarriageRepository->where('take_order_id',$data['id'])->where('status','paid')->first();
-                if($extra_price)
+                $carriage = $this->sendOrderCarriageRepository->where('send_order_id',$data['id'])->where('status','paid')->first();
+                if($carriage)
                 {
-                    $extra_price_data = [
-                        'id' => $extra_price->id,
-                        'total_price' => $extra_price->total_price,
-                        'order_sn' =>  $extra_price->order_sn,
-                        'payment' => $extra_price->payment,
-                        'trade_type' => 'CANCEL_TAKE_ORDER',
-                        'description' => '取消代拿任务',
+                    $carriage_data = [
+                        'id' => $carriage->id,
+                        'total_price' => $carriage->total_price,
+                        'order_sn' =>  $carriage->order_sn,
+                        'payment' => $carriage->payment,
+                        'trade_type' => 'CANCEL_SEND_ORDER',
+                        'description' => '取消代寄任务',
                     ];
-                    $this->takeOrderExtraPriceRefundHandle($extra_price_data);
+                    $this->sendOrderCarriageRefundHandle($carriage_data);
                 }
                 return $this->sendOrderRefundHandle($data);
             default :
@@ -186,6 +192,30 @@ class RefundService
         if($status)
         {
             $this->sendOrderRepository->updateOrderStatus(['order_status' => 'cancel','order_cancel_status' => 'refunded'],$data['id']);
+        }
+    }
+    public function sendOrderCarriageRefundHandle($data)
+    {
+        $status = false;
+
+        switch ($data['payment']){
+            case 'balance':
+                $result = $this->balance($data);
+                if($result['return_code'] == 'SUCCESS')
+                {
+                    $status = true;
+                }
+                break;
+            case 'wehcat':
+                $result = $this->wechat($data);
+                $status = true;
+                Log::debug("代寄任务运费退款result:");
+                Log::debug($result);
+                break;
+        }
+        if($status)
+        {
+            $this->sendOrderCarriageRepository->update(['status' => 'refunded'], $data['id']);
         }
     }
     private function balance($data)
