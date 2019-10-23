@@ -52,7 +52,8 @@ return [
         ],
         'carriage_pay_status' => [
             'unpaid' => '待支付',
-            'paid' => '已支付'
+            'paid' => '已支付',
+            'protest' => '拒绝支付',
         ],
     ],
     'order_status' => [
@@ -89,7 +90,8 @@ return [
     ],
     'service_price_pay_status' => [
         'unpaid' => '待支付',
-        'paid' => '已支付'
+        'paid' => '已支付',
+        'protest' => '拒绝支付',
     ],
     'be_accepted' => '您好，您的%s任务已被接。',
     'be_finished' => '您好，骑手已完成您的%s任务，请给任务结算和评价吧。',
