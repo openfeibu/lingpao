@@ -105,7 +105,7 @@ class TakeOrderController extends BaseController
         }
 
         $take_order_extra_price = $this->takeOrderExtraPriceRepository->where('take_order_id',$take_order->id)->first(['id','status']);
-
+        $status = 'unpaid';
         if($take_order_extra_price)
         {
             if(!in_array($take_order_extra_price->status,['unpaid','protest']) )
@@ -115,6 +115,7 @@ class TakeOrderController extends BaseController
             $this->takeOrderExtraPriceRepository->update([
                 'service_price' => $service_price,
                 'total_price' => $total_price,
+                'status' => $status
             ],$take_order_extra_price->id);
         }else{
             $order_sn = 'TAKEEXTRA-'.generate_order_sn();
@@ -123,7 +124,7 @@ class TakeOrderController extends BaseController
                 'take_order_id' => $take_order->id,
                 'service_price' => $service_price,
                 'total_price' => $total_price,
-                'status' => 'unpaid'
+                'status' => $status
             ]);
             //通知 发单人
             $message_data = [
