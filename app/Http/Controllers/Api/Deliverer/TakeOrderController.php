@@ -108,7 +108,7 @@ class TakeOrderController extends BaseController
 
         if($take_order_extra_price)
         {
-            if($take_order_extra_price->status != 'unpaid')
+            if(!in_array($take_order_extra_price->status,['unpaid','protest']) )
             {
                 throw new \App\Exceptions\OutputServerMessageException('已支付，不允许该操作');
             }
