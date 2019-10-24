@@ -218,7 +218,7 @@ class PayService
                 if($result['return_code'] == 'SUCCESS')
                 {
                     $this->sendOrderCarriageRepository->update(['status' => 'paid'],$data['send_order_carriage_price_id']);
-                    $this->sendOrderRepository->update(['deliverer_price' => $data['send_order']->deliverer_price+$data['extra_price'] ],$data['send_order']->id);
+                    $this->sendOrderRepository->update(['deliverer_price' => $data['send_order']->deliverer_price+$data['total_price']],$data['send_order']->id);
                     //$this->sendOrderRepository->updateOrderStatus(['order_status' => 'paid_carriage'],$data['send_order']->id);
                     //通知 发单人
                     $message_data = [

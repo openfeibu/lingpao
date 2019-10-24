@@ -185,9 +185,10 @@ class SendOrderRepository extends BaseRepository implements SendOrderRepositoryI
         if ($send_order->order_status != 'finish') {
             throw new OutputServerMessageException('当前任务状态不允许结算任务');
         }
-
         $deliverer = app(UserRepository::class)->where('id',$send_order->deliverer_id)->first();
-        $fee = get_fee($send_order->deliverer_price);
+        $carriage_data = app(SendOrderCarriageRepository::class)->where('send_order_id',$send_order->id)->first();
+        $carriage = $carriage_data ? $carriage_data->carriage : 0;
+        $fee = get_fee($send_order->deliverer_price - $carriage);
         $income = $send_order->deliverer_price - $fee;
         $new_balance = $deliverer->balance + $income;
         $balanceData = array(

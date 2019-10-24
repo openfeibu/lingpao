@@ -160,7 +160,7 @@ class PaymentNotifyController extends BaseController
             case 'SENDCARRIAGE':
                 $carriage = $this->sendOrderCarriageRepository->where('order_sn',$out_trade_no)->first();
                 if($carriage->status == 'unpaid') {
-                    $send_order = $this->sendOrderRepository->where('id', $carriage->send_order_id)->first(['id', 'user_id','deliverer_id','extra_price', 'total_price', 'payment', 'order_status', 'coupon_id','deliverer_price']);
+                    $send_order = $this->sendOrderRepository->where('id', $carriage->send_order_id)->first(['id', 'user_id','deliverer_id', 'total_price', 'payment', 'order_status', 'coupon_id','deliverer_price']);
                     $trade = array(
                         'user_id' => $send_order->user_id,
                         'out_trade_no' => $out_trade_no,
@@ -174,7 +174,7 @@ class PaymentNotifyController extends BaseController
                         'description' => '代寄运费',
                     );
                     $this->sendOrderCarriageRepository->update(['status' => 'paid'], $carriage->id);
-                    $this->sendOrderRepository->update(['deliverer_price' => $send_order->deliverer_price+$carriage->extra_price],$send_order->id);
+                    $this->sendOrderRepository->update(['deliverer_price' => $send_order->deliverer_price+$carriage->total_price],$send_order->id);
                     //通知 接单人
                     $message_data = [
                         'user_id' => $send_order->deliverer_id,
