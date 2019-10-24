@@ -59,6 +59,7 @@ class CustomOrderCategoryResourceController extends BaseController
     {
         try {
             $attributes = $request->all();
+            $attributes['is_open'] = $attributes['is_open'] == 'on' ? '1' : 0;
 
             $custom_order_category = $this->repository->create($attributes);
 
@@ -92,10 +93,13 @@ class CustomOrderCategoryResourceController extends BaseController
     {
         try {
             $attributes = $request->all();
-
+            if(isset($attributes['is_open']))
+            {
+                $attributes['is_open'] = $attributes['is_open'] == 'on' ? '1' : 0;
+            }
             $custom_order_category->update($attributes);
 
-            return $this->response->message(trans('messages.success.created', ['Module' => trans('custom_order_category.name')]))
+            return $this->response->message(trans('messages.success.updated', ['Module' => trans('custom_order_category.name')]))
                 ->code(0)
                 ->status('success')
                 ->url(guard_url('custom_order_category/'))
