@@ -18,6 +18,6 @@ class CustomOrderCategory extends BaseModel
 
     public static function getCategories()
     {
-        return self::orderBy('order','asc')->orderBy('id','asc')->get();
+        return self::where('status',1)->orderBy('order','asc')->orderBy('id','asc')->get();
     }
 }

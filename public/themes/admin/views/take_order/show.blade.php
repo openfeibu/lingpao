@@ -120,7 +120,7 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">{!! trans('app.service_price')!!}：</label>
                             <div class="layui-input-inline">
-                                <p class="input-p">{{ $take_order['service_price'] }}</p>
+                                <p class="input-p">{{ $take_order['service_price'] }}({{ $take_order['service_price_data']['service_price_pay_status_desc'] }})</p>
                             </div>
                         </div>
                     @endif

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\CustomOrder;
+use App\Models\SendOrder;
+use App\Models\SendOrderCarriage;
 use App\Models\TakeOrder;
+use App\Models\TakeOrderExtraPrice;
 use App\Models\User;
 use Route;
 use App\Http\Controllers\Admin\Controller as BaseController;
@@ -42,22 +45,31 @@ class ResourceController extends BaseController
 
         $take_order_count = TakeOrder::where('order_status','<>','unpaid')->count();
         $today_take_order_count = TakeOrder::where('order_status','<>','unpaid')->where('created_at','>=',date('Y-m-d 00:00:00'))->count();
+
         $custom_order_count = CustomOrder::where('order_status','<>','unpaid')->count();
         $today_custom_order_count = CustomOrder::where('order_status','<>','unpaid')->where('created_at','>=',date('Y-m-d 00:00:00'))->count();
-        $send_order_count = 0;
-        $today_send_order_count = 0;
+
+        $send_order_count = SendOrder::where('order_status','<>','unpaid')->count();;
+        $today_send_order_count = SendOrder::where('order_status','<>','unpaid')->where('created_at','>=',date('Y-m-d 00:00:00'))->count();
 
         $balance_sum = User::sum('balance');
         $take_order_total_price = TakeOrder::where('order_status','<>','unpaid')->sum('total_price');
+        $take_order_extra_price = TakeOrderExtraPrice::where('status','<>','unpaid')->sum('total_price');
+        $take_order_total_price += $take_order_extra_price;
         $custom_order_total_price = CustomOrder::where('order_status','<>','unpaid')->sum('total_price');
-        $send_order_total_price = 0;
+        $send_order_total_price = SendOrder::where('order_status','<>','unpaid')->sum('total_price');
+        $send_order_carriage = SendOrderCarriage::where('status','<>','unpaid')->sum('total_price');
+        $send_order_total_price += $send_order_carriage;
         $transaction_total_price = $take_order_total_price + $custom_order_total_price + $send_order_total_price;
 
         $today_take_order_total_price = TakeOrder::where('order_status','<>','unpaid')->where('created_at','>=',date('Y-m-d 00:00:00'))->sum('total_price');
+        $today_take_order_extra_price = TakeOrderExtraPrice::where('status','<>','unpaid')->where('created_at','>=',date('Y-m-d 00:00:00'))->sum('total_price');
+        $today_take_order_total_price += $today_take_order_extra_price;
         $today_custom_order_total_price = CustomOrder::where('order_status','<>','unpaid')->where('created_at','>=',date('Y-m-d 00:00:00'))->sum('total_price');
-        $today_send_order_total_price = 0;
+        $today_send_order_total_price = SendOrder::where('order_status','<>','unpaid')->where('created_at','>=',date('Y-m-d 00:00:00'))->sum('total_price');
+        $today_send_order_carriage = SendOrderCarriage::where('status','<>','unpaid')->where('created_at','>=',date('Y-m-d 00:00:00'))->sum('total_price');
+        $today_send_order_total_price += $today_send_order_carriage;
         $today_transaction_total_price = $today_take_order_total_price + $today_custom_order_total_price + $today_send_order_total_price;
-
 
         return $this->response->title(trans('app.name'))
             ->view('home')

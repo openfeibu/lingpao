@@ -114,7 +114,11 @@ class CustomOrderCategoryResourceController extends BaseController
             $exist = $this->customOrderRepository->where('custom_order_category_id',$custom_order_category->id)->first();
             if($exist)
             {
-                throw new OutputServerMessageException("该分类下存在订单，请勿删除");
+                return $this->response->message("该分类下存在订单，请勿删除")
+                    ->status("error")
+                    ->code(400)
+                    ->url(guard_url('custom_order_category'))
+                    ->redirect();
             }
             $custom_order_category->forceDelete();
             return $this->response->message(trans('messages.success.deleted', ['Module' => trans('custom_order_category.name')]))

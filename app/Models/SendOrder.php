@@ -14,7 +14,7 @@ class SendOrder extends BaseModel
 
     protected $config = 'model.send_order.send_order';
 
-    protected $appends = ['task_order_id','carriage_data','status_desc','payment_desc'];
+    protected $appends = ['task_order_id','carriage_data','status_desc','payment_desc','all_total_price'];
 
     public function getTaskOrderIdAttribute()
     {
@@ -58,5 +58,13 @@ class SendOrder extends BaseModel
     public function getPaymentDescAttribute()
     {
         return isset($this->attributes['payment']) ? trans('app.payment.payments.'.$this->attributes['payment']) : '';
+    }
+
+    public function getAllTotalPriceAttribute()
+    {
+        $id = $this->attributes['id'];
+        $total_carriage = SendOrderCarriage::where('send_order_id',$id)->where('status','paid')->value('total_price');
+        $all_total_price = $total_carriage ? $this->attributes['total_price'] +  $total_carriage : $this->attributes['total_price'];
+        return $all_total_price;
     }
 }

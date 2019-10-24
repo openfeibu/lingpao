@@ -190,6 +190,9 @@ class TaskOrderRepository extends BaseRepository implements TaskOrderRepositoryI
                 case 'custom_order':
                     $order_detail = app(CustomOrderRepository::class)->getAdminOrder($order->objective_id);
                     break;
+                case 'send_order':
+                    $order_detail = app(SendOrderRepository::class)->getAdminOrder($order->objective_id);
+                    break;
             }
 
             $order_detail->task_order_id = $order->id;
